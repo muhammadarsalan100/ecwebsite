@@ -63,7 +63,7 @@ export function SmartWearableBanner() {
   const currentData = slides[currentSlide];
 
   return (
-    <motion.section 
+    <motion.section
       className='w-full py-12 relative max-w-7xl mx-auto'
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
@@ -73,18 +73,7 @@ export function SmartWearableBanner() {
       {/* LEFT ARROW */}
       <motion.button
         onClick={() => setCurrentSlide((prev) => Math.max(0, prev - 1))}
-        className="
-          absolute left-0 top-1/2
-          -translate-x-1/2 -translate-y-1/2
-          z-30
-          w-14 h-14
-          rounded-full
-          bg-white
-          flex items-center justify-center
-          shadow-md
-          hover:bg-gray-100
-          transition
-        "
+        className='absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition'
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         initial={{ opacity: 0, x: -20 }}
@@ -92,24 +81,15 @@ export function SmartWearableBanner() {
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.5 }}
       >
-        <ChevronLeft className="w-5 h-5 text-blue-500" />
+        <ChevronLeft className='w-5 h-5 text-blue-500' />
       </motion.button>
 
       {/* RIGHT ARROW */}
       <motion.button
-        onClick={() => setCurrentSlide((prev) => Math.min(totalSlides - 1, prev + 1))}
-        className="
-          absolute right-0 top-1/2
-          translate-x-1/2 -translate-y-1/2
-          z-30
-          w-14 h-14
-          rounded-full
-          bg-white
-          flex items-center justify-center
-          shadow-md
-          hover:bg-gray-100
-          transition
-        "
+        onClick={() =>
+          setCurrentSlide((prev) => Math.min(totalSlides - 1, prev + 1))
+        }
+        className='absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition'
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         initial={{ opacity: 0, x: 20 }}
@@ -117,7 +97,7 @@ export function SmartWearableBanner() {
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.5 }}
       >
-        <ChevronRight className="w-5 h-5 text-blue-500" />
+        <ChevronRight className='w-5 h-5 text-blue-500' />
       </motion.button>
 
       {/* Main Banner - Full Width */}
@@ -142,8 +122,8 @@ export function SmartWearableBanner() {
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <Image
-              src="/globe.png"
-              alt="Globe background"
+              src='/globe.png'
+              alt='Globe background'
               width={496}
               height={308}
               className='absolute'
@@ -159,7 +139,7 @@ export function SmartWearableBanner() {
             {/* Left Text Content */}
             <div className='flex-1 flex flex-col justify-center pl-16 pr-8'>
               {/* First Heading */}
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode='wait'>
                 <motion.p
                   key={`subtitle-${currentSlide}`}
                   style={{
@@ -180,7 +160,7 @@ export function SmartWearableBanner() {
               </AnimatePresence>
 
               {/* Second Heading - Main */}
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode='wait'>
                 <motion.h2
                   key={`title-${currentSlide}`}
                   style={{
@@ -201,7 +181,7 @@ export function SmartWearableBanner() {
               </AnimatePresence>
 
               {/* Third Text */}
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode='wait'>
                 <motion.p
                   key={`offer-${currentSlide}`}
                   style={{
@@ -231,7 +211,10 @@ export function SmartWearableBanner() {
                       width: i === currentSlide ? "24px" : "8px",
                       height: "8px",
                       borderRadius: "4px",
-                      background: i === currentSlide ? "#FFF" : "rgba(255, 255, 255, 0.5)",
+                      background:
+                        i === currentSlide
+                          ? "#FFF"
+                          : "rgba(255, 255, 255, 0.5)",
                       transition: "all 0.3s ease",
                     }}
                     whileHover={{ scale: 1.2 }}
@@ -242,8 +225,11 @@ export function SmartWearableBanner() {
             </div>
 
             {/* Right Image */}
-            <div className='relative flex items-center justify-center' style={{ width: "45%" }}>
-              <AnimatePresence mode="wait">
+            <div
+              className='relative flex items-center justify-center'
+              style={{ width: "45%" }}
+            >
+              <AnimatePresence mode='wait'>
                 <motion.div
                   key={`image-${currentSlide}`}
                   initial={{ opacity: 0, scale: 0.8, rotate: -10 }}

@@ -9,7 +9,7 @@ export function SummerHero() {
   return (
     <section className='w-full px-4 py-6 md:px-8 lg:px-12'>
       <div className='mx-auto max-w-7xl'>
-        <motion.div 
+        <motion.div
           className='relative overflow-hidden'
           style={{
             height: "307px",
@@ -21,7 +21,7 @@ export function SummerHero() {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           {/* Background Image */}
-          <motion.div 
+          <motion.div
             className='absolute inset-0'
             initial={{ scale: 1.1 }}
             whileInView={{ scale: 1 }}
@@ -36,17 +36,18 @@ export function SummerHero() {
               priority
             />
             {/* Overlay gradient for text readability */}
-            <div 
-              className='absolute inset-0' 
+            <div
+              className='absolute inset-0'
               style={{
-                background: "linear-gradient(0deg, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0.70) 100%)",
+                background:
+                  "linear-gradient(0deg, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0.70) 100%)",
               }}
             />
           </motion.div>
 
           {/* Content */}
           <div className='relative z-10 flex flex-col items-center justify-center text-center px-6 h-[307px]'>
-            <motion.h1 
+            <motion.h1
               className='mb-4'
               style={{
                 color: "#FFF",
@@ -62,18 +63,8 @@ export function SummerHero() {
             >
               Summer Arrival of Outfit
             </motion.h1>
-            <motion.p 
-              className='mb-8'
-              style={{
-                width: "410px",
-                color: "#FFF",
-                textAlign: "center",
-                fontFamily: "var(--font-poppins)",
-                fontSize: "16px",
-                fontWeight: 400,
-                lineHeight: "normal",
-                opacity: 0.6,
-              }}
+            <motion.p
+              className='absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition'
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 0.6, y: 0 }}
               viewport={{ once: true }}
@@ -82,7 +73,7 @@ export function SummerHero() {
               Discover quality fashion that reflects your style and make
               everyday enjoyable
             </motion.p>
-            <motion.button 
+            <motion.button
               className='group flex items-center gap-3 bg-white text-black px-8 py-3.5 rounded-full hover:bg-gray-100 transition-all duration-300'
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}

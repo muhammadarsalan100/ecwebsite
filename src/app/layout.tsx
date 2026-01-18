@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit, Readex_Pro, Poppins } from "next/font/google";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+
 import "./globals.css";
 
 const outfit = Outfit({
@@ -35,11 +34,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${outfit.className} ${readexPro.variable} ${poppins.variable} antialiased bg-background text-foreground flex flex-col min-h-screen`}
+        className={`${outfit.className} ${readexPro.variable} ${poppins.variable} antialiased bg-background text-foreground min-h-screen`}
       >
-        <Navbar />
-        <main className='grow'>{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );
