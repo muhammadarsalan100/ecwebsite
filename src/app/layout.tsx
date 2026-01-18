@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Outfit, Readex_Pro, Poppins } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import "./globals.css";
@@ -7,6 +7,19 @@ import "./globals.css";
 const outfit = Outfit({
   subsets: ["latin"],
   display: "swap",
+});
+
+const readexPro = Readex_Pro({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-readex-pro",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
@@ -22,10 +35,10 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${outfit.className} antialiased bg-background text-foreground flex flex-col min-h-screen`}
+        className={`${outfit.className} ${readexPro.variable} ${poppins.variable} antialiased bg-background text-foreground flex flex-col min-h-screen`}
       >
         <Navbar />
-        <main className='grow pt-16'>{children}</main>
+        <main className='grow'>{children}</main>
         <Footer />
       </body>
     </html>

@@ -4,7 +4,7 @@ import { RecentCollectionBanner } from "@/assets/images";
 export function RecentCollections() {
   return (
     <section className='w-full px-4 py-12 md:px-8 lg:px-16 bg-background'>
-      <div className='max-w-6xl mx-auto'>
+      <div className='max-w-7xl mx-auto'>
         <div className='mb-8'>
           <h2 className='text-3xl md:text-4xl mb-1'>
             <span className='font-serif '>Recent</span>{" "}

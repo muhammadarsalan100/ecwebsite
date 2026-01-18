@@ -7,18 +7,48 @@ import { AppleStoreIcon, GooglePlayStoreIcon } from "@/assets/images";
 
 export default function Footer() {
   return (
-    <footer className='bg-[#008ECC] text-white relative overflow-hidden pt-16 pb-8'>
+    <footer className='bg-[#0090FF] text-white relative overflow-hidden' style={{ paddingLeft: "130px", paddingRight: "130px", paddingTop: "80px", paddingBottom: "30px" }}>
       {/* Decorative Circle Background */}
       <div className='absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none'></div>
 
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
+      <div className='relative z-10'>
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-12 mb-12'>
           {/* Column 1: Brand & Contact */}
           <div className='space-y-8'>
-            <h2 className='text-4xl font-bold tracking-tight'>Mega Mart</h2>
+            <h2
+              style={{
+                color: "#FFF",
+                fontFamily: "var(--font-readex-pro)",
+                fontSize: "50px",
+                fontWeight: 500,
+                lineHeight: "normal",
+              }}
+            >
+              Mega Mart
+            </h2>
 
             <div className='space-y-6'>
-              <h3 className='text-xl font-medium'>Contact Us</h3>
+              <div className='relative inline-block'>
+                <h3
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "20px",
+                    fontWeight: 400,
+                    lineHeight: "20px",
+                  }}
+                >
+                  Contact Us
+                </h3>
+                <div
+                  style={{
+                    width: "219px",
+                    height: "3px",
+                    background: "#FFF",
+                    marginTop: "8px",
+                  }}
+                />
+              </div>
 
               <div className='space-y-4'>
                 <div className='flex items-start space-x-3'>
@@ -26,8 +56,28 @@ export default function Footer() {
                     <MessageCircle className='w-6 h-6' />
                   </div>
                   <div>
-                    <p className='text-sm font-medium'>Whats App</p>
-                    <p className='text-sm'>+1 202-918-2132</p>
+                    <p
+                      style={{
+                        color: "#FFF",
+                        fontFamily: "var(--font-readex-pro)",
+                        fontSize: "16px",
+                        fontWeight: 400,
+                        lineHeight: "37px",
+                      }}
+                    >
+                      Whats App
+                    </p>
+                    <p
+                      style={{
+                        color: "#FFF",
+                        fontFamily: "var(--font-readex-pro)",
+                        fontSize: "16px",
+                        fontWeight: 400,
+                        lineHeight: "37px",
+                      }}
+                    >
+                      +1 202-918-2132
+                    </p>
                   </div>
                 </div>
 
@@ -36,15 +86,55 @@ export default function Footer() {
                     <Phone className='w-6 h-6' />
                   </div>
                   <div>
-                    <p className='text-sm font-medium'>Call Us</p>
-                    <p className='text-sm'>+1 202-918-2132</p>
+                    <p
+                      style={{
+                        color: "#FFF",
+                        fontFamily: "var(--font-readex-pro)",
+                        fontSize: "16px",
+                        fontWeight: 400,
+                        lineHeight: "37px",
+                      }}
+                    >
+                      Call Us
+                    </p>
+                    <p
+                      style={{
+                        color: "#FFF",
+                        fontFamily: "var(--font-readex-pro)",
+                        fontSize: "16px",
+                        fontWeight: 400,
+                        lineHeight: "37px",
+                      }}
+                    >
+                      +1 202-918-2132
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className='space-y-4'>
-              <h3 className='text-xl font-medium'>Download App</h3>
+              <div className='relative inline-block'>
+                <h3
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "20px",
+                    fontWeight: 400,
+                    lineHeight: "20px",
+                  }}
+                >
+                  Download App
+                </h3>
+                <div
+                  style={{
+                    width: "219px",
+                    height: "3px",
+                    background: "#FFF",
+                    marginTop: "8px",
+                  }}
+                />
+              </div>
               <div className='flex flex-wrap gap-4'>
                 {/* App Store */}
                 <Link
@@ -81,73 +171,146 @@ export default function Footer() {
 
           {/* Column 2: Most Popular Categories */}
           <div>
-            <h3 className='text-xl font-medium mb-6 relative inline-block'>
-              Most Popular Categories
-              <span className='absolute bottom-[-8px] left-0 w-full h-[2px] bg-white/30'></span>
-            </h3>
-            <ul className='space-y-4'>
+            <div className='relative inline-block mb-6'>
+              <h3
+                style={{
+                  color: "#FFF",
+                  fontFamily: "var(--font-readex-pro)",
+                  fontSize: "20px",
+                  fontWeight: 400,
+                  lineHeight: "20px",
+                }}
+              >
+                Most Popular Categories
+              </h3>
+              <div
+                style={{
+                  width: "219px",
+                  height: "3px",
+                  background: "#FFF",
+                  marginTop: "8px",
+                }}
+              />
+            </div>
+            <ul>
               <li>
                 <Link
                   href='/shop/staples'
-                  className='hover:underline opacity-90'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
                 >
-                  Staples
+                  • Staples
                 </Link>
               </li>
               <li>
                 <Link
                   href='/shop/beverages'
-                  className='hover:underline opacity-90'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
                 >
-                  Beverages
+                  • Beverages
                 </Link>
               </li>
               <li>
                 <Link
                   href='/shop/personal-care'
-                  className='hover:underline opacity-90'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
                 >
-                  Personal Care
+                  • Personal Care
                 </Link>
               </li>
               <li>
                 <Link
                   href='/shop/home-care'
-                  className='hover:underline opacity-90'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
                 >
-                  Home Care
+                  • Home Care
                 </Link>
               </li>
               <li>
                 <Link
                   href='/shop/baby-care'
-                  className='hover:underline opacity-90'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
                 >
-                  Baby Care
+                  • Baby Care
                 </Link>
               </li>
               <li>
                 <Link
                   href='/shop/vegetables-fruits'
-                  className='hover:underline opacity-90'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
                 >
-                  Vegetables & Fruits
+                  • Vegetables & Fruits
                 </Link>
               </li>
               <li>
                 <Link
                   href='/shop/snacks-foods'
-                  className='hover:underline opacity-90'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
                 >
-                  Snacks & Foods
+                  • Snacks & Foods
                 </Link>
               </li>
               <li>
                 <Link
                   href='/shop/dairy-bakery'
-                  className='hover:underline opacity-90'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
                 >
-                  Dairy & Bakery
+                  • Dairy & Bakery
                 </Link>
               </li>
             </ul>
@@ -155,39 +318,116 @@ export default function Footer() {
 
           {/* Column 3: Customer Services */}
           <div>
-            <h3 className='text-xl font-medium mb-6 relative inline-block'>
-              Customer Services
-              <span className='absolute bottom-[-8px] left-0 w-full h-[2px] bg-white/30'></span>
-            </h3>
-            <ul className='space-y-4'>
+            <div className='relative inline-block mb-6'>
+              <h3
+                style={{
+                  color: "#FFF",
+                  fontFamily: "var(--font-readex-pro)",
+                  fontSize: "20px",
+                  fontWeight: 400,
+                  lineHeight: "20px",
+                }}
+              >
+                Customer Services
+              </h3>
+              <div
+                style={{
+                  width: "219px",
+                  height: "3px",
+                  background: "#FFF",
+                  marginTop: "8px",
+                }}
+              />
+            </div>
+            <ul>
               <li>
-                <Link href='/about' className='hover:underline opacity-90'>
-                  About Us
+                <Link
+                  href='/about'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
+                >
+                  • About Us
                 </Link>
               </li>
               <li>
-                <Link href='/terms' className='hover:underline opacity-90'>
-                  Terms & Conditions
+                <Link
+                  href='/terms'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
+                >
+                  • Terms & Conditions
                 </Link>
               </li>
               <li>
-                <Link href='/faq' className='hover:underline opacity-90'>
-                  FAQ
+                <Link
+                  href='/faq'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
+                >
+                  • FAQ
                 </Link>
               </li>
               <li>
-                <Link href='/privacy' className='hover:underline opacity-90'>
-                  Privacy Policy
+                <Link
+                  href='/privacy'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
+                >
+                  • Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href='/e-waste' className='hover:underline opacity-90'>
-                  E-waste Policy
+                <Link
+                  href='/e-waste'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
+                >
+                  • E-waste Policy
                 </Link>
               </li>
               <li>
-                <Link href='/returns' className='hover:underline opacity-90'>
-                  Cancellation & Return Policy
+                <Link
+                  href='/returns'
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "37px",
+                  }}
+                  className='hover:underline'
+                >
+                  • Cancellation & Return Policy
                 </Link>
               </li>
             </ul>
@@ -196,7 +436,16 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className='border-t border-white/20 pt-8 text-center'>
-          <p className='text-sm'>© {}2025 All rights reserved</p>
+          <p
+            style={{
+              color: "#FFF",
+              fontFamily: "var(--font-readex-pro)",
+              fontSize: "16px",
+              fontWeight: 400,
+            }}
+          >
+            © 2025 All rights reserved
+          </p>
         </div>
       </div>
     </footer>

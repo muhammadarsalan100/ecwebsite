@@ -3,26 +3,48 @@
 import Link from "next/link";
 import {
   ShoppingCart,
-  Heart,
   Search,
   ChevronDown,
   Menu,
   X,
+  User,
+  SlidersHorizontal,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { pakFlag } from "@/assets/images";
 
+const countries = [
+  { code: "PK", name: "Pakistan", flag: pakFlag },
+  { code: "US", name: "United States", flag: pakFlag },
+  { code: "UK", name: "United Kingdom", flag: pakFlag },
+  { code: "AE", name: "UAE", flag: pakFlag },
+  { code: "SA", name: "Saudi Arabia", flag: pakFlag },
+];
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isRegionOpen, setIsRegionOpen] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState(countries[0]);
+  const regionRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (regionRef.current && !regionRef.current.contains(event.target as Node)) {
+        setIsRegionOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className='flex flex-col w-full z-50'>
       {/* Top Bar */}
       <div className='bg-black text-white text-xs py-3 px-4 sm:px-6 lg:px-8'>
         <div className='max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0'>
-          <div className='hidden md:block w-1/4'></div>{" "}
-          {/* Spacer for centering */}
+          <div className='hidden md:block w-1/4'></div>
           <div className='flex-1 text-center'>
             <span className='opacity-90'>
               Summer Sale For All Swim Suits And Free Express Delivery - OFF
@@ -54,70 +76,112 @@ export default function Navbar() {
                 href='/'
                 className='text-2xl font-bold tracking-tight text-black'
               >
-                Name Logo
+                Logo
               </Link>
             </div>
 
-            {/* Desktop Navigation - Middle (Optional based on image, but good to keep links if needed, otherwise hidden) 
-                The image doesn't strictly show links in the middle, but standard navs usually have them. 
-                Based on "Name Logo" image, it seems strictly Logo | Search | Actions. 
-                I will prioritize the layout in the image but keep the search prominent.
-            */}
+            {/* Region Selector with Dropdown */}
+            <div className='hidden md:flex items-center relative' ref={regionRef}>
+              <button 
+                onClick={() => setIsRegionOpen(!isRegionOpen)}
+                className='flex items-center gap-2 hover:opacity-80 transition-opacity'
+              >
+                <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0'>
+                  <Image
+                    src={selectedCountry.flag}
+                    alt='Flag'
+                    fill
+                    className='object-cover'
+                  />
+                </div>
+                <span style={{ color: '#666', fontFamily: 'var(--font-readex-pro)', fontSize: '16px', fontWeight: 400, lineHeight: '18px' }}>
+                  Region
+                </span>
+                <ChevronDown className='w-4 h-4' style={{ color: '#666' }} />
+              </button>
 
-            {/* Search Bar - Center/Right aligned */}
-            <div className='hidden md:flex flex-1 max-w-md mx-8'>
-              <div className='relative w-full'>
+              {/* Region Dropdown */}
+              {isRegionOpen && (
+                <div className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50'>
+                  {countries.map((country) => (
+                    <button
+                      key={country.code}
+                      onClick={() => {
+                        setSelectedCountry(country);
+                        setIsRegionOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors ${
+                        selectedCountry.code === country.code ? 'bg-gray-50' : ''
+                      }`}
+                    >
+                      <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0'>
+                        <Image
+                          src={country.flag}
+                          alt={country.name}
+                          fill
+                          className='object-cover'
+                        />
+                      </div>
+                      <span className='text-sm text-gray-700'>{country.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Search Bar - Center */}
+            <div className='hidden md:flex flex-1 max-w-xl mx-4'>
+              <div className='relative w-full flex items-center'>
+                <div className='absolute left-4' style={{ color: '#666' }}>
+                  <Search className='w-5 h-5' />
+                </div>
                 <input
                   type='text'
-                  placeholder='What are you looking for?'
-                  className='w-full bg-gray-100 rounded-md py-2.5 pl-4 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-black placeholder:text-gray-500 text-black'
+                  placeholder='Search essentials, groceries and more...'
+                  className='w-full bg-gray-50 border border-gray-200 py-3 pl-12 pr-14 text-sm focus:outline-none focus:ring-2 focus:ring-[#0090FF] focus:border-transparent placeholder:text-gray-400 text-black'
+                  style={{ borderRadius: '10px' }}
                 />
-                <button className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black'>
-                  <Search className='w-5 h-5' />
+                <button className='absolute right-3 p-1' style={{ color: '#666' }}>
+                  <SlidersHorizontal className='w-5 h-5' />
                 </button>
               </div>
             </div>
 
             {/* Right Actions */}
-            <div className='hidden md:flex items-center space-x-6 text-black'>
-              {/* Region Selector */}
-              <button className='flex items-center gap-2 hover:opacity-80 transition-opacity text-sm font-medium'>
-                <div className='w-6 h-4 relative overflow-hidden rounded-sm border border-gray-200'>
-                  <Image
-                    src={pakFlag}
-                    alt='Flag'
-                    className='w-full h-full object-cover'
-                  />
-                </div>
-                <span>Region</span>
-                <ChevronDown className='w-4 h-4' />
-              </button>
-
+            <div className='hidden md:flex items-center gap-6'>
+              {/* Sign Up/Sign In */}
               <Link
-                href='/wishlist'
-                className='hover:text-secondary transition-colors'
+                href='/auth'
+                className='flex items-center gap-2 hover:opacity-80 transition-opacity'
+                style={{ color: '#666', fontFamily: 'var(--font-readex-pro)', fontSize: '16px', fontWeight: 400, lineHeight: '18px' }}
               >
-                <Heart className='w-6 h-6' />
+                <User className='w-5 h-5' />
+                <span>Sign Up/Sign In</span>
               </Link>
 
+              {/* Divider */}
+              <div className='h-6 w-px bg-gray-300'></div>
+
+              {/* Cart */}
               <Link
                 href='/cart'
-                className='hover:text-secondary transition-colors relative'
+                className='flex items-center gap-2 hover:opacity-80 transition-opacity'
+                style={{ color: '#666', fontFamily: 'var(--font-readex-pro)', fontSize: '16px', fontWeight: 400, lineHeight: '18px' }}
               >
-                <ShoppingCart className='w-6 h-6' />
-                {/* Optional Badge */}
-                {/* <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span> */}
+                <ShoppingCart className='w-5 h-5' />
+                <span>Cart</span>
               </Link>
             </div>
 
             {/* Mobile Menu Button */}
             <div className='md:hidden flex items-center gap-4'>
-              <button className='text-black p-2'>
+              <button className='p-2' style={{ color: '#666' }}>
                 <Search className='w-5 h-5' />
               </button>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className='text-black p-2'
+                className='p-2'
+                style={{ color: '#666' }}
               >
                 {isMenuOpen ? (
                   <X className='w-6 h-6' />
@@ -131,37 +195,47 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className='md:hidden bg-white border-t border-gray-100 absolute w-full left-0 z-50 shadow-lg text-black'>
+          <div className='md:hidden bg-white border-t border-gray-100 absolute w-full left-0 z-50 shadow-lg'>
             <div className='px-4 py-6 space-y-4'>
               {/* Mobile Search */}
               <div className='relative w-full mb-6'>
                 <input
                   type='text'
-                  placeholder='What are you looking for?'
-                  className='w-full bg-gray-100 rounded-md py-3 pl-4 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-black text-black'
+                  placeholder='Search essentials, groceries and more...'
+                  className='w-full bg-gray-100 py-3 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#0090FF] text-black'
+                  style={{ borderRadius: '10px' }}
                 />
-                <button className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-500'>
+                <button className='absolute right-3 top-1/2 -translate-y-1/2' style={{ color: '#666' }}>
                   <Search className='w-5 h-5' />
                 </button>
               </div>
 
               <div className='space-y-3'>
                 <Link
-                  href='/wishlist'
+                  href='/auth'
                   className='flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-md'
+                  style={{ color: '#666' }}
                 >
-                  <Heart className='w-5 h-5' />
-                  <span>Wishlist</span>
+                  <User className='w-5 h-5' />
+                  <span>Sign Up/Sign In</span>
                 </Link>
                 <Link
                   href='/cart'
                   className='flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-md'
+                  style={{ color: '#666' }}
                 >
                   <ShoppingCart className='w-5 h-5' />
                   <span>Cart</span>
                 </Link>
-                <button className='flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-md w-full text-left'>
-                  <div className='w-5 h-3 bg-green-700'></div>
+                <button className='flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-md w-full text-left' style={{ color: '#666' }}>
+                  <div className='w-6 h-4 relative overflow-hidden rounded-sm'>
+                    <Image
+                      src={pakFlag}
+                      alt='Flag'
+                      className='object-cover'
+                      fill
+                    />
+                  </div>
                   <span>Region</span>
                 </button>
               </div>
