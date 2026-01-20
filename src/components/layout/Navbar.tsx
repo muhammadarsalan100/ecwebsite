@@ -9,6 +9,7 @@ import {
   X,
   User,
   SlidersHorizontal,
+  List,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
@@ -31,7 +32,10 @@ export default function Navbar() {
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (regionRef.current && !regionRef.current.contains(event.target as Node)) {
+      if (
+        regionRef.current &&
+        !regionRef.current.contains(event.target as Node)
+      ) {
         setIsRegionOpen(false);
       }
     }
@@ -81,8 +85,11 @@ export default function Navbar() {
             </div>
 
             {/* Region Selector with Dropdown */}
-            <div className='hidden md:flex items-center relative' ref={regionRef}>
-              <button 
+            <div
+              className='hidden md:flex items-center relative'
+              ref={regionRef}
+            >
+              <button
                 onClick={() => setIsRegionOpen(!isRegionOpen)}
                 className='flex items-center gap-2 hover:opacity-80 transition-opacity'
               >
@@ -94,10 +101,18 @@ export default function Navbar() {
                     className='object-cover'
                   />
                 </div>
-                <span style={{ color: '#666', fontFamily: 'var(--font-readex-pro)', fontSize: '16px', fontWeight: 400, lineHeight: '18px' }}>
+                <span
+                  style={{
+                    color: "#666",
+                    fontFamily: "var(--font-readex-pro)",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    lineHeight: "18px",
+                  }}
+                >
                   Region
                 </span>
-                <ChevronDown className='w-4 h-4' style={{ color: '#666' }} />
+                <ChevronDown className='w-4 h-4' style={{ color: "#666" }} />
               </button>
 
               {/* Region Dropdown */}
@@ -111,7 +126,9 @@ export default function Navbar() {
                         setIsRegionOpen(false);
                       }}
                       className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors ${
-                        selectedCountry.code === country.code ? 'bg-gray-50' : ''
+                        selectedCountry.code === country.code
+                          ? "bg-gray-50"
+                          : ""
                       }`}
                     >
                       <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0'>
@@ -122,7 +139,9 @@ export default function Navbar() {
                           className='object-cover'
                         />
                       </div>
-                      <span className='text-sm text-gray-700'>{country.name}</span>
+                      <span className='text-sm text-gray-700'>
+                        {country.name}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -132,17 +151,20 @@ export default function Navbar() {
             {/* Search Bar - Center */}
             <div className='hidden md:flex flex-1 max-w-xl mx-4'>
               <div className='relative w-full flex items-center'>
-                <div className='absolute left-4' style={{ color: '#666' }}>
-                  <Search className='w-5 h-5' />
+                <div className='absolute left-4' style={{ color: "#666" }}>
+                  <Search className='w-5 h-5' color='#0091ff' />
                 </div>
                 <input
                   type='text'
                   placeholder='Search essentials, groceries and more...'
                   className='w-full bg-gray-50 border border-gray-200 py-3 pl-12 pr-14 text-sm focus:outline-none focus:ring-2 focus:ring-[#0090FF] focus:border-transparent placeholder:text-gray-400 text-black'
-                  style={{ borderRadius: '10px' }}
+                  style={{ borderRadius: "10px" }}
                 />
-                <button className='absolute right-3 p-1' style={{ color: '#666' }}>
-                  <SlidersHorizontal className='w-5 h-5' />
+                <button
+                  className='absolute right-3 p-1'
+                  style={{ color: "#666" }}
+                >
+                  <List className='w-5 h-5 text-primary' />
                 </button>
               </div>
             </div>
@@ -153,9 +175,15 @@ export default function Navbar() {
               <Link
                 href='/auth'
                 className='flex items-center gap-2 hover:opacity-80 transition-opacity'
-                style={{ color: '#666', fontFamily: 'var(--font-readex-pro)', fontSize: '16px', fontWeight: 400, lineHeight: '18px' }}
+                style={{
+                  color: "#666",
+                  fontFamily: "var(--font-readex-pro)",
+                  fontSize: "16px",
+                  fontWeight: 400,
+                  lineHeight: "18px",
+                }}
               >
-                <User className='w-5 h-5' />
+                <User className='w-5 h-5 text-primary' />
                 <span>Sign Up/Sign In</span>
               </Link>
 
@@ -166,22 +194,28 @@ export default function Navbar() {
               <Link
                 href='/cart'
                 className='flex items-center gap-2 hover:opacity-80 transition-opacity'
-                style={{ color: '#666', fontFamily: 'var(--font-readex-pro)', fontSize: '16px', fontWeight: 400, lineHeight: '18px' }}
+                style={{
+                  color: "#666",
+                  fontFamily: "var(--font-readex-pro)",
+                  fontSize: "16px",
+                  fontWeight: 400,
+                  lineHeight: "18px",
+                }}
               >
-                <ShoppingCart className='w-5 h-5' />
+                <ShoppingCart className='w-5 h-5 text-primary' />
                 <span>Cart</span>
               </Link>
             </div>
 
             {/* Mobile Menu Button */}
             <div className='md:hidden flex items-center gap-4'>
-              <button className='p-2' style={{ color: '#666' }}>
-                <Search className='w-5 h-5' />
+              <button className='p-2' style={{ color: "#666" }}>
+                <Search className='w-5 h-5 text-primary' />
               </button>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className='p-2'
-                style={{ color: '#666' }}
+                style={{ color: "#666" }}
               >
                 {isMenuOpen ? (
                   <X className='w-6 h-6' />
@@ -203,10 +237,13 @@ export default function Navbar() {
                   type='text'
                   placeholder='Search essentials, groceries and more...'
                   className='w-full bg-gray-100 py-3 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#0090FF] text-black'
-                  style={{ borderRadius: '10px' }}
+                  style={{ borderRadius: "10px" }}
                 />
-                <button className='absolute right-3 top-1/2 -translate-y-1/2' style={{ color: '#666' }}>
-                  <Search className='w-5 h-5' />
+                <button
+                  className='absolute right-3 top-1/2 -translate-y-1/2'
+                  style={{ color: "#666" }}
+                >
+                  <Search className='w-5 h-5 text-primary' />
                 </button>
               </div>
 
@@ -214,7 +251,7 @@ export default function Navbar() {
                 <Link
                   href='/auth'
                   className='flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-md'
-                  style={{ color: '#666' }}
+                  style={{ color: "#666" }}
                 >
                   <User className='w-5 h-5' />
                   <span>Sign Up/Sign In</span>
@@ -222,12 +259,15 @@ export default function Navbar() {
                 <Link
                   href='/cart'
                   className='flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-md'
-                  style={{ color: '#666' }}
+                  style={{ color: "#666" }}
                 >
                   <ShoppingCart className='w-5 h-5' />
                   <span>Cart</span>
                 </Link>
-                <button className='flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-md w-full text-left' style={{ color: '#666' }}>
+                <button
+                  className='flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-md w-full text-left'
+                  style={{ color: "#666" }}
+                >
                   <div className='w-6 h-4 relative overflow-hidden rounded-sm'>
                     <Image
                       src={pakFlag}

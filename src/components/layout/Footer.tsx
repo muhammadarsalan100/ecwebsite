@@ -4,25 +4,22 @@ import Link from "next/link";
 import { Phone, MessageCircle } from "lucide-react";
 import Image from "next/image";
 import { AppleStoreIcon, GooglePlayStoreIcon } from "@/assets/images";
+import whatsapp from "../../../public/whatsapp.svg";
 
 export default function Footer() {
   return (
-    <footer className='bg-[#0090FF] text-white relative overflow-hidden' style={{ paddingLeft: "130px", paddingRight: "130px", paddingTop: "80px", paddingBottom: "30px" }}>
+    <footer
+      className='bg-[#0090FF] text-white relative overflow-hidden px-5 py-10 md:px-10 lg:px-[130px] lg:pt-[80px] lg:pb-[30px]'
+    >
       {/* Decorative Circle Background */}
       <div className='absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none'></div>
 
       <div className='relative z-10'>
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-12 mb-12'>
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-1 lg:gap-12 mb-12'>
           {/* Column 1: Brand & Contact */}
           <div className='space-y-8'>
             <h2
-              style={{
-                color: "#FFF",
-                fontFamily: "var(--font-readex-pro)",
-                fontSize: "50px",
-                fontWeight: 500,
-                lineHeight: "normal",
-              }}
+              className='text-white font-readex text-4xl lg:text-[50px] font-medium leading-normal'
             >
               Mega Mart
             </h2>
@@ -30,51 +27,34 @@ export default function Footer() {
             <div className='space-y-6'>
               <div className='relative inline-block'>
                 <h3
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "20px",
-                    fontWeight: 400,
-                    lineHeight: "20px",
-                  }}
+                  className='text-white font-readex text-lg lg:text-[20px] font-normal leading-5'
                 >
                   Contact Us
                 </h3>
                 <div
-                  style={{
-                    width: "219px",
-                    height: "3px",
-                    background: "#FFF",
-                    marginTop: "8px",
-                  }}
+                  className='w-[150px] lg:w-[219px] h-[3px] bg-white mt-2'
                 />
               </div>
 
-              <div className='space-y-4'>
+              <div className='space-y-0 lg:space-y-4'>
                 <div className='flex items-start space-x-3'>
                   <div className='mt-1'>
-                    <MessageCircle className='w-6 h-6' />
+                    {/* <MessageCircle className='w-6 h-6' /> */}
+                    <Image
+                      src={whatsapp}
+                      alt='WhatsApp Icon'
+                      width={24}
+                      height={24}
+                    />
                   </div>
                   <div>
                     <p
-                      style={{
-                        color: "#FFF",
-                        fontFamily: "var(--font-readex-pro)",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "37px",
-                      }}
+                      className='text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px]'
                     >
                       Whats App
                     </p>
                     <p
-                      style={{
-                        color: "#FFF",
-                        fontFamily: "var(--font-readex-pro)",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "37px",
-                      }}
+                      className='text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px]'
                     >
                       +1 202-918-2132
                     </p>
@@ -87,24 +67,12 @@ export default function Footer() {
                   </div>
                   <div>
                     <p
-                      style={{
-                        color: "#FFF",
-                        fontFamily: "var(--font-readex-pro)",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "37px",
-                      }}
+                      className='text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px]'
                     >
                       Call Us
                     </p>
                     <p
-                      style={{
-                        color: "#FFF",
-                        fontFamily: "var(--font-readex-pro)",
-                        fontSize: "16px",
-                        fontWeight: 400,
-                        lineHeight: "37px",
-                      }}
+                      className='text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px]'
                     >
                       +1 202-918-2132
                     </p>
@@ -113,29 +81,18 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className='space-y-4'>
+            <div className='hidden lg:block space-y-4'>
               <div className='relative inline-block'>
                 <h3
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "20px",
-                    fontWeight: 400,
-                    lineHeight: "20px",
-                  }}
+                  className='text-white font-readex text-lg lg:text-[20px] font-normal leading-5'
                 >
                   Download App
                 </h3>
                 <div
-                  style={{
-                    width: "219px",
-                    height: "3px",
-                    background: "#FFF",
-                    marginTop: "8px",
-                  }}
+                  className='w-[150px] lg:w-[219px] h-[3px] bg-white mt-2'
                 />
               </div>
-              <div className='flex flex-wrap gap-4'>
+              <div className='flex gap-4'>
                 {/* App Store */}
                 <Link
                   href='#'
@@ -171,39 +128,21 @@ export default function Footer() {
 
           {/* Column 2: Most Popular Categories */}
           <div>
-            <div className='relative inline-block mb-6'>
+            <div className='relative inline-block mt-6 mb-6'>
               <h3
-                style={{
-                  color: "#FFF",
-                  fontFamily: "var(--font-readex-pro)",
-                  fontSize: "20px",
-                  fontWeight: 400,
-                  lineHeight: "20px",
-                }}
+                className='text-white font-readex text-lg lg:text-[20px] font-normal leading-5'
               >
                 Most Popular Categories
               </h3>
               <div
-                style={{
-                  width: "219px",
-                  height: "3px",
-                  background: "#FFF",
-                  marginTop: "8px",
-                }}
+                className='w-[150px] lg:w-[219px] h-[3px] bg-white mt-2'
               />
             </div>
             <ul>
               <li>
                 <Link
                   href='/shop/staples'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • Staples
                 </Link>
@@ -211,14 +150,7 @@ export default function Footer() {
               <li>
                 <Link
                   href='/shop/beverages'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • Beverages
                 </Link>
@@ -226,14 +158,7 @@ export default function Footer() {
               <li>
                 <Link
                   href='/shop/personal-care'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • Personal Care
                 </Link>
@@ -241,14 +166,7 @@ export default function Footer() {
               <li>
                 <Link
                   href='/shop/home-care'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • Home Care
                 </Link>
@@ -256,14 +174,7 @@ export default function Footer() {
               <li>
                 <Link
                   href='/shop/baby-care'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • Baby Care
                 </Link>
@@ -271,14 +182,7 @@ export default function Footer() {
               <li>
                 <Link
                   href='/shop/vegetables-fruits'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • Vegetables & Fruits
                 </Link>
@@ -286,14 +190,7 @@ export default function Footer() {
               <li>
                 <Link
                   href='/shop/snacks-foods'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • Snacks & Foods
                 </Link>
@@ -301,14 +198,7 @@ export default function Footer() {
               <li>
                 <Link
                   href='/shop/dairy-bakery'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • Dairy & Bakery
                 </Link>
@@ -318,39 +208,21 @@ export default function Footer() {
 
           {/* Column 3: Customer Services */}
           <div>
-            <div className='relative inline-block mb-6'>
+            <div className='relative inline-block mt-6 mb-6'>
               <h3
-                style={{
-                  color: "#FFF",
-                  fontFamily: "var(--font-readex-pro)",
-                  fontSize: "20px",
-                  fontWeight: 400,
-                  lineHeight: "20px",
-                }}
+                className='text-white font-readex text-lg lg:text-[20px] font-normal leading-5'
               >
                 Customer Services
               </h3>
               <div
-                style={{
-                  width: "219px",
-                  height: "3px",
-                  background: "#FFF",
-                  marginTop: "8px",
-                }}
+                className='w-[150px] lg:w-[219px] h-[3px] bg-white mt-2'
               />
             </div>
             <ul>
               <li>
                 <Link
                   href='/about'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • About Us
                 </Link>
@@ -358,14 +230,7 @@ export default function Footer() {
               <li>
                 <Link
                   href='/terms'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • Terms & Conditions
                 </Link>
@@ -373,14 +238,7 @@ export default function Footer() {
               <li>
                 <Link
                   href='/faq'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • FAQ
                 </Link>
@@ -388,14 +246,7 @@ export default function Footer() {
               <li>
                 <Link
                   href='/privacy'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • Privacy Policy
                 </Link>
@@ -403,14 +254,7 @@ export default function Footer() {
               <li>
                 <Link
                   href='/e-waste'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • E-waste Policy
                 </Link>
@@ -418,31 +262,64 @@ export default function Footer() {
               <li>
                 <Link
                   href='/returns'
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-readex-pro)",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "37px",
-                  }}
-                  className='hover:underline'
+                  className='hover:underline text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px] block'
                 >
                   • Cancellation & Return Policy
                 </Link>
               </li>
             </ul>
           </div>
+
+          {/* Mobile Only: Download App (Moved to bottom) */}
+          <div className='block lg:hidden space-y-4'>
+            <div className='relative inline-block'>
+              <h3
+                className='text-white font-readex text-lg lg:text-[20px] font-normal leading-5'
+              >
+                Download App
+              </h3>
+              <div
+                className='w-[150px] lg:w-[219px] h-[3px] bg-white mt-2'
+              />
+            </div>
+            <div className='flex flex-wrap gap-4'>
+              {/* App Store */}
+              <Link
+                href='#'
+                className='bg-black rounded-lg flex items-center hover:opacity-80 transition-opacity min-w-[160px]'
+              >
+                <Image
+                  src={AppleStoreIcon}
+                  alt='Download on the App Store'
+                  width={160}
+                  height={50}
+                  className='object-contain'
+                  priority
+                />
+              </Link>
+
+              {/* Google Play */}
+              <Link
+                href='#'
+                className='bg-black rounded-lg flex items-center hover:opacity-80 transition-opacity min-w-[160px]'
+              >
+                <Image
+                  src={GooglePlayStoreIcon}
+                  alt='Get it on Google Play'
+                  width={160}
+                  height={50}
+                  className='object-contain'
+                  priority
+                />
+              </Link>
+            </div>
+          </div>
         </div>
 
         {/* Copyright */}
         <div className='border-t border-white/20 pt-8 text-center'>
           <p
-            style={{
-              color: "#FFF",
-              fontFamily: "var(--font-readex-pro)",
-              fontSize: "16px",
-              fontWeight: 400,
-            }}
+            className='text-white font-readex text-sm lg:text-[16px] font-normal'
           >
             © 2025 All rights reserved
           </p>
