@@ -8,39 +8,33 @@ export function Newsletter() {
   const [email, setEmail] = useState("");
 
   return (
-    <section className='w-full overflow-hidden' style={{ marginTop: "150px", marginBottom: "120px", minHeight: "624px" }}>
-      <div className='max-w-7xl mx-auto px-4 relative h-full'>
-        <div className='flex items-center justify-center relative' style={{ minHeight: "624px" }}>
-          {/* Left Model Image */}
-          <motion.div 
-            className='hidden lg:block absolute left-0 top-0'
+    <section className='w-full overflow-hidden mt-12 mb-12 lg:mt-[150px] lg:mb-[120px]'>
+      <div className='max-w-7xl mx-auto px-4 relative'>
+        <div className='flex flex-col lg:flex-row items-center justify-center relative min-h-[400px] lg:min-h-[624px]'>
+
+          {/* Left Model Image - Desktop Only */}
+          <motion.div
+            className='hidden lg:block absolute left-0 bottom-0'
             initial={{ opacity: 0, x: -100 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <Image
-              src='/man.png'
-              alt='Male Model'
-              width={281}
-              height={624}
-              className='object-contain'
-            />
+            <div className="relative w-[200px] xl:w-[281px] h-[500px] xl:h-[624px]">
+              <Image
+                src='/man.png'
+                alt='Male Model'
+                fill
+                className='object-contain object-bottom'
+              />
+            </div>
           </motion.div>
 
           {/* Center Content */}
-          <div className='flex flex-col items-center text-center z-10'>
+          <div className='flex flex-col items-center text-center z-10 w-full max-w-lg mx-auto py-8 lg:py-0'>
             {/* Title */}
             <motion.h2
-              style={{
-                color: "#484848",
-                textAlign: "center",
-                fontFamily: "var(--font-volkhov)",
-                fontSize: "38.445px",
-                fontWeight: 400,
-                lineHeight: "normal",
-                marginBottom: "16px",
-              }}
+              className='text-[#484848] text-center font-volkhov text-2xl md:text-3xl lg:text-[38.445px] font-normal leading-tight mb-4'
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -51,17 +45,8 @@ export function Newsletter() {
 
             {/* Description */}
             <motion.p
-              style={{
-                width: "513.158px",
-                maxWidth: "100%",
-                color: "#8A8A8A",
-                textAlign: "center",
-                fontFamily: "var(--font-poppins)",
-                fontSize: "13.372px",
-                fontWeight: 400,
-                lineHeight: "21.73px",
-                marginBottom: "32px",
-              }}
+              className='text-[#8A8A8A] text-center font-poppins text-xs md:text-[13.372px] font-normal leading-relaxed mb-6 md:mb-8'
+              style={{ maxWidth: "513px" }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -73,15 +58,10 @@ export function Newsletter() {
 
             {/* Email Input Container */}
             <motion.div
-              className='flex flex-col items-center gap-4'
+              className='flex flex-col items-center gap-4 w-full p-3 bg-white rounded-lg shadow-lg'
               style={{
-                width: "527.366px",
-                maxWidth: "100%",
-                padding: "12px",
-                background: "#FFF",
-                boxShadow:
-                  "0 136.229px 66.861px 0 rgba(1, 141, 242, 0.04), 0 88.297px 39.157px 0 rgba(1, 141, 242, 0.03), 0 52.473px 21.296px 0 rgba(1, 141, 242, 0.02), 0 27.246px 10.865px 0 rgba(1, 141, 242, 0.02), 0 11.1px 5.448px 0 rgba(1, 141, 242, 0.02), 0 2.523px 2.631px 0 rgba(1, 141, 242, 0.01)",
-                borderRadius: "8px",
+                maxWidth: "527px",
+                boxShadow: "0 20px 50px rgba(1, 141, 242, 0.05)"
               }}
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -94,59 +74,44 @@ export function Newsletter() {
                 placeholder='michael@ymail.com'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className='w-full outline-none'
-                style={{
-                  color: "#8A8A8A",
-                  fontFamily: "var(--font-poppins)",
-                  fontSize: "14px",
-                  fontWeight: 400,
-                  textAlign: "center",
-                  padding: "12px",
-                  background: "transparent",
-                }}
+                className='w-full outline-none text-[#8A8A8A] font-poppins text-sm text-center p-3 bg-transparent'
               />
             </motion.div>
 
             {/* Subscribe Button */}
             <motion.button
+              className='bg-[#0092FE] text-white font-poppins text-sm font-medium rounded-lg mt-6 shadow-[0_16px_29px_rgba(0,146,254,0.15)] hover:shadow-[0_20px_35px_rgba(0,146,254,0.25)] transition-all'
               style={{
-                width: "173.003px",
-                height: "46.803px",
-                borderRadius: "8.358px",
-                background: "#0092FE",
-                boxShadow: "0 16.715px 29.252px 0 rgba(0, 146, 254, 0.15)",
-                color: "#FFF",
-                fontFamily: "var(--font-poppins)",
-                fontSize: "14px",
-                fontWeight: 500,
-                marginTop: "24px",
+                width: "173px",
+                height: "47px",
               }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              whileHover={{ scale: 1.05, boxShadow: "0 20px 35px 0 rgba(0, 146, 254, 0.25)" }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               Subscribe Now
             </motion.button>
           </div>
 
-          {/* Right Model Image */}
-          <motion.div 
-            className='hidden lg:block absolute right-0 top-0'
+          {/* Right Model Image - Desktop Only */}
+          <motion.div
+            className='hidden lg:block absolute right-0 bottom-0'
             initial={{ opacity: 0, x: 100 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <Image
-              src='/woman.png'
-              alt='Female Model'
-              width={281}
-              height={624}
-              className='object-contain'
-            />
+            <div className="relative w-[200px] xl:w-[281px] h-[500px] xl:h-[624px]">
+              <Image
+                src='/woman.png'
+                alt='Female Model'
+                fill
+                className='object-contain object-bottom'
+              />
+            </div>
           </motion.div>
         </div>
       </div>

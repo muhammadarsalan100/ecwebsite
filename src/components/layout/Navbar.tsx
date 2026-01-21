@@ -8,12 +8,13 @@ import {
   Menu,
   X,
   User,
-  SlidersHorizontal,
   List,
+  Globe,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { pakFlag } from "@/assets/images";
+import { motion, AnimatePresence } from "framer-motion";
 
 const countries = [
   { code: "PK", name: "Pakistan", flag: pakFlag },
@@ -25,7 +26,9 @@ const countries = [
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isRegionOpen, setIsRegionOpen] = useState(false);
+  const [isRegionOpen, setIsRegionOpen] = useState(false); // Desktop Region
+  const [isMobileRegionOpen, setIsMobileRegionOpen] = useState(false); // Mobile Region
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(countries[0]);
   const regionRef = useRef<HTMLDivElement>(null);
 
@@ -43,8 +46,17 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isMenuOpen]);
+
   return (
-    <div className='flex flex-col w-full z-50'>
+    <div className='flex flex-col w-full z-50 relative'>
       {/* Top Bar */}
       <div className='bg-black text-white text-xs py-3 px-4 sm:px-6 lg:px-8'>
         <div className='max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0'>
@@ -71,7 +83,7 @@ export default function Navbar() {
       </div>
 
       {/* Main Navigation */}
-      <nav className='bg-white border-b border-gray-200 sticky top-0'>
+      <nav className='bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
           <div className='flex items-center justify-between h-20 gap-4'>
             {/* Logo */}
@@ -84,7 +96,7 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* Region Selector with Dropdown */}
+            {/* Desktop: Region Selector */}
             <div
               className='hidden md:flex items-center relative'
               ref={regionRef}
@@ -107,7 +119,6 @@ export default function Navbar() {
                     fontFamily: "var(--font-readex-pro)",
                     fontSize: "16px",
                     fontWeight: 400,
-                    lineHeight: "18px",
                   }}
                 >
                   Region
@@ -116,39 +127,47 @@ export default function Navbar() {
               </button>
 
               {/* Region Dropdown */}
-              {isRegionOpen && (
-                <div className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50'>
-                  {countries.map((country) => (
-                    <button
-                      key={country.code}
-                      onClick={() => {
-                        setSelectedCountry(country);
-                        setIsRegionOpen(false);
-                      }}
-                      className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors ${
-                        selectedCountry.code === country.code
-                          ? "bg-gray-50"
-                          : ""
-                      }`}
-                    >
-                      <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0'>
-                        <Image
-                          src={country.flag}
-                          alt={country.name}
-                          fill
-                          className='object-cover'
-                        />
-                      </div>
-                      <span className='text-sm text-gray-700'>
-                        {country.name}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
+              <AnimatePresence>
+                {isRegionOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50'
+                  >
+                    {countries.map((country) => (
+                      <button
+                        key={country.code}
+                        onClick={() => {
+                          setSelectedCountry(country);
+                          setIsRegionOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors ${
+                          selectedCountry.code === country.code
+                            ? "bg-gray-50"
+                            : ""
+                        }`}
+                      >
+                        <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0'>
+                          <Image
+                            src={country.flag}
+                            alt={country.name}
+                            fill
+                            className='object-cover'
+                          />
+                        </div>
+                        <span className='text-sm text-gray-700'>
+                          {country.name}
+                        </span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            {/* Search Bar - Center */}
+            {/* Desktop: Search Bar */}
             <div className='hidden md:flex flex-1 max-w-xl mx-4'>
               <div className='relative w-full flex items-center'>
                 <div className='absolute left-4' style={{ color: "#666" }}>
@@ -169,7 +188,7 @@ export default function Navbar() {
               </div>
             </div>
 
-            {/* Right Actions */}
+            {/* Desktop: Right Actions */}
             <div className='hidden md:flex items-center gap-6'>
               {/* Sign Up/Sign In */}
               <Link
@@ -180,7 +199,6 @@ export default function Navbar() {
                   fontFamily: "var(--font-readex-pro)",
                   fontSize: "16px",
                   fontWeight: 400,
-                  lineHeight: "18px",
                 }}
               >
                 <User className='w-5 h-5 text-primary' />
@@ -199,7 +217,6 @@ export default function Navbar() {
                   fontFamily: "var(--font-readex-pro)",
                   fontSize: "16px",
                   fontWeight: 400,
-                  lineHeight: "18px",
                 }}
               >
                 <ShoppingCart className='w-5 h-5 text-primary' />
@@ -207,81 +224,205 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
-            <div className='md:hidden flex items-center gap-4'>
-              <button className='p-2' style={{ color: "#666" }}>
-                <Search className='w-5 h-5 text-primary' />
-              </button>
+            {/* Mobile Actions - Keep new responsive design */}
+            <div className='md:hidden flex items-center gap-2'>
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className='p-2'
-                style={{ color: "#666" }}
+                onClick={() => {
+                  setIsMobileSearchOpen(!isMobileSearchOpen);
+                  setIsMenuOpen(false);
+                }}
+                className='p-2 text-gray-600'
               >
-                {isMenuOpen ? (
-                  <X className='w-6 h-6' />
-                ) : (
-                  <Menu className='w-6 h-6' />
-                )}
+                <Search className='w-5 h-5' />
+              </button>
+
+              <Link href='/cart' className='p-2 text-gray-600 relative'>
+                <ShoppingCart className='w-5 h-5' />
+                {/* <span className="absolute top-1 right-0 bg-[var(--primary)] text-white text-[10px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">2</span> */}
+              </Link>
+
+              <button
+                onClick={() => {
+                  setIsMenuOpen(true);
+                  setIsMobileSearchOpen(false);
+                }}
+                className='p-2 text-gray-600'
+              >
+                <Menu className='w-6 h-6' />
               </button>
             </div>
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className='md:hidden bg-white border-t border-gray-100 absolute w-full left-0 z-50 shadow-lg'>
-            <div className='px-4 py-6 space-y-4'>
-              {/* Mobile Search */}
-              <div className='relative w-full mb-6'>
-                <input
-                  type='text'
-                  placeholder='Search essentials, groceries and more...'
-                  className='w-full bg-gray-100 py-3 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#0090FF] text-black'
-                  style={{ borderRadius: "10px" }}
-                />
+        {/* Mobile Search Bar Dropdown */}
+        <AnimatePresence>
+          {isMobileSearchOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className='md:hidden bg-white border-b border-gray-100 overflow-hidden'
+            >
+              <div className='p-4'>
+                <div className='relative'>
+                  <input
+                    type='text'
+                    autoFocus
+                    placeholder='What are you looking for?'
+                    className='w-full bg-gray-50 border border-gray-200 py-3 pl-10 pr-4 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent text-black'
+                  />
+                  <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400' />
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Mobile Menu Overlay - Full Screen */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, x: "100%" }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className='fixed inset-0 z-[60] bg-white md:hidden overflow-y-auto'
+            >
+              {/* Internal Header for Mobile Menu */}
+              <div className='flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-100'>
+                <div className='shrink-0'>
+                  <Link
+                    href='/'
+                    className='text-xl font-bold tracking-tight text-black'
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Logo
+                  </Link>
+                </div>
                 <button
-                  className='absolute right-3 top-1/2 -translate-y-1/2'
-                  style={{ color: "#666" }}
+                  onClick={() => setIsMenuOpen(false)}
+                  className='p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors'
                 >
-                  <Search className='w-5 h-5 text-primary' />
+                  <X className='w-6 h-6' />
                 </button>
               </div>
 
-              <div className='space-y-3'>
-                <Link
-                  href='/auth'
-                  className='flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-md'
-                  style={{ color: "#666" }}
-                >
-                  <User className='w-5 h-5' />
-                  <span>Sign Up/Sign In</span>
-                </Link>
-                <Link
-                  href='/cart'
-                  className='flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-md'
-                  style={{ color: "#666" }}
-                >
-                  <ShoppingCart className='w-5 h-5' />
-                  <span>Cart</span>
-                </Link>
-                <button
-                  className='flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-md w-full text-left'
-                  style={{ color: "#666" }}
-                >
-                  <div className='w-6 h-4 relative overflow-hidden rounded-sm'>
-                    <Image
-                      src={pakFlag}
-                      alt='Flag'
-                      className='object-cover'
-                      fill
-                    />
+              <div className='p-4 space-y-2'>
+                <div className='space-y-2 pb-6 border-b border-gray-100'>
+                  <Link
+                    href='/auth'
+                    className='flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors'
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <div className='p-2 bg-white rounded-full shadow-sm'>
+                      <User className='w-5 h-5 text-gray-700' />
+                    </div>
+                    <div>
+                      <p className='font-semibold text-gray-900'>My Account</p>
+                      <p className='text-xs text-gray-500'>
+                        Sign in or Register
+                      </p>
+                    </div>
+                  </Link>
+                </div>
+
+                <div className='space-y-1 pt-4'>
+                  <Link
+                    href='/'
+                    className='flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg font-medium'
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <span>Home</span>
+                  </Link>
+                  <Link
+                    href='/shop'
+                    className='flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg font-medium'
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <span>Shop</span>
+                  </Link>
+                  <Link
+                    href='/about'
+                    className='flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg font-medium'
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <span>About Us</span>
+                  </Link>
+                </div>
+
+                <div className='pt-4 mt-4 border-t border-gray-100'>
+                  <div className='px-4 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider'>
+                    Preferences
                   </div>
-                  <span>Region</span>
-                </button>
+
+                  {/* Mobile Region Selector */}
+                  <div className='rounded-xl overflow-hidden border border-gray-100'>
+                    <button
+                      onClick={() => setIsMobileRegionOpen(!isMobileRegionOpen)}
+                      className='w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-gray-50 transition-colors'
+                    >
+                      <div className='flex items-center gap-3'>
+                        <Globe className='w-4 h-4 text-gray-500' />
+                        <span className='text-sm font-medium text-gray-700'>
+                          Region
+                        </span>
+                      </div>
+                      <div className='flex items-center gap-2'>
+                        <div className='w-5 h-4 relative overflow-hidden rounded-sm shadow-sm'>
+                          <Image
+                            src={selectedCountry.flag}
+                            alt='Flag'
+                            fill
+                            className='object-cover'
+                          />
+                        </div>
+                        <ChevronDown
+                          className={`w-4 h-4 text-gray-400 transition-transform ${isMobileRegionOpen ? "rotate-180" : ""}`}
+                        />
+                      </div>
+                    </button>
+
+                    <AnimatePresence>
+                      {isMobileRegionOpen && (
+                        <motion.div
+                          initial={{ height: 0 }}
+                          animate={{ height: "auto" }}
+                          exit={{ height: 0 }}
+                          className='bg-gray-50 border-t border-gray-100'
+                        >
+                          {countries.map((country) => (
+                            <button
+                              key={country.code}
+                              onClick={() => {
+                                setSelectedCountry(country);
+                                setIsMobileRegionOpen(false);
+                              }}
+                              className={`w-full flex items-center gap-3 px-11 py-2.5 transition-colors text-left text-sm ${
+                                selectedCountry.code === country.code
+                                  ? "text-[var(--primary)] font-medium bg-blue-50/50"
+                                  : "text-gray-600 hover:text-gray-900"
+                              }`}
+                            >
+                              <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0 shadow-sm'>
+                                <Image
+                                  src={country.flag}
+                                  alt={country.name}
+                                  fill
+                                  className='object-cover'
+                                />
+                              </div>
+                              <span>{country.name}</span>
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
     </div>
   );

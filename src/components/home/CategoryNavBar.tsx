@@ -24,40 +24,36 @@ export function CategoryNavBar() {
   const [activeCategory, setActiveCategory] = useState("groceries");
 
   return (
-    <div className='w-full bg-white'>
-      {/* Categories Container */}
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-auto scrollbar-hide' style={{ marginTop: '16px', marginBottom: '16px' }}>
-        <div className='flex items-center gap-3 w-max'>
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`
-                flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200
-                ${
-                  activeCategory === category.id
+    <div className='w-full bg-white border-b border-gray-200'>
+      <div className='max-w-7xl mx-auto'>
+        <div className='overflow-x-auto scrollbar-hide py-3 md:py-4'>
+          <div className='flex items-center gap-3 w-max px-4 sm:px-6 lg:px-8'>
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setActiveCategory(category.id)}
+                className={`
+                  flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-200
+                  ${activeCategory === category.id
                     ? "bg-[#0090FF] text-white"
-                    : "bg-[#EFF8FF] text-gray-700 hover:bg-[#d9efff]"
-                }
-              `}
-            >
-              <span>{category.name}</span>
-              {category.hasDropdown && (
-                <ChevronDown
-                  className={`w-4 h-4 ${
-                    activeCategory === category.id
-                      ? "text-white"
-                      : "text-gray-500"
-                  }`}
-                />
-              )}
-            </button>
-          ))}
+                    : "bg-[#F3F9FF] text-gray-600 hover:bg-[#E6F4FF]"
+                  }
+                `}
+              >
+                <span>{category.name}</span>
+                {category.hasDropdown && (
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform ${activeCategory === category.id
+                        ? "text-white rotate-180"
+                        : "text-gray-400"
+                      }`}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-      
-      {/* Bottom HR */}
-      <div className='w-full h-px' style={{ background: '#EDEDED' }} />
     </div>
   );
 }

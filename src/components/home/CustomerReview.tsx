@@ -54,24 +54,15 @@ export function CustomerReview() {
 
   return (
     <section
-      className='w-full'
+      className='w-full bg-[#FAFAFA] py-12 md:py-20'
       style={{
-        background: "#FAFAFA",
         minHeight: "522px",
-        paddingTop: "60px",
-        paddingBottom: "60px",
       }}
     >
       <div className='max-w-7xl mx-auto px-4'>
         {/* Title */}
         <motion.h2
-          className='mb-16'
-          style={{
-            fontFamily: "var(--font-poppins)",
-            fontSize: "32px",
-            fontWeight: 600,
-            color: "#000",
-          }}
+          className='mb-8 md:mb-16 font-poppins text-2xl md:text-[32px] font-semibold text-black'
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -81,408 +72,166 @@ export function CustomerReview() {
         </motion.h2>
 
         {/* Reviews Carousel */}
-        <motion.div 
-          className='relative flex items-center justify-center' 
-          style={{ minHeight: "350px" }}
+        <motion.div
+          className='relative flex items-center justify-center min-h-[400px] md:min-h-[350px] overflow-visible'
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          {/* Left Review Card (Behind) */}
+          {/* Left Review Card (Behind) - Desktop Only */}
           <div
-            className='absolute hidden md:flex items-stretch'
+            className='absolute hidden xl:flex items-stretch bg-white rounded-md shadow-lg overflow-hidden'
             style={{
-              width: "726.836px",
-              height: "243.906px",
-              borderRadius: "6.098px",
-              background: "#FFF",
-              boxShadow: "0 12.195px 36.586px 0 rgba(46, 33, 61, 0.08)",
-              overflow: "hidden",
-              left: "calc(50% - 550px)",
+              width: "726px",
+              height: "244px",
+              left: "calc(50% - 620px)",
               zIndex: 1,
+              transform: "scale(0.9)",
+              opacity: 0.7,
             }}
           >
-            {/* Stacked Images */}
-            <div
-              className='relative'
-              style={{
-                width: "160px",
-                height: "160px",
-                flexShrink: 0,
-                alignSelf: "center",
-                marginLeft: "30px",
-              }}
-            >
-              {/* Back layer */}
-              <div
-                className='absolute'
-                style={{
-                  width: "160px",
-                  height: "160px",
-                  background: "#E8E8E8",
-                  borderRadius: "4px",
-                  top: "12px",
-                  left: "12px",
-                  zIndex: 1,
-                }}
-              />
-              {/* Middle layer */}
-              <div
-                className='absolute'
-                style={{
-                  width: "160px",
-                  height: "160px",
-                  background: "#F0F0F0",
-                  borderRadius: "4px",
-                  top: "6px",
-                  left: "6px",
-                  zIndex: 2,
-                }}
-              />
-              {/* Front layer (main image) */}
-              <div
-                className='relative overflow-hidden'
-                style={{
-                  width: "160px",
-                  height: "160px",
-                  borderRadius: "4px",
-                  zIndex: 3,
-                }}
-              >
+            {/* Stacked Images - Left Card */}
+            <div className='relative w-[160px] h-[160px] flex-shrink-0 self-center ml-[30px]'>
+              <div className='absolute w-full h-full bg-[#E8E8E8] rounded-[4px] top-[12px] left-[12px] z-[1]' />
+              <div className='absolute w-full h-full bg-[#F0F0F0] rounded-[4px] top-[6px] left-[6px] z-[2]' />
+              <div className='relative w-full h-full rounded-[4px] z-[3] overflow-hidden'>
                 <Image
                   src={visibleReviews[0].image}
                   alt={visibleReviews[0].name}
-                  width={160}
-                  height={160}
-                  className='w-full h-full object-cover'
+                  fill
+                  className='object-cover'
                 />
               </div>
             </div>
-            {/* Content */}
-            <div className='flex-1 flex flex-col justify-center' style={{ paddingLeft: "40px", paddingRight: "40px", paddingTop: "56px", paddingBottom: "56px" }}>
-              <p
-                style={{
-                  color: "#484848",
-                  fontFamily: "var(--font-poppins)",
-                  fontSize: "13.008px",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                  marginBottom: "12px",
-                }}
-              >
+            {/* Content - Left Card */}
+            <div className='flex-1 flex flex-col justify-center px-10 py-14'>
+              <p className='text-[#484848] font-poppins text-[13px] font-normal mb-3 line-clamp-3'>
                 "{visibleReviews[0].review}"
               </p>
               <div className='flex items-center gap-1 mb-3'>
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className={`w-3 h-3 ${
-                      i < visibleReviews[0].rating
+                    className={`w-3 h-3 ${i < visibleReviews[0].rating
                         ? "fill-[#F59E0B] text-[#F59E0B]"
                         : "fill-gray-200 text-gray-200"
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
-              <div
-                style={{
-                  width: "140px",
-                  height: "0.813px",
-                  background: "#484848",
-                  marginBottom: "12px",
-                }}
-              />
-              <p
-                style={{
-                  color: "#484848",
-                  fontFamily: "var(--font-poppins)",
-                  fontSize: "20px",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                  marginBottom: "4px",
-                }}
-              >
+              <div className='w-[140px] h-[1px] bg-[#484848] mb-3' />
+              <p className='text-[#484848] font-poppins text-[20px] font-normal mb-1'>
                 {visibleReviews[0].name}
               </p>
-              <p
-                style={{
-                  color: "#484848",
-                  fontFamily: "var(--font-poppins)",
-                  fontSize: "11px",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                }}
-              >
+              <p className='text-[#484848] font-poppins text-[11px] font-normal'>
                 {visibleReviews[0].occupation}
               </p>
             </div>
           </div>
 
-          {/* Center Review Card (Main - Elevated) */}
+          {/* Center Review Card (Main - Elevated) - Responsive */}
           <div
-            className='flex items-stretch relative'
+            className='relative flex flex-col md:flex-row items-center md:items-stretch bg-white rounded-lg shadow-xl overflow-hidden z-10 w-full max-w-[340px] md:max-w-[700px] lg:max-w-[802px]'
             style={{
-              width: "802.448px",
-              height: "325.208px",
-              borderRadius: "8.13px",
-              background: "#FFF",
-              boxShadow: "0 16.26px 48.781px 0 rgba(46, 33, 61, 0.08)",
-              overflow: "hidden",
-              zIndex: 10,
+              minHeight: "325px",
             }}
           >
-            {/* Stacked Images */}
-            <div
-              className='relative'
-              style={{
-                width: "196.751px",
-                height: "196.751px",
-                flexShrink: 0,
-                alignSelf: "center",
-                marginLeft: "40px",
-              }}
-            >
-              {/* Back layer (furthest) */}
-              <div
-                className='absolute'
-                style={{
-                  width: "196.751px",
-                  height: "196.751px",
-                  background: "#E8E8E8",
-                  borderRadius: "4px",
-                  top: "16px",
-                  left: "16px",
-                  zIndex: 1,
-                }}
-              />
-              {/* Middle layer */}
-              <div
-                className='absolute'
-                style={{
-                  width: "196.751px",
-                  height: "196.751px",
-                  background: "#F0F0F0",
-                  borderRadius: "4px",
-                  top: "8px",
-                  left: "8px",
-                  zIndex: 2,
-                }}
-              />
-              {/* Front layer (main image) */}
-              <div
-                className='relative overflow-hidden'
-                style={{
-                  width: "196.751px",
-                  height: "196.751px",
-                  borderRadius: "4px",
-                  zIndex: 3,
-                }}
-              >
+            {/* Stacked Images - Center Card */}
+            <div className='relative w-[160px] h-[160px] md:w-[196px] md:h-[196px] flex-shrink-0 self-center mt-6 md:mt-0 md:ml-10'>
+              <div className='absolute w-full h-full bg-[#E8E8E8] rounded-[4px] top-[12px] left-[12px] md:top-[16px] md:left-[16px] z-[1]' />
+              <div className='absolute w-full h-full bg-[#F0F0F0] rounded-[4px] top-[6px] left-[6px] md:top-[8px] md:left-[8px] z-[2]' />
+              <div className='relative w-full h-full rounded-[4px] z-[3] overflow-hidden'>
                 <Image
                   src={visibleReviews[1].image}
                   alt={visibleReviews[1].name}
-                  width={197}
-                  height={197}
-                  className='w-full h-full object-cover'
+                  fill
+                  className='object-cover'
                 />
               </div>
             </div>
 
-            {/* Content */}
-            <div className='flex-1 flex flex-col justify-center' style={{ paddingLeft: "40px", paddingRight: "40px", paddingTop: "56px", paddingBottom: "56px" }}>
+            {/* Content - Center Card */}
+            <div className='flex-1 flex flex-col justify-center px-6 py-8 md:px-10 md:py-14 text-center md:text-left w-full'>
               {/* Review Text */}
-              <p
-                style={{
-                  color: "#484848",
-                  fontFamily: "var(--font-poppins)",
-                  fontSize: "13.008px",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                  marginBottom: "16px",
-                }}
-              >
+              <p className='text-[#484848] font-poppins text-sm md:text-[13px] font-normal mb-4 leading-relaxed'>
                 "{visibleReviews[1].review}"
               </p>
 
               {/* Stars */}
-              <div className='flex items-center gap-1 mb-4'>
+              <div className='flex items-center justify-center md:justify-start gap-1 mb-4'>
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className={`w-4 h-4 ${
-                      i < visibleReviews[1].rating
+                    className={`w-4 h-4 ${i < visibleReviews[1].rating
                         ? "fill-[#F59E0B] text-[#F59E0B]"
                         : "fill-gray-200 text-gray-200"
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
 
               {/* HR */}
-              <div
-                style={{
-                  width: "186.995px",
-                  height: "0.813px",
-                  background: "#484848",
-                  marginBottom: "16px",
-                }}
-              />
+              <div className='w-full md:w-[187px] h-[1px] bg-[#484848] mb-4 mx-auto md:mx-0' />
 
               {/* Name */}
-              <p
-                style={{
-                  color: "#484848",
-                  fontFamily: "var(--font-poppins)",
-                  fontSize: "26.017px",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                  marginBottom: "4px",
-                }}
-              >
+              <p className='text-[#484848] font-poppins text-xl md:text-[26px] font-normal mb-1'>
                 {visibleReviews[1].name}
               </p>
 
               {/* Occupation */}
-              <p
-                style={{
-                  color: "#484848",
-                  fontFamily: "var(--font-poppins)",
-                  fontSize: "13.008px",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                }}
-              >
+              <p className='text-[#484848] font-poppins text-xs md:text-[13px] font-normal'>
                 {visibleReviews[1].occupation}
               </p>
             </div>
           </div>
 
-          {/* Right Review Card (Behind) */}
+          {/* Right Review Card (Behind) - Desktop Only */}
           <div
-            className='absolute hidden md:flex items-stretch'
+            className='absolute hidden xl:flex items-stretch bg-white rounded-md shadow-lg overflow-hidden'
             style={{
-              width: "726.836px",
-              height: "243.906px",
-              borderRadius: "6.098px",
-              background: "#FFF",
-              boxShadow: "0 12.195px 36.586px 0 rgba(46, 33, 61, 0.08)",
-              overflow: "hidden",
-              right: "calc(50% - 550px)",
+              width: "726px",
+              height: "244px",
+              right: "calc(50% - 620px)",
               zIndex: 1,
+              transform: "scale(0.9)",
+              opacity: 0.7,
             }}
           >
-            {/* Stacked Images */}
-            <div
-              className='relative'
-              style={{
-                width: "160px",
-                height: "160px",
-                flexShrink: 0,
-                alignSelf: "center",
-                marginLeft: "30px",
-              }}
-            >
-              {/* Back layer */}
-              <div
-                className='absolute'
-                style={{
-                  width: "160px",
-                  height: "160px",
-                  background: "#E8E8E8",
-                  borderRadius: "4px",
-                  top: "12px",
-                  left: "12px",
-                  zIndex: 1,
-                }}
-              />
-              {/* Middle layer */}
-              <div
-                className='absolute'
-                style={{
-                  width: "160px",
-                  height: "160px",
-                  background: "#F0F0F0",
-                  borderRadius: "4px",
-                  top: "6px",
-                  left: "6px",
-                  zIndex: 2,
-                }}
-              />
-              {/* Front layer (main image) */}
-              <div
-                className='relative overflow-hidden'
-                style={{
-                  width: "160px",
-                  height: "160px",
-                  borderRadius: "4px",
-                  zIndex: 3,
-                }}
-              >
+            {/* Stacked Images - Right Card */}
+            <div className='relative w-[160px] h-[160px] flex-shrink-0 self-center ml-[30px]'>
+              <div className='absolute w-full h-full bg-[#E8E8E8] rounded-[4px] top-[12px] left-[12px] z-[1]' />
+              <div className='absolute w-full h-full bg-[#F0F0F0] rounded-[4px] top-[6px] left-[6px] z-[2]' />
+              <div className='relative w-full h-full rounded-[4px] z-[3] overflow-hidden'>
                 <Image
                   src={visibleReviews[2].image}
                   alt={visibleReviews[2].name}
-                  width={160}
-                  height={160}
-                  className='w-full h-full object-cover'
+                  fill
+                  className='object-cover'
                 />
               </div>
             </div>
-            {/* Content */}
-            <div className='flex-1 flex flex-col justify-center' style={{ paddingLeft: "40px", paddingRight: "40px", paddingTop: "56px", paddingBottom: "56px" }}>
-              <p
-                style={{
-                  color: "#484848",
-                  fontFamily: "var(--font-poppins)",
-                  fontSize: "13.008px",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                  marginBottom: "12px",
-                }}
-              >
+            {/* Content - Right Card */}
+            <div className='flex-1 flex flex-col justify-center px-10 py-14'>
+              <p className='text-[#484848] font-poppins text-[13px] font-normal mb-3 line-clamp-3'>
                 "{visibleReviews[2].review}"
               </p>
               <div className='flex items-center gap-1 mb-3'>
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className={`w-3 h-3 ${
-                      i < visibleReviews[2].rating
+                    className={`w-3 h-3 ${i < visibleReviews[2].rating
                         ? "fill-[#F59E0B] text-[#F59E0B]"
                         : "fill-gray-200 text-gray-200"
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
-              <div
-                style={{
-                  width: "140px",
-                  height: "0.813px",
-                  background: "#484848",
-                  marginBottom: "12px",
-                }}
-              />
-              <p
-                style={{
-                  color: "#484848",
-                  fontFamily: "var(--font-poppins)",
-                  fontSize: "20px",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                  marginBottom: "4px",
-                }}
-              >
+              <div className='w-[140px] h-[1px] bg-[#484848] mb-3' />
+              <p className='text-[#484848] font-poppins text-[20px] font-normal mb-1'>
                 {visibleReviews[2].name}
               </p>
-              <p
-                style={{
-                  color: "#484848",
-                  fontFamily: "var(--font-poppins)",
-                  fontSize: "11px",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                }}
-              >
+              <p className='text-[#484848] font-poppins text-[11px] font-normal'>
                 {visibleReviews[2].occupation}
               </p>
             </div>
@@ -490,8 +239,8 @@ export function CustomerReview() {
         </motion.div>
 
         {/* Navigation Arrows */}
-        <motion.div 
-          className='flex items-center justify-center gap-4 mt-12'
+        <motion.div
+          className='flex items-center justify-center gap-4 mt-8 md:mt-12'
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

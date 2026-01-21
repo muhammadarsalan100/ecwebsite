@@ -64,49 +64,52 @@ export function SmartWearableBanner() {
 
   return (
     <motion.section
-      className='w-full py-12 relative max-w-7xl mx-auto'
+      className='w-full py-6 md:py-12 relative max-w-7xl mx-auto px-4'
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
     >
-      {/* LEFT ARROW */}
-      <motion.button
-        onClick={() => setCurrentSlide((prev) => Math.max(0, prev - 1))}
-        className='absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition'
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        initial={{ opacity: 0, x: -20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-      >
-        <ChevronLeft className='w-5 h-5 text-blue-500' />
-      </motion.button>
+      {/* Container to hold arrows relative to this */}
+      <div className="relative group">
 
-      {/* RIGHT ARROW */}
-      <motion.button
-        onClick={() =>
-          setCurrentSlide((prev) => Math.min(totalSlides - 1, prev + 1))
-        }
-        className='absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition'
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        initial={{ opacity: 0, x: 20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-      >
-        <ChevronRight className='w-5 h-5 text-blue-500' />
-      </motion.button>
+        {/* LEFT ARROW - Hidden on very small screens, shown on md+ */}
+        <motion.button
+          onClick={() => setCurrentSlide((prev) => Math.max(0, prev - 1))}
+          className='absolute left-[-10px] md:-left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-14 md:h-14 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition disabled:opacity-50'
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          disabled={currentSlide === 0}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <ChevronLeft className='w-5 h-5 text-blue-500' />
+        </motion.button>
 
-      {/* Main Banner - Full Width */}
-      <div className='mx-auto'>
+        {/* RIGHT ARROW */}
+        <motion.button
+          onClick={() =>
+            setCurrentSlide((prev) => Math.min(totalSlides - 1, prev + 1))
+          }
+          className='absolute right-[-10px] md:-right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-14 md:h-14 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition disabled:opacity-50'
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          disabled={currentSlide === totalSlides - 1}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <ChevronRight className='w-5 h-5 text-blue-500' />
+        </motion.button>
+
+        {/* Main Banner Card */}
         <motion.div
           className='relative w-full overflow-hidden'
           style={{
-            height: "307.652px",
-            borderRadius: "15.577px",
+            borderRadius: "16px",
             background: "#212844",
           }}
           initial={{ opacity: 0, y: 40 }}
@@ -116,40 +119,33 @@ export function SmartWearableBanner() {
         >
           {/* Globe Background */}
           <motion.div
+            className="absolute right-0 top-0 h-full w-full pointer-events-none"
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <Image
-              src='/globe.png'
-              alt='Globe background'
-              width={496}
-              height={308}
-              className='absolute'
-              style={{
-                right: "0px",
-                top: "0px",
-              }}
-            />
+            <div className="relative w-full h-full overflow-hidden">
+              <Image
+                src='/globe.png'
+                alt='Globe background'
+                width={496}
+                height={308}
+                className='absolute right-[-50px] top-[-50px] opacity-40 md:opacity-100 md:right-0 md:top-0 object-cover'
+              />
+            </div>
           </motion.div>
 
-          {/* Content */}
-          <div className='relative z-10 flex h-full'>
+          {/* Content Flex Container */}
+          <div className='relative z-10 flex flex-col-reverse md:flex-row h-auto md:h-[308px] overflow-visible'>
+
             {/* Left Text Content */}
-            <div className='flex-1 flex flex-col justify-center pl-16 pr-8'>
-              {/* First Heading */}
+            <div className='flex-1 flex flex-col justify-center px-6 py-8 md:pl-16 md:pr-8 text-center md:text-left'>
+              {/* First Heading (Subtitle) */}
               <AnimatePresence mode='wait'>
                 <motion.p
                   key={`subtitle-${currentSlide}`}
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-poppins)",
-                    fontSize: "29.207px",
-                    fontWeight: 600,
-                    lineHeight: "29.207px",
-                    marginBottom: "12px",
-                  }}
+                  className='text-white font-poppins font-semibold mb-2 md:mb-3 text-lg md:text-[29px] leading-tight'
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
@@ -159,18 +155,11 @@ export function SmartWearableBanner() {
                 </motion.p>
               </AnimatePresence>
 
-              {/* Second Heading - Main */}
+              {/* Second Heading (Title) */}
               <AnimatePresence mode='wait'>
                 <motion.h2
                   key={`title-${currentSlide}`}
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-poppins)",
-                    fontSize: "61.336px",
-                    fontWeight: 700,
-                    lineHeight: "61.336px",
-                    marginBottom: "12px",
-                  }}
+                  className='text-white font-poppins font-bold mb-2 md:mb-3 text-3xl md:text-[61px] leading-tight md:leading-[1]'
                   initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 30 }}
@@ -180,17 +169,11 @@ export function SmartWearableBanner() {
                 </motion.h2>
               </AnimatePresence>
 
-              {/* Third Text */}
+              {/* Third Heading (Offer) */}
               <AnimatePresence mode='wait'>
                 <motion.p
                   key={`offer-${currentSlide}`}
-                  style={{
-                    color: "#FFF",
-                    fontFamily: "var(--font-poppins)",
-                    fontSize: "29.207px",
-                    fontWeight: 600,
-                    lineHeight: "29.207px",
-                  }}
+                  className='text-white font-poppins font-semibold text-lg md:text-[29px]'
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
@@ -201,7 +184,7 @@ export function SmartWearableBanner() {
               </AnimatePresence>
 
               {/* Pagination Dots */}
-              <div className='flex items-center gap-2 mt-8'>
+              <div className='flex items-center justify-center md:justify-start gap-2 mt-6 md:mt-8'>
                 {slides.map((_, i) => (
                   <motion.div
                     key={i}
@@ -226,24 +209,26 @@ export function SmartWearableBanner() {
 
             {/* Right Image */}
             <div
-              className='relative flex items-center justify-center'
-              style={{ width: "45%" }}
+              className='relative flex items-center justify-center w-full md:w-[45%] h-[250px] md:h-auto mt-6 md:mt-0'
             >
               <AnimatePresence mode='wait'>
                 <motion.div
                   key={`image-${currentSlide}`}
+                  className="relative w-full h-full flex items-center justify-center"
                   initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
                   animate={{ opacity: 1, scale: 1, rotate: 0 }}
                   exit={{ opacity: 0, scale: 0.8, rotate: 10 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <Image
-                    src={currentData.image}
-                    alt={currentData.title}
-                    width={280}
-                    height={320}
-                    className='object-contain z-20 relative'
-                  />
+                  {/* Image container for better resizing control */}
+                  <div className="relative w-[200px] h-[200px] md:w-[280px] md:h-[320px]">
+                    <Image
+                      src={currentData.image}
+                      alt={currentData.title}
+                      fill
+                      className='object-contain z-20'
+                    />
+                  </div>
                 </motion.div>
               </AnimatePresence>
             </div>

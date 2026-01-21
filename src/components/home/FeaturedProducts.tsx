@@ -42,7 +42,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
   return (
     <section className='w-full px-4 py-8 md:px-8 lg:px-12'>
       <div className='mx-auto max-w-7xl'>
-        <motion.div 
+        <motion.div
           className='grid grid-cols-1 md:grid-cols-3 gap-6'
           variants={containerVariants}
           initial="hidden"
@@ -67,7 +67,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                 />
 
                 {/* Wishlist Button */}
-                <motion.button 
+                <motion.button
                   className='absolute top-4 left-4 w-10 h-10 bg-white flex items-center justify-center hover:bg-gray-50 transition-colors'
                   style={{ borderRadius: '20px', border: '0.5px solid #000' }}
                   whileHover={{ scale: 1.1 }}
@@ -77,8 +77,8 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                 </motion.button>
 
                 {/* Buy Now Button */}
-                <motion.button 
-                  className='absolute top-4 right-4 px-5 py-2.5 bg-transparent text-sm font-medium text-gray-800 hover:bg-gray-50 transition-colors'
+                <motion.button
+                  className='absolute top-4 right-4 px-5 py-2.5 bg-transparent text-sm font-medium text-gray-800 hover:bg-gray-50 transition-colors whitespace-nowrap'
                   style={{ borderRadius: '20px', border: '0.5px solid #000' }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -87,14 +87,14 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                 </motion.button>
 
                 {/* Bottom Content Overlay */}
-                <motion.div 
-                  className='absolute bottom-4 left-4'
+                <motion.div
+                  className='absolute bottom-4 left-4 right-4'
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
                 >
-                  <div className='bg-white px-4 py-3' style={{ borderRadius: '10px' }}>
+                  <div className='bg-white px-4 py-3 inline-block max-w-[90%]' style={{ borderRadius: '10px' }}>
                     <p className='text-sm font-medium text-gray-900'>
                       {product.title}
                     </p>
