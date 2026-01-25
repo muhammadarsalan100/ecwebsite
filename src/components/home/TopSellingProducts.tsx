@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import type { StaticImageData } from "next/image";
+import Link from "next/link";
 import {
   Carousel,
   CarouselContent,
@@ -57,14 +58,14 @@ export function TopSellingProducts({ products }: TopSellingProductsProps) {
     <section className='w-full px-4 py-12 md:px-8 lg:px-12 border-t border-gray-200'>
       <div className='mx-auto max-w-7xl'>
         {/* Header */}
-        <motion.div 
+        <motion.div
           className='flex items-start justify-between mb-10'
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <motion.h2 
+          <motion.h2
             className='text-3xl md:text-4xl font-bold text-foreground leading-tight'
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -77,7 +78,7 @@ export function TopSellingProducts({ products }: TopSellingProductsProps) {
           </motion.h2>
 
           {/* Navigation Arrows */}
-          <motion.div 
+          <motion.div
             className='flex items-center gap-2'
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -129,7 +130,7 @@ export function TopSellingProducts({ products }: TopSellingProductsProps) {
                     key={product.id}
                     className='pl-6 basis-1/2 md:basis-1/4'
                   >
-                    <motion.div 
+                    <motion.div
                       className='group cursor-pointer'
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
@@ -137,55 +138,56 @@ export function TopSellingProducts({ products }: TopSellingProductsProps) {
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       whileHover={{ y: -5 }}
                     >
-                      {/* Product Image */}
-                      <div
-                        className='relative w-full mb-4 overflow-hidden bg-gray-100'
-                        style={{
-                          borderRadius: "27px",
-                          height: `${height}px`,
-                        }}
-                      >
-                        <Image
-                          src={product.image}
-                          alt={product.name}
-                          fill
-                          className='object-cover group-hover:scale-105 transition-transform duration-500'
-                        />
-                      </div>
+                      <Link href={`/product/${product.id}`} className="block h-full">
+                        {/* Product Image */}
+                        <div
+                          className='relative w-full mb-4 overflow-hidden bg-gray-100'
+                          style={{
+                            borderRadius: "27px",
+                            height: `${height}px`,
+                          }}
+                        >
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            className='object-cover group-hover:scale-105 transition-transform duration-500'
+                          />
+                        </div>
 
-                      {/* Product Info */}
-                      <div className='space-y-2'>
-                        <h3 className='text-lg font-semibold text-foreground'>
-                          {product.name}
-                        </h3>
-                        <p className='text-sm text-gray-500'>
-                          ({product.reviews}) Customer Reviews
-                        </p>
-
-                        {/* Price and Rating */}
-                        <div className='flex items-center justify-between pt-2'>
-                          <p className='text-base text-foreground'>
-                            <span className='text-gray-500'>Price: </span>
-                            <span className='font-semibold'>
-                              ${product.price.toFixed(2)}
-                            </span>
+                        {/* Product Info */}
+                        <div className='space-y-2'>
+                          <h3 className='text-lg font-semibold text-foreground'>
+                            {product.name}
+                          </h3>
+                          <p className='text-sm text-gray-500'>
+                            ({product.reviews}) Customer Reviews
                           </p>
 
-                          {/* Star Rating */}
-                          <div className='flex items-center gap-0.5'>
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-4 h-4 ${
-                                  i < product.rating
+                          {/* Price and Rating */}
+                          <div className='flex items-center justify-between pt-2'>
+                            <p className='text-base text-foreground'>
+                              <span className='text-gray-500'>Price: </span>
+                              <span className='font-semibold'>
+                                ${product.price.toFixed(2)}
+                              </span>
+                            </p>
+
+                            {/* Star Rating */}
+                            <div className='flex items-center gap-0.5'>
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`w-4 h-4 ${i < product.rating
                                     ? "fill-[#F59E0B] text-[#F59E0B]"
                                     : "fill-gray-200 text-gray-200"
-                                }`}
-                              />
-                            ))}
+                                    }`}
+                                />
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     </motion.div>
                   </CarouselItem>
                 );

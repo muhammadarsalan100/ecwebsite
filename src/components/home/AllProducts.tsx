@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Star } from "lucide-react";
 import type { StaticImageData } from "next/image";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 interface Product {
   id: string;
@@ -90,124 +91,127 @@ export function AllProducts({ products }: AllProductsProps) {
                 flexDirection: "column",
               }}
               variants={itemVariants}
-              whileHover={{ 
-                y: -10, 
+              whileHover={{
+                y: -10,
                 boxShadow: "0 40px 90px 0 rgba(0, 0, 0, 0.1)",
-                transition: { duration: 0.3 } 
+                transition: { duration: 0.3 }
               }}
             >
-              {/* Product Image */}
-              <div
-                className='relative w-full flex-1 mb-4 '
-                style={{
-                  borderRadius: "9.141px",
-                  background: "#F5F5F5",
-                }}
-              >
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className='object-contain'
-                />
-              </div>
-
-              {/* Product Info */}
-              <div className='flex items-start justify-between'>
-                <div>
-                  {/* Product Name */}
-                  <h3
-                    style={{
-                      color: "#484848",
-                      fontFamily: "var(--font-poppins)",
-                      fontSize: "18.282px",
-                      fontWeight: 500,
-                      lineHeight: "normal",
-                    }}
-                  >
-                    {product.name}
-                  </h3>
-
-                  {/* Brand Name */}
-                  <p
-                    style={{
-                      color: "#8A8A8A",
-                      fontFamily: "var(--font-poppins)",
-                      fontSize: "10.969px",
-                      fontWeight: 500,
-                      lineHeight: "10.969px",
-                    }}
-                  >
-                    {product.brand}
-                  </p>
+              <Link href={`/product/${product.id}`} className="block h-full w-full">
+                {/* Product Image */}
+                <div
+                  className='relative w-full flex-1 mb-4'
+                  style={{
+                    borderRadius: "9.141px",
+                    background: "#F5F5F5",
+                    minHeight: "200px"
+                  }}
+                >
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className='object-contain'
+                  />
                 </div>
 
-                {/* Star Rating */}
-                <div className='flex items-center gap-0.5'>
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-3 h-3 ${
-                        i < product.rating
+                {/* Product Info */}
+                <div className='flex items-start justify-between'>
+                  <div>
+                    {/* Product Name */}
+                    <h3
+                      style={{
+                        color: "#484848",
+                        fontFamily: "var(--font-poppins)",
+                        fontSize: "18.282px",
+                        fontWeight: 500,
+                        lineHeight: "normal",
+                      }}
+                    >
+                      {product.name}
+                    </h3>
+
+                    {/* Brand Name */}
+                    <p
+                      style={{
+                        color: "#8A8A8A",
+                        fontFamily: "var(--font-poppins)",
+                        fontSize: "10.969px",
+                        fontWeight: 500,
+                        lineHeight: "10.969px",
+                        marginTop: "4px"
+                      }}
+                    >
+                      {product.brand}
+                    </p>
+                  </div>
+
+                  {/* Star Rating */}
+                  <div className='flex items-center gap-0.5'>
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-3 h-3 ${i < product.rating
                           ? "fill-[#F59E0B] text-[#F59E0B]"
                           : "fill-gray-200 text-gray-200"
-                      }`}
-                    />
-                  ))}
+                          }`}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Customer Reviews */}
-              <p
-                className='mt-2'
-                style={{
-                  color: "#484848",
-                  fontFamily: "var(--font-poppins)",
-                  fontSize: "10.969px",
-                  fontWeight: 500,
-                  lineHeight: "normal",
-                }}
-              >
-                ({product.reviews}) Customer Reviews
-              </p>
-
-              {/* Price and Sold Out - 23px gap from reviews */}
-              <div className='flex items-center justify-between' style={{ marginTop: "23px" }}>
+                {/* Customer Reviews */}
                 <p
+                  className='mt-2'
                   style={{
                     color: "#484848",
                     fontFamily: "var(--font-poppins)",
-                    fontSize: "21.939px",
+                    fontSize: "10.969px",
                     fontWeight: 500,
-                    lineHeight: "18.282px",
-                    letterSpacing: "-0.219px",
+                    lineHeight: "normal",
                   }}
                 >
-                  ${product.price.toFixed(2)}
+                  ({product.reviews}) Customer Reviews
                 </p>
 
-                {product.almostSoldOut && (
+                {/* Price and Sold Out - 23px gap from reviews */}
+                <div className='flex items-center justify-between' style={{ marginTop: "23px" }}>
                   <p
                     style={{
-                      color: "#FF4646",
+                      color: "#484848",
                       fontFamily: "var(--font-poppins)",
-                      fontSize: "10.969px",
-                      fontWeight: 400,
+                      fontSize: "21.939px",
+                      fontWeight: 500,
                       lineHeight: "18.282px",
-                      letterSpacing: "-0.11px",
-                      textAlign: "right",
+                      letterSpacing: "-0.219px",
                     }}
                   >
-                    Almost Sold Out
+                    ${product.price.toFixed(2)}
                   </p>
-                )}
-              </div>
+
+                  {product.almostSoldOut && (
+                    <p
+                      style={{
+                        color: "#FF4646",
+                        fontFamily: "var(--font-poppins)",
+                        fontSize: "10.969px",
+                        fontWeight: 400,
+                        lineHeight: "18.282px",
+                        letterSpacing: "-0.11px",
+                        textAlign: "right",
+                      }}
+                    >
+                      Almost Sold Out
+                    </p>
+                  )}
+                </div>
+              </Link>
             </motion.div>
           ))}
         </motion.div>
 
         {/* View More Button */}
-        <motion.div 
+        <motion.div
           className='flex justify-center mt-10'
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
