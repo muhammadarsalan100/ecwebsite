@@ -35,7 +35,7 @@ export function CategoryNavBar() {
                 className={`
                   flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-200
                   ${activeCategory === category.id
-                    ? "bg-[#0090FF] text-white"
+                    ? "bg-[#0092FF] text-white"
                     : "bg-[#F3F9FF] text-gray-600 hover:bg-[#E6F4FF]"
                   }
                 `}
@@ -44,8 +44,8 @@ export function CategoryNavBar() {
                 {category.hasDropdown && (
                   <ChevronDown
                     className={`w-3.5 h-3.5 transition-transform ${activeCategory === category.id
-                        ? "text-white rotate-180"
-                        : "text-gray-400"
+                      ? "text-white rotate-180"
+                      : "text-gray-400"
                       }`}
                   />
                 )}

@@ -8,9 +8,8 @@ export function LeatherBagBanner() {
     <section className='w-full pt-12 pb-12 md:pt-32'>
       <div className='mx-auto max-w-7xl px-4 md:px-8 lg:px-12'>
         <motion.div
-          className='relative overflow-visible w-full'
+          className='relative overflow-visible w-full rounded-[30px]'
           style={{
-            borderRadius: "36px",
             background: "#F8F8F8",
           }}
           initial={{ opacity: 0, y: 50 }}
@@ -82,7 +81,7 @@ export function LeatherBagBanner() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                Best Lather Bag Collection
+                Best Leather Bag Collection
                 <br />
                 For you
               </motion.h2>
@@ -109,13 +108,10 @@ export function LeatherBagBanner() {
               {/* Buy Now Button */}
               <motion.button
                 style={{
-                  width: "150px",
-                  height: "46.429px",
-                  borderRadius: "8.929px",
                   background: "#FCBD01",
                   boxShadow: "0 1.786px 3.571px 0 rgba(191, 151, 32, 0.25)",
                 }}
-                className='font-semibold text-black hover:opacity-90 transition-opacity'
+                className='w-[150px] h-12 rounded-[9px] font-semibold text-black hover:opacity-90 transition-opacity'
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

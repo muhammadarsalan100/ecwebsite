@@ -143,11 +143,10 @@ export default function Navbar() {
                           setSelectedCountry(country);
                           setIsRegionOpen(false);
                         }}
-                        className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors ${
-                          selectedCountry.code === country.code
-                            ? "bg-gray-50"
-                            : ""
-                        }`}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors ${selectedCountry.code === country.code
+                          ? "bg-gray-50"
+                          : ""
+                          }`}
                       >
                         <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0'>
                           <Image
@@ -171,12 +170,12 @@ export default function Navbar() {
             <div className='hidden md:flex flex-1 max-w-xl mx-4'>
               <div className='relative w-full flex items-center'>
                 <div className='absolute left-4' style={{ color: "#666" }}>
-                  <Search className='w-5 h-5' color='#0091ff' />
+                  <Search className='w-5 h-5' color='#0092FF' />
                 </div>
                 <input
                   type='text'
                   placeholder='Search essentials, groceries and more...'
-                  className='w-full bg-gray-50 border border-gray-200 py-3 pl-12 pr-14 text-sm focus:outline-none focus:ring-2 focus:ring-[#0090FF] focus:border-transparent placeholder:text-gray-400 text-black'
+                  className='w-full bg-gray-50 border border-gray-200 py-3 pl-12 pr-14 text-sm focus:outline-none focus:ring-2 focus:ring-[#0092FF] focus:border-transparent placeholder:text-gray-400 text-black'
                   style={{ borderRadius: "10px" }}
                 />
                 <button
@@ -210,7 +209,7 @@ export default function Navbar() {
 
               {/* Cart */}
               <Link
-                href='/cart'
+                href='/billing'
                 className='flex items-center gap-2 hover:opacity-80 transition-opacity'
                 style={{
                   color: "#666",
@@ -236,7 +235,7 @@ export default function Navbar() {
                 <Search className='w-5 h-5' />
               </button>
 
-              <Link href='/cart' className='p-2 text-gray-600 relative'>
+              <Link href='/billing' className='p-2 text-gray-600 relative'>
                 <ShoppingCart className='w-5 h-5' />
                 {/* <span className="absolute top-1 right-0 bg-[var(--primary)] text-white text-[10px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">2</span> */}
               </Link>
@@ -397,11 +396,10 @@ export default function Navbar() {
                                 setSelectedCountry(country);
                                 setIsMobileRegionOpen(false);
                               }}
-                              className={`w-full flex items-center gap-3 px-11 py-2.5 transition-colors text-left text-sm ${
-                                selectedCountry.code === country.code
-                                  ? "text-[var(--primary)] font-medium bg-blue-50/50"
-                                  : "text-gray-600 hover:text-gray-900"
-                              }`}
+                              className={`w-full flex items-center gap-3 px-11 py-2.5 transition-colors text-left text-sm ${selectedCountry.code === country.code
+                                ? "text-[var(--primary)] font-medium bg-blue-50/50"
+                                : "text-gray-600 hover:text-gray-900"
+                                }`}
                             >
                               <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0 shadow-sm'>
                                 <Image

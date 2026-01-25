@@ -42,8 +42,9 @@ export function TopCategories({ categories }: TopCategoriesProps) {
     <section className='w-full px-4 py-12 md:px-8 lg:px-12'>
       <div className='mx-auto max-w-7xl'>
         {/* Title */}
-        <motion.h2 
+        <motion.h2
           className='text-3xl md:text-4xl font-bold text-foreground mb-12'
+          style={{ fontFamily: "var(--font-poppins)" }}
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -53,7 +54,7 @@ export function TopCategories({ categories }: TopCategoriesProps) {
         </motion.h2>
 
         {/* Categories Grid */}
-        <motion.div 
+        <motion.div
           className='flex items-center justify-between gap-6 flex-wrap md:flex-nowrap'
           variants={containerVariants}
           initial="hidden"
@@ -68,11 +69,11 @@ export function TopCategories({ categories }: TopCategoriesProps) {
               whileHover={{ y: -10, transition: { duration: 0.3 } }}
             >
               {/* Circle Container */}
-              <motion.div 
+              <motion.div
                 className='w-40 h-40 md:w-48 md:h-48 rounded-full bg-[#F0F0F0] flex items-center justify-center overflow-hidden group-hover:bg-[#e5e5e5] transition-colors'
                 whileHover={{ scale: 1.05 }}
               >
-                <div className='relative' style={{ width: '100px', height: '93px' }}>
+                <div className='relative w-[100px] h-[93px]'>
                   <Image
                     src={category.image}
                     alt={category.name}

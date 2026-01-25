@@ -1,4 +1,3 @@
-import { CategoriesView } from "@/components/home/CategoriesView";
 import { CategoryNavBar } from "@/components/home/CategoryNavBar";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { SummerHero } from "@/components/home/SummerHero";
@@ -9,44 +8,6 @@ import { AllProducts } from "@/components/home/AllProducts";
 import { SmartWearableBanner } from "@/components/home/SmartWearableBanner";
 import { CustomerReview } from "@/components/home/CustomerReview";
 import { Newsletter } from "@/components/home/Newsletter";
-
-const categoriesData = [
-  {
-    name: "Quilted Satin Jacket",
-    image: "/p-1.jpg",
-  },
-  {
-    name: "Kids Electric Car",
-    image: "/p-2.jpg",
-  },
-  {
-    name: "GP11 Shooter USB Gamepad",
-    image: "/p-3.jpg",
-  },
-  {
-    name: "ASUS FHD Gaming Laptop",
-    image: "/p-4.jpg",
-  },
-];
-
-const rareFindsCategories = [
-  {
-    name: "CANON EOS DSLR Camera",
-    image: "/p-5.jpg",
-  },
-  {
-    name: "Curology Product Set",
-    image: "/p-6.jpg",
-  },
-  {
-    name: "Gucci duffle bag",
-    image: "/p-7.jpg",
-  },
-  {
-    name: "Small BookSelf",
-    image: "/p-8.jpg",
-  },
-];
 
 const featuredProducts = [
   {

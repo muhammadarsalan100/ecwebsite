@@ -67,12 +67,13 @@ export function TopSellingProducts({ products }: TopSellingProductsProps) {
         >
           <motion.h2
             className='text-3xl md:text-4xl font-bold text-foreground leading-tight'
+            style={{ fontFamily: "var(--font-poppins)" }}
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            Top-Selling Product
+            Top-Selling Products
             <br />
             of the year Collection
           </motion.h2>
@@ -141,9 +142,8 @@ export function TopSellingProducts({ products }: TopSellingProductsProps) {
                       <Link href={`/product/${product.id}`} className="block h-full">
                         {/* Product Image */}
                         <div
-                          className='relative w-full mb-4 overflow-hidden bg-gray-100'
+                          className='relative w-full mb-4 overflow-hidden bg-gray-100 rounded-[20px]'
                           style={{
-                            borderRadius: "27px",
                             height: `${height}px`,
                           }}
                         >
@@ -196,6 +196,6 @@ export function TopSellingProducts({ products }: TopSellingProductsProps) {
           </Carousel>
         </motion.div>
       </div>
-    </section>
+    </section >
   );
 }

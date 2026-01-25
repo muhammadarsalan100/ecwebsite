@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Minus, Plus, Share2, Truck, RefreshCw, ShieldCheck, ChevronRight } from "lucide-react";
+import { Star, Share2, Truck, RefreshCw, ShieldCheck, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -9,7 +9,6 @@ import Link from "next/link";
 interface ProductInfoProps {
     title: string;
     price: number;
-    originalPrice?: number;
     rating: number;
     reviewsCount: number;
     description: string;
@@ -22,7 +21,6 @@ interface ProductInfoProps {
 export function ProductInfo({
     title,
     price,
-    originalPrice,
     rating,
     reviewsCount,
     description,
@@ -33,15 +31,6 @@ export function ProductInfo({
 }: ProductInfoProps) {
     const [selectedColor, setSelectedColor] = useState(colors[0]?.name);
     const [selectedSize, setSelectedSize] = useState(sizes[0]);
-    const [quantity, setQuantity] = useState(1);
-
-    const handleDecreaseByOne = () => {
-        setQuantity(prev => Math.max(1, prev - 1));
-    }
-
-    const handleIncreaseByOne = () => {
-        setQuantity(prev => prev + 1);
-    }
 
     return (
         <div className="flex flex-col gap-6">

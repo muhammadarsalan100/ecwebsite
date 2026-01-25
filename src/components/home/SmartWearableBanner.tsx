@@ -107,9 +107,8 @@ export function SmartWearableBanner() {
 
         {/* Main Banner Card */}
         <motion.div
-          className='relative w-full overflow-hidden'
+          className='relative w-full overflow-hidden rounded-[30px]'
           style={{
-            borderRadius: "16px",
             background: "#212844",
           }}
           initial={{ opacity: 0, y: 40 }}

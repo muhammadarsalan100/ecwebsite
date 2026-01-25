@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { useState } from "react";
 import { WomanInYellowDress, ModelWearingCollection } from "@/assets/images";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const reviews = [
   {
@@ -107,15 +107,15 @@ export function CustomerReview() {
             {/* Content - Left Card */}
             <div className='flex-1 flex flex-col justify-center px-10 py-14'>
               <p className='text-[#484848] font-poppins text-[13px] font-normal mb-3 line-clamp-3'>
-                "{visibleReviews[0].review}"
+                &quot;{visibleReviews[0].review}&quot;
               </p>
               <div className='flex items-center gap-1 mb-3'>
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
                     className={`w-3 h-3 ${i < visibleReviews[0].rating
-                        ? "fill-[#F59E0B] text-[#F59E0B]"
-                        : "fill-gray-200 text-gray-200"
+                      ? "fill-[#F59E0B] text-[#F59E0B]"
+                      : "fill-gray-200 text-gray-200"
                       }`}
                   />
                 ))}
@@ -155,7 +155,7 @@ export function CustomerReview() {
             <div className='flex-1 flex flex-col justify-center px-6 py-8 md:px-10 md:py-14 text-center md:text-left w-full'>
               {/* Review Text */}
               <p className='text-[#484848] font-poppins text-sm md:text-[13px] font-normal mb-4 leading-relaxed'>
-                "{visibleReviews[1].review}"
+                &quot;{visibleReviews[1].review}&quot;
               </p>
 
               {/* Stars */}
@@ -164,8 +164,8 @@ export function CustomerReview() {
                   <Star
                     key={i}
                     className={`w-4 h-4 ${i < visibleReviews[1].rating
-                        ? "fill-[#F59E0B] text-[#F59E0B]"
-                        : "fill-gray-200 text-gray-200"
+                      ? "fill-[#F59E0B] text-[#F59E0B]"
+                      : "fill-gray-200 text-gray-200"
                       }`}
                   />
                 ))}
@@ -214,15 +214,15 @@ export function CustomerReview() {
             {/* Content - Right Card */}
             <div className='flex-1 flex flex-col justify-center px-10 py-14'>
               <p className='text-[#484848] font-poppins text-[13px] font-normal mb-3 line-clamp-3'>
-                "{visibleReviews[2].review}"
+                &quot;{visibleReviews[2].review}&quot;
               </p>
               <div className='flex items-center gap-1 mb-3'>
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
                     className={`w-3 h-3 ${i < visibleReviews[2].rating
-                        ? "fill-[#F59E0B] text-[#F59E0B]"
-                        : "fill-gray-200 text-gray-200"
+                      ? "fill-[#F59E0B] text-[#F59E0B]"
+                      : "fill-gray-200 text-gray-200"
                       }`}
                   />
                 ))}

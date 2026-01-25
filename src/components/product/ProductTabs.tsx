@@ -8,8 +8,8 @@ import Image from "next/image";
 
 interface ProductTabsProps {
     description: string;
-    reviews?: any[];
-    faqs?: any[];
+    reviews?: unknown[];
+    faqs?: unknown[];
 }
 
 const tabs = [
@@ -81,9 +81,7 @@ export function ProductTabs({ description }: ProductTabsProps) {
                                 {/* Left Content */}
                                 <div className="lg:col-span-2">
                                     <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
-                                        100% Bio-washed Cotton – makes the fabric extra soft & silky. Flexible ribbed crew neck.
-                                        Precisely stitched with no pilling & no fading. Provide all-time comfort. Anytime, anywhere.
-                                        Infinite range of matte-finish HD prints.
+                                        {description}
                                     </p>
 
                                     <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6">

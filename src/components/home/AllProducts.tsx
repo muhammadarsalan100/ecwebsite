@@ -49,25 +49,19 @@ export function AllProducts({ products }: AllProductsProps) {
       <div className='mx-auto max-w-7xl'>
         {/* Title */}
         <motion.h2
-          className='mb-10'
-          style={{
-            fontFamily: "var(--font-poppins)",
-            fontSize: "32px",
-            fontWeight: 600,
-            color: "#000",
-          }}
+          className='mb-10 text-[32px] font-semibold text-black'
+          style={{ fontFamily: "var(--font-poppins)" }}
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          Our All Product
+          All Our Products
         </motion.h2>
 
         {/* Products Grid */}
         <motion.div
-          className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-          style={{ gap: "54px" }}
+          className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[54px]'
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -76,20 +70,7 @@ export function AllProducts({ products }: AllProductsProps) {
           {products.map((product) => (
             <motion.div
               key={product.id}
-              className='cursor-pointer'
-              style={{
-                maxWidth: "352.846px",
-                height: "400.379px",
-                borderRadius: "14.14px",
-                background: "#FFF",
-                boxShadow: "0 36.564px 82.27px 0 rgba(0, 0, 0, 0.06)",
-                paddingLeft: "22px",
-                paddingRight: "22px",
-                paddingTop: "13px",
-                paddingBottom: "32px",
-                display: "flex",
-                flexDirection: "column",
-              }}
+              className='cursor-pointer bg-white rounded-2xl shadow-[0_36px_82px_0_rgba(0,0,0,0.06)] px-[22px] pt-[13px] pb-8 flex flex-col h-full max-w-sm mx-auto w-full'
               variants={itemVariants}
               whileHover={{
                 y: -10,
@@ -99,19 +80,12 @@ export function AllProducts({ products }: AllProductsProps) {
             >
               <Link href={`/product/${product.id}`} className="block h-full w-full">
                 {/* Product Image */}
-                <div
-                  className='relative w-full flex-1 mb-4'
-                  style={{
-                    borderRadius: "9.141px",
-                    background: "#F5F5F5",
-                    minHeight: "200px"
-                  }}
-                >
+                <div className='relative w-full aspect-[3/2] mb-4 bg-[#F5F5F5] rounded-[9px] min-h-[200px]'>
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
-                    className='object-contain'
+                    className='object-contain p-2'
                   />
                 </div>
 
@@ -120,27 +94,16 @@ export function AllProducts({ products }: AllProductsProps) {
                   <div>
                     {/* Product Name */}
                     <h3
-                      style={{
-                        color: "#484848",
-                        fontFamily: "var(--font-poppins)",
-                        fontSize: "18.282px",
-                        fontWeight: 500,
-                        lineHeight: "normal",
-                      }}
+                      className='text-[#484848] text-[18px] font-medium leading-normal'
+                      style={{ fontFamily: "var(--font-poppins)" }}
                     >
                       {product.name}
                     </h3>
 
                     {/* Brand Name */}
                     <p
-                      style={{
-                        color: "#8A8A8A",
-                        fontFamily: "var(--font-poppins)",
-                        fontSize: "10.969px",
-                        fontWeight: 500,
-                        lineHeight: "10.969px",
-                        marginTop: "4px"
-                      }}
+                      className='text-[#8A8A8A] text-[11px] font-medium leading-[11px] mt-1'
+                      style={{ fontFamily: "var(--font-poppins)" }}
                     >
                       {product.brand}
                     </p>
@@ -162,44 +125,25 @@ export function AllProducts({ products }: AllProductsProps) {
 
                 {/* Customer Reviews */}
                 <p
-                  className='mt-2'
-                  style={{
-                    color: "#484848",
-                    fontFamily: "var(--font-poppins)",
-                    fontSize: "10.969px",
-                    fontWeight: 500,
-                    lineHeight: "normal",
-                  }}
+                  className='mt-2 text-[#484848] text-[11px] font-medium leading-normal'
+                  style={{ fontFamily: "var(--font-poppins)" }}
                 >
                   ({product.reviews}) Customer Reviews
                 </p>
 
-                {/* Price and Sold Out - 23px gap from reviews */}
-                <div className='flex items-center justify-between' style={{ marginTop: "23px" }}>
+                {/* Price and Sold Out */}
+                <div className='flex items-center justify-between mt-6'>
                   <p
-                    style={{
-                      color: "#484848",
-                      fontFamily: "var(--font-poppins)",
-                      fontSize: "21.939px",
-                      fontWeight: 500,
-                      lineHeight: "18.282px",
-                      letterSpacing: "-0.219px",
-                    }}
+                    className='text-[#484848] text-[22px] font-medium leading-[18px] tracking-tight'
+                    style={{ fontFamily: "var(--font-poppins)" }}
                   >
                     ${product.price.toFixed(2)}
                   </p>
 
                   {product.almostSoldOut && (
                     <p
-                      style={{
-                        color: "#FF4646",
-                        fontFamily: "var(--font-poppins)",
-                        fontSize: "10.969px",
-                        fontWeight: 400,
-                        lineHeight: "18.282px",
-                        letterSpacing: "-0.11px",
-                        textAlign: "right",
-                      }}
+                      className='text-[#FF4646] text-[11px] font-normal leading-[18px] tracking-tight text-right'
+                      style={{ fontFamily: "var(--font-poppins)" }}
                     >
                       Almost Sold Out
                     </p>
@@ -219,13 +163,11 @@ export function AllProducts({ products }: AllProductsProps) {
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <motion.button
-            className='text-white font-medium hover:opacity-90 transition-opacity'
+            className='text-white font-medium hover:opacity-90 transition-opacity bg-[#0092FF] shadow-[0_18px_31px_0_rgba(0,146,255,0.15)]'
             style={{
-              width: "186.633px",
-              height: "50.49px",
-              borderRadius: "9.016px",
-              background: "#0092FF",
-              boxShadow: "0 18.032px 31.556px 0 rgba(0, 146, 255, 0.15)",
+              width: "186px",
+              height: "50px",
+              borderRadius: "9px",
               fontFamily: "var(--font-poppins)",
               fontSize: "14px",
             }}
