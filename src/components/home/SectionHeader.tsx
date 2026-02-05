@@ -2,14 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface SectionHeaderProps {
-  titleBold: string;
-  titleLight: string;
-  subtitle?: string;
-  showNavigation?: boolean;
-  onPrevious?: () => void;
-  onNext?: () => void;
-}
+import { SectionHeaderProps } from "@/types";
 
 export function SectionHeader({
   titleBold,

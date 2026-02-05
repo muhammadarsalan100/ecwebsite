@@ -6,9 +6,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface ProductGalleryProps {
-    images: string[];
-}
+import { ProductGalleryProps } from "@/types";
 
 export function ProductGallery({ images }: ProductGalleryProps) {
     const [selectedIndex, setSelectedIndex] = useState(0);

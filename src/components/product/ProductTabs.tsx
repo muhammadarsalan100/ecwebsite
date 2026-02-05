@@ -6,11 +6,7 @@ import { cn } from "@/lib/utils";
 import { Play } from "lucide-react";
 import Image from "next/image";
 
-interface ProductTabsProps {
-    description: string;
-    reviews?: unknown[];
-    faqs?: unknown[];
-}
+import { ProductTabsProps } from "@/types";
 
 const tabs = [
     { id: "description", label: "Description", count: null },

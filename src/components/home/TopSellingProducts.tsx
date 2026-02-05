@@ -13,14 +13,7 @@ import {
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
-interface Product {
-  id: string;
-  name: string;
-  image: string | StaticImageData;
-  price: number;
-  reviews: string;
-  rating: number;
-}
+import { Product } from "@/types";
 
 interface TopSellingProductsProps {
   products: Product[];

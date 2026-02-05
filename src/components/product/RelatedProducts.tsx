@@ -4,19 +4,10 @@ import Image from "next/image";
 import { Star } from "lucide-react";
 import { motion } from "framer-motion";
 
-interface RelatedProduct {
-    id: string;
-    name: string;
-    brand: string;
-    image: string;
-    price: number;
-    rating: number;
-    reviews: string;
-    soldOut?: boolean;
-}
+import { Product } from "@/types";
 
 interface RelatedProductsProps {
-    products: RelatedProduct[];
+    products: Product[];
 }
 
 export function RelatedProducts({ products }: RelatedProductsProps) {

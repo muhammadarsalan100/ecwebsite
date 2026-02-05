@@ -3,13 +3,9 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
-interface Category {
-  id: string;
-  name: string;
-  hasDropdown?: boolean;
-}
+import { NavCategory } from "@/types";
 
-const categories: Category[] = [
+const categories: NavCategory[] = [
   { id: "groceries", name: "Groceries", hasDropdown: true },
   { id: "premium-fruits", name: "Premium Fruits", hasDropdown: true },
   { id: "home-kitchen", name: "Home & Kitchen", hasDropdown: true },

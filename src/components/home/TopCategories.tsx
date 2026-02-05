@@ -4,11 +4,7 @@ import Image from "next/image";
 import type { StaticImageData } from "next/image";
 import { motion } from "framer-motion";
 
-interface Category {
-  id: string;
-  name: string;
-  image: string | StaticImageData;
-}
+import { Category } from "@/types";
 
 interface TopCategoriesProps {
   categories: Category[];

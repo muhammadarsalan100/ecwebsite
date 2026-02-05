@@ -5,16 +5,13 @@ import { useState } from "react";
 import { SectionHeader } from "./SectionHeader";
 import type { StaticImageData } from "next/image";
 
-export interface CategoryItem {
-  name: string;
-  image: string | StaticImageData;
-}
+import { Category } from "@/types";
 
 interface CategoriesViewProps {
   titleBold: string;
   titleLight: string;
   subtitle?: string;
-  categories: CategoryItem[];
+  categories: Category[];
   itemsPerView?: number;
   showNavigation?: boolean;
 }

@@ -6,17 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-interface ProductInfoProps {
-    title: string;
-    price: number;
-    rating: number;
-    reviewsCount: number;
-    description: string;
-    colors: { name: string; value: string }[];
-    sizes: string[];
-    category: string;
-    subcategory: string;
-}
+import { ProductInfoProps } from "@/types";
 
 export function ProductInfo({
     title,

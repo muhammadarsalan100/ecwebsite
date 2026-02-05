@@ -5,15 +5,10 @@ import { Heart } from "lucide-react";
 import type { StaticImageData } from "next/image";
 import { motion } from "framer-motion";
 
-interface ProductCard {
-  id: string;
-  image: string | StaticImageData;
-  title: string;
-  subtitle?: string;
-}
+import { FeaturedProductCard } from "@/types";
 
 interface FeaturedProductsProps {
-  products: ProductCard[];
+  products: FeaturedProductCard[];
 }
 
 const containerVariants = {

@@ -2,82 +2,34 @@
 
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
+import { BillingField } from "@/types"
+
+const BILLING_FIELDS: BillingField[] = [
+    { id: "firstName", label: "First Name" },
+    { id: "lastName", label: "Last Name" },
+    { id: "streetAddress", label: "Street Address" },
+    { id: "apartment", label: "Apartment, floor, etc (optional)" },
+    { id: "city", label: "Town/City" },
+    { id: "phone", label: "Phone Number", type: "tel" },
+    { id: "email", label: "Email Address", type: "email" },
+];
 
 export function BillingForm() {
     return (
         <div className="flex-1 space-y-8">
             <div className="space-y-12">
-                <div className="flex flex-col gap-3">
-                    <label htmlFor="firstName" className="text-sm md:text-base text-gray-400">
-                        First Name
-                    </label>
-                    <Input
-                        id="firstName"
-                        className="h-12 bg-white border border-gray-200 focus-visible:ring-2 focus-visible:ring-[#0092FF] rounded-[4px]"
-                    />
-                </div>
-
-                <div className="flex flex-col gap-3">
-                    <label htmlFor="lastName" className="text-sm md:text-base text-gray-400">
-                        Last Name
-                    </label>
-                    <Input
-                        id="lastName"
-                        className="h-12 bg-white border border-gray-200 focus-visible:ring-2 focus-visible:ring-[#0092FF] rounded-[4px]"
-                    />
-                </div>
-
-                <div className="flex flex-col gap-3">
-                    <label htmlFor="streetAddress" className="text-sm md:text-base text-gray-400">
-                        Street Address
-                    </label>
-                    <Input
-                        id="streetAddress"
-                        className="h-12 bg-white border border-gray-200 focus-visible:ring-2 focus-visible:ring-[#0092FF] rounded-[4px]"
-                    />
-                </div>
-
-                <div className="flex flex-col gap-3">
-                    <label htmlFor="apartment" className="text-sm md:text-base text-gray-400">
-                        Apartment, floor, etc (optional)
-                    </label>
-                    <Input
-                        id="apartment"
-                        className="h-12 bg-white border border-gray-200 focus-visible:ring-2 focus-visible:ring-[#0092FF] rounded-[4px]"
-                    />
-                </div>
-
-                <div className="flex flex-col gap-3">
-                    <label htmlFor="city" className="text-sm md:text-base text-gray-400">
-                        Town/City
-                    </label>
-                    <Input
-                        id="city"
-                        className="h-12 bg-white border border-gray-200 focus-visible:ring-2 focus-visible:ring-[#0092FF] rounded-[4px]"
-                    />
-                </div>
-
-                <div className="flex flex-col gap-3">
-                    <label htmlFor="phone" className="text-sm md:text-base text-gray-400">
-                        Phone Number
-                    </label>
-                    <Input
-                        id="phone"
-                        type="tel"
-                        className="h-12 bg-white border border-gray-200 focus-visible:ring-2 focus-visible:ring-[#0092FF] rounded-[4px]"
-                    />
-                </div>
-
-                <div className="flex flex-col gap-3">
-                    <label htmlFor="email" className="text-sm md:text-base text-gray-400">
-                        Email Address
-                    </label>
-                    <Input
-                        id="email"
-                        type="email"
-                        className="h-12 bg-white border border-gray-200 focus-visible:ring-2 focus-visible:ring-[#0092FF] rounded-[4px]"
-                    />
-                </div>
+                {BILLING_FIELDS.map((field) => (
+                    <div key={field.id} className="flex flex-col gap-3">
+                        <label htmlFor={field.id} className="text-sm md:text-base text-gray-400">
+                            {field.label}
+                        </label>
+                        <Input
+                            id={field.id}
+                            type={field.type || "text"}
+                            className="h-12 bg-white border border-gray-200 focus-visible:ring-2 focus-visible:ring-[#0092FF] rounded-[4px]"
+                        />
+                    </div>
+                ))}
             </div>
 
             <div className="flex items-center space-x-3 pt-2">
