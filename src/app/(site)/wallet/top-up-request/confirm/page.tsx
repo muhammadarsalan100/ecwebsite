@@ -18,8 +18,8 @@ export default function TopUpConfirmPage() {
         <div className="space-y-10 pb-10">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">My Wallet</h1>
-                <p className="text-gray-500 mt-1 text-sm">Track, return or purchase items</p>
+                <h1 className="text-2xl font-bold text-foreground">My Wallet</h1>
+                <p className="text-muted-foreground mt-1 text-sm">Track, return or purchase items</p>
             </div>
 
             {/* Details Form */}
@@ -28,11 +28,11 @@ export default function TopUpConfirmPage() {
                 <div className="space-y-8">
                     {/* Debit Account */}
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Debit Account</label>
-                        <div className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl shadow-sm h-[56px]">
+                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Debit Account</label>
+                        <div className="flex items-center justify-between p-4 bg-card border border-border rounded-xl shadow-sm h-[56px]">
                             <div className="flex items-center gap-3">
-                                <Globe className="w-5 h-5 text-gray-900" />
-                                <span className="font-bold text-gray-900 text-sm">Aruban Florin (AWG)</span>
+                                <Globe className="w-5 h-5 text-foreground" />
+                                <span className="font-bold text-foreground text-sm">Aruban Florin (AWG)</span>
                             </div>
                             <button className="text-gray-300 hover:text-gray-500 transition-colors">
                                 <PencilLine className="w-4 h-4" />
@@ -42,11 +42,11 @@ export default function TopUpConfirmPage() {
 
                     {/* Top Up Type */}
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Top Up Type</label>
-                        <div className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl shadow-sm h-[56px]">
+                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Top Up Type</label>
+                        <div className="flex items-center justify-between p-4 bg-card border border-border rounded-xl shadow-sm h-[56px]">
                             <div className="flex items-center gap-3">
-                                <User className="w-5 h-5 text-gray-900" />
-                                <span className="font-bold text-gray-900 text-sm">Pick up by Agent</span>
+                                <User className="w-5 h-5 text-foreground" />
+                                <span className="font-bold text-foreground text-sm">Pick up by Agent</span>
                             </div>
                             <button className="text-gray-300 hover:text-gray-500 transition-colors">
                                 <PencilLine className="w-4 h-4" />
@@ -56,12 +56,12 @@ export default function TopUpConfirmPage() {
 
                     {/* Select Location */}
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Select Location</label>
+                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Select Location</label>
                         <div className="relative">
-                            <div className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl shadow-sm h-[56px] cursor-pointer hover:bg-gray-50 transition-colors">
+                            <div className="flex items-center justify-between p-4 bg-card border border-border rounded-xl shadow-sm h-[56px] cursor-pointer hover:bg-accent transition-colors">
                                 <div className="flex items-center gap-3">
-                                    <MapPin className="w-5 h-5 text-gray-400" />
-                                    <span className="font-bold text-gray-400 text-sm">Nearest Location</span>
+                                    <MapPin className="w-5 h-5 text-muted-foreground" />
+                                    <span className="font-bold text-muted-foreground text-sm">Nearest Location</span>
                                 </div>
                                 <ChevronDown className="w-4 h-4 text-gray-400" />
                             </div>
@@ -73,11 +73,11 @@ export default function TopUpConfirmPage() {
                 <div className="space-y-8">
                     {/* Amount From AWG */}
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Amount From AWG</label>
-                        <div className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl shadow-sm h-[56px]">
+                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Amount From AWG</label>
+                        <div className="flex items-center justify-between p-4 bg-card border border-border rounded-xl shadow-sm h-[56px]">
                             <div className="flex items-center gap-3">
-                                <Banknote className="w-5 h-5 text-gray-900" />
-                                <span className="font-bold text-gray-900 text-sm">5000</span>
+                                <Banknote className="w-5 h-5 text-foreground" />
+                                <span className="font-bold text-foreground text-sm">5000</span>
                             </div>
                             <button className="text-gray-300 hover:text-gray-500 transition-colors">
                                 <PencilLine className="w-4 h-4" />
@@ -87,12 +87,12 @@ export default function TopUpConfirmPage() {
 
                     {/* Charge Type */}
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Charge Type</label>
+                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Charge Type</label>
                         <div className="relative">
-                            <div className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl shadow-sm h-[56px] cursor-pointer hover:bg-gray-50 transition-colors">
+                            <div className="flex items-center justify-between p-4 bg-card border border-border rounded-xl shadow-sm h-[56px] cursor-pointer hover:bg-accent transition-colors">
                                 <div className="flex items-center gap-3">
-                                    <Wallet className="w-5 h-5 text-gray-400" />
-                                    <span className="font-bold text-gray-400 text-sm">Select Charge Type</span>
+                                    <Wallet className="w-5 h-5 text-muted-foreground" />
+                                    <span className="font-bold text-muted-foreground text-sm">Select Charge Type</span>
                                 </div>
                                 <ChevronDown className="w-4 h-4 text-gray-400" />
                             </div>
@@ -101,10 +101,10 @@ export default function TopUpConfirmPage() {
 
                     {/* Deposit Purpose */}
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Deposit Purpose</label>
+                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Deposit Purpose</label>
                         <Input
                             placeholder="Deposit Purpose"
-                            className="h-[56px] border-gray-100 rounded-xl shadow-sm px-4 text-sm font-bold text-gray-900 placeholder:text-gray-300 focus:ring-0"
+                            className="h-[56px] border-border bg-card rounded-xl shadow-sm px-4 text-sm font-bold text-foreground placeholder:text-muted-foreground focus:ring-0"
                         />
                     </div>
                 </div>

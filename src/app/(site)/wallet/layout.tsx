@@ -28,7 +28,7 @@ function WalletLayout({
     const currentPageTitle = breadcrumbMap[lastSegment];
 
     return (
-        <div className="bg-white min-h-screen py-8">
+        <div className="bg-background min-h-screen py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Breadcrumbs */}
                 <div className="flex items-center gap-2 text-sm text-gray-400 mb-8">

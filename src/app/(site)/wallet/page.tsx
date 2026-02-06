@@ -31,13 +31,13 @@ export default function WalletPage() {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">My Wallet</h1>
+                <h1 className="text-2xl font-bold text-foreground">My Wallet</h1>
                 <p className="text-gray-500 mt-1">Track, return or purchase items</p>
             </div>
 
             {/* Main Stats & Actions */}
             <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-[2] bg-primary rounded-2xl p-6 text-white flex flex-col justify-center gap-1 min-h-[150px] md:min-h-[180px] shadow-lg shadow-blue-200">
+                <div className="flex-[2] bg-[#0092FF] rounded-2xl p-6 text-white flex flex-col justify-center gap-1 min-h-[150px] md:min-h-[180px] shadow-lg shadow-blue-200">
                     <div className="flex flex-col items-start gap-1">
                         <Image
                             src="/WalletIcon.png"
@@ -75,10 +75,10 @@ export default function WalletPage() {
 
             {/* Recent Transactions List */}
             <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-6">Recent Transaction</h3>
+                <h3 className="text-lg font-bold text-foreground mb-6">Recent Transaction</h3>
                 <div className="space-y-4">
                     {transactions.map((item, i) => (
-                        <div key={i} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl hover:shadow-md transition-shadow">
+                        <div key={i} className="flex items-center justify-between p-4 bg-card border border-border rounded-xl hover:shadow-md transition-shadow">
                             <div className="flex items-center gap-4">
                                 <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${item.color === 'blue' ? 'bg-blue-50 text-blue-500' : 'bg-orange-50 text-orange-500'}`}>
                                     <Image

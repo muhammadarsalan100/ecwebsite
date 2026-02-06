@@ -60,10 +60,10 @@ export function TopUpDetailsForm({ topUpType, amount, onConfirm, onEdit }: TopUp
                     {/* Debit Account */}
                     <div className="space-y-2">
                         <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest pl-1">Debit Account</label>
-                        <div className="flex items-center justify-between px-6 bg-white border border-gray-100 rounded-2xl shadow-sm h-[64px] hover:border-blue-100 transition-colors">
+                        <div className="flex items-center justify-between px-6 bg-card border border-border rounded-2xl shadow-sm h-[64px] hover:border-primary transition-colors">
                             <div className="flex items-center gap-4">
-                                <Globe className="w-5 h-5 text-gray-900" />
-                                <span className="font-bold text-gray-900 text-[15px]">Aruban Florin (AWG)</span>
+                                <Globe className="w-5 h-5 text-foreground" />
+                                <span className="font-bold text-foreground text-[15px]">Aruban Florin (AWG)</span>
                             </div>
                             <button onClick={() => onEdit?.('account')} className="text-gray-300 hover:text-blue-500 transition-colors p-1">
                                 <PencilLine className="w-4 h-4" />
@@ -74,10 +74,10 @@ export function TopUpDetailsForm({ topUpType, amount, onConfirm, onEdit }: TopUp
                     {/* Top Up Type */}
                     <div className="space-y-2">
                         <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest pl-1">Top Up Type</label>
-                        <div className="flex items-center justify-between px-6 bg-white border border-gray-100 rounded-2xl shadow-sm h-[64px] hover:border-blue-100 transition-colors">
+                        <div className="flex items-center justify-between px-6 bg-card border border-border rounded-2xl shadow-sm h-[64px] hover:border-primary transition-colors">
                             <div className="flex items-center gap-4">
-                                <currentType.icon className="w-5 h-5 text-gray-900" />
-                                <span className="font-bold text-gray-900 text-[15px]">{currentType.label}</span>
+                                <currentType.icon className="w-5 h-5 text-foreground" />
+                                <span className="font-bold text-foreground text-[15px]">{currentType.label}</span>
                             </div>
                             <button onClick={() => onEdit?.('type')} className="text-gray-300 hover:text-blue-500 transition-colors p-1">
                                 <PencilLine className="w-4 h-4" />
@@ -91,7 +91,7 @@ export function TopUpDetailsForm({ topUpType, amount, onConfirm, onEdit }: TopUp
                             {showBankFields ? 'Select Bank' : 'Select Location'}
                         </label>
                         <div className="relative">
-                            <div className="flex items-center justify-between px-6 bg-white border border-gray-100 rounded-2xl shadow-sm h-[64px] cursor-pointer hover:bg-gray-50 hover:border-blue-100 transition-all">
+                            <div className="flex items-center justify-between px-6 bg-card border border-border rounded-2xl shadow-sm h-[64px] cursor-pointer hover:bg-accent hover:border-primary transition-all">
                                 <div className="flex items-center gap-4">
                                     {showBankFields ? (
                                         <Building className="w-5 h-5 text-gray-400" />
@@ -113,10 +113,10 @@ export function TopUpDetailsForm({ topUpType, amount, onConfirm, onEdit }: TopUp
                     {/* Amount From AWG */}
                     <div className="space-y-2">
                         <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest pl-1">Amount From AWG</label>
-                        <div className="flex items-center justify-between px-6 bg-white border border-gray-100 rounded-2xl shadow-sm h-[64px] hover:border-blue-100 transition-colors">
+                        <div className="flex items-center justify-between px-6 bg-card border border-border rounded-2xl shadow-sm h-[64px] hover:border-primary transition-colors">
                             <div className="flex items-center gap-4">
-                                <Banknote className="w-5 h-5 text-gray-900" />
-                                <span className="font-bold text-gray-900 text-[15px]">{amount}</span>
+                                <Banknote className="w-5 h-5 text-foreground" />
+                                <span className="font-bold text-foreground text-[15px]">{amount}</span>
                             </div>
                             <button onClick={() => onEdit?.('amount')} className="text-gray-300 hover:text-blue-500 transition-colors p-1">
                                 <PencilLine className="w-4 h-4" />
@@ -132,7 +132,7 @@ export function TopUpDetailsForm({ topUpType, amount, onConfirm, onEdit }: TopUp
                         <div className="relative">
                             <div
                                 onClick={() => showBankFields && setIsCountryModalOpen(true)}
-                                className="flex items-center justify-between px-6 bg-white border border-gray-100 rounded-2xl shadow-sm h-[64px] cursor-pointer hover:bg-gray-50 hover:border-blue-100 transition-all"
+                                className="flex items-center justify-between px-6 bg-card border border-border rounded-2xl shadow-sm h-[64px] cursor-pointer hover:bg-accent hover:border-primary transition-all"
                             >
                                 <div className="flex items-center gap-4">
                                     {showBankFields && selectedCountry ? (
@@ -152,7 +152,7 @@ export function TopUpDetailsForm({ topUpType, amount, onConfirm, onEdit }: TopUp
                                             <Wallet className="w-5 h-5 text-gray-400" />
                                         )
                                     )}
-                                    <span className={`font-bold text-[15px] ${selectedCountry && showBankFields ? 'text-gray-900' : 'text-gray-400'}`}>
+                                    <span className={`font-bold text-[15px] ${selectedCountry && showBankFields ? 'text-foreground' : 'text-muted-foreground'}`}>
                                         {showBankFields ? (selectedCountry?.name || 'Select Country') : 'Select Charge Type'}
                                     </span>
                                 </div>
@@ -166,7 +166,7 @@ export function TopUpDetailsForm({ topUpType, amount, onConfirm, onEdit }: TopUp
                         <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest pl-1">Deposit Purpose</label>
                         <Input
                             placeholder="Deposit Purpose"
-                            className="h-[64px] border-gray-100 rounded-2xl shadow-sm px-6 text-[15px] font-bold text-gray-900 placeholder:text-gray-300 focus-visible:ring-1 focus-visible:ring-blue-100 focus:border-blue-100 transition-all"
+                            className="h-[64px] border-border bg-card rounded-2xl shadow-sm px-6 text-[15px] font-bold text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary focus:border-primary transition-all"
                         />
                     </div>
                 </div>
