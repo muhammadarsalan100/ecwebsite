@@ -15,7 +15,7 @@ export function LeatherBagBanner() {
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: "easeOut" as const }}
         >
           {/* Decorative Elements - Hidden on Mobile */}
           <div className="hidden md:block">
@@ -130,7 +130,7 @@ export function LeatherBagBanner() {
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+                transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" as const }}
               >
                 <Image
                   src="/ecom.png"

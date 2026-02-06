@@ -45,7 +45,7 @@ export function LanguageSelector({
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        transition={{ duration: 0.2, ease: "easeOut" as const }}
                         className="absolute right-0 top-full mt-3 bg-white rounded-[20px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] py-3 min-w-[200px] z-[100] border border-gray-100 overflow-hidden"
                     >
                         {LANGUAGES.map((lang) => (

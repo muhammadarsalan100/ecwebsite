@@ -16,7 +16,7 @@ export function SummerHero() {
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: "easeOut" as const }}
         >
           {/* Container Height: Responsive */}
           <div className="h-[400px] md:h-[350px] lg:h-[307px] relative w-full">
@@ -26,7 +26,7 @@ export function SummerHero() {
               initial={{ scale: 1.1 }}
               whileInView={{ scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
+              transition={{ duration: 1.2, ease: "easeOut" as const }}
             >
               <Image
                 src='/p-8jpg.jpg'
