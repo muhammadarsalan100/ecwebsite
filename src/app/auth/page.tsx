@@ -27,7 +27,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className='flex min-h-[100dvh] w-full'>
+    <div className='flex h-screen w-full'>
       {/* LEFT IMAGE */}
       <div className='relative hidden w-1/2 md:block'>
         <Image
