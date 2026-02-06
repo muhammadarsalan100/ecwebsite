@@ -1,19 +1,33 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-// shadcn/ui
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-// assets
+import { useAuth } from "@/lib/auth-context";
 import banner from "../../../public/banner.png";
 import logo from "../../../public/logo.png";
 
 export default function LoginPage() {
+  // Hooks
+  const [email, setEmail] = useState("");
+  const { login } = useAuth();
+
+  // Constants
+  const targetEmail = "marsalanmalik455@gmail.com";
+
+  // Functions
+  const handleAuth = () => {
+    if (email === targetEmail) {
+      login(email);
+    } else {
+      alert("Please use the authorized email for testing.");
+    }
+  };
+
   return (
-    <div className='flex h-screen w-full'>
+    <div className='flex min-h-[100dvh] w-full'>
       {/* LEFT IMAGE */}
       <div className='relative hidden w-1/2 md:block'>
         <Image
@@ -30,7 +44,7 @@ export default function LoginPage() {
           {/* Logo */}
           <div className='flex '>
             <div className='h-14 w-14 rounded-xl'>
-              <Image src={logo} alt='Logo' width={100} height={100} />
+              <Image src={logo} alt='Logo' width={100} height={100} priority style={{ height: '56px', width: 'auto' }} />
             </div>
           </div>
 
@@ -52,11 +66,16 @@ export default function LoginPage() {
           <div className='space-y-5'>
             <Input
               type='email'
-              placeholder='bill.sanders@example.com'
+              placeholder={targetEmail}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className='h-12 text-base border-zinc-300 focus-visible:ring-blue-500'
             />
 
-            <Button className='w-full h-12 text-base font-semibold bg-blue-500 hover:bg-blue-600'>
+            <Button
+              onClick={handleAuth}
+              className='w-full h-12 text-base font-semibold bg-blue-500 hover:bg-blue-600'
+            >
               Sign Up
             </Button>
 

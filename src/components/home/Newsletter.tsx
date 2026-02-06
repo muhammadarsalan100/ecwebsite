@@ -80,7 +80,7 @@ export function Newsletter() {
 
             {/* Subscribe Button */}
             <motion.button
-              className='bg-[#0092FE] text-white font-poppins text-sm font-medium rounded-lg mt-6 shadow-[0_16px_29px_rgba(0,146,254,0.15)] hover:shadow-[0_20px_35px_rgba(0,146,254,0.25)] transition-all'
+              className='bg-primary text-white font-poppins text-sm font-medium rounded-lg mt-6 shadow-[0_16px_29px_rgba(0,146,254,0.15)] hover:shadow-[0_20px_35px_rgba(0,146,254,0.25)] transition-all'
               style={{
                 width: "173px",
                 height: "47px",

@@ -109,7 +109,7 @@ export function OrderSummary() {
                 </div>
 
                 {/* Place Order */}
-                <Button className="w-auto h-12 px-10 bg-[#0092FF] hover:bg-[#0092FF]/90 text-white rounded-[4px] font-medium transition-all active:scale-95">
+                <Button className="w-full lg:w-auto h-12 px-10 bg-[#0092FF] hover:bg-[#0092FF]/90 text-white rounded-[4px] font-medium transition-all active:scale-95">
                     Place Order
                 </Button>
             </div>

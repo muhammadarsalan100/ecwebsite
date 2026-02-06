@@ -8,23 +8,16 @@ export default function WalletPage() {
         {
             title: "Top Up Request",
             icon: "/Topup.png",
-            href: "/wallet/top-up-request",
+            href: "/wallet/request",
             bg: "bg-blue-50",
             hover: "hover:bg-blue-100",
         },
         {
             title: "Digital Top up",
             icon: "/Digital-Topup.png",
-            href: "#",
+            href: "/wallet/top-up-request",
             bg: "bg-[#FFF6E9]",
             hover: "hover:bg-orange-100",
-        },
-        {
-            title: "Multi Currency",
-            icon: "/Multi_Curr.png",
-            href: "#",
-            bg: "bg-[#E8F8EE]",
-            hover: "hover:bg-green-100",
         },
     ];
 
@@ -44,7 +37,7 @@ export default function WalletPage() {
 
             {/* Main Stats & Actions */}
             <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-[2] bg-[#0092FF] rounded-2xl p-6 text-white flex flex-col justify-center gap-1 min-h-[150px] md:min-h-[180px] shadow-lg shadow-blue-200">
+                <div className="flex-[2] bg-primary rounded-2xl p-6 text-white flex flex-col justify-center gap-1 min-h-[150px] md:min-h-[180px] shadow-lg shadow-blue-200">
                     <div className="flex flex-col items-start gap-1">
                         <Image
                             src="/WalletIcon.png"

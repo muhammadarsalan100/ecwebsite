@@ -6,8 +6,9 @@ import { ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import React from "react";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
-export default function WalletLayout({
+function WalletLayout({
     children,
 }: {
     children: React.ReactNode;
@@ -17,10 +18,9 @@ export default function WalletLayout({
 
     // Map of paths to breadcrumb titles
     const breadcrumbMap: Record<string, string> = {
-        'top-up-request': 'Top Up Request',
-        'top-up': 'Digital Top Up',
-        'currency': 'Multi Currency',
-        'confirm': 'Top Up Request'
+        'top-up-request': 'Digital Top up',
+        'request': 'Top Up Request',
+        'confirm': 'Digital Top up'
     };
 
     // Get the last segment
@@ -68,5 +68,13 @@ export default function WalletLayout({
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ProtectedWalletLayout(props: { children: React.ReactNode }) {
+    return (
+        <ProtectedRoute>
+            <WalletLayout {...props} />
+        </ProtectedRoute>
     );
 }

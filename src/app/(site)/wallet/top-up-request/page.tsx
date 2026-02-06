@@ -2,10 +2,10 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { ChevronDown, Check, User, Building, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, Check, User, Building, MapPin } from "lucide-react";
-import Image from "next/image";
 
 import { TopUpDetailsForm } from "@/components/wallet/TopUpDetailsForm";
 import { CardData, TopUpPurpose } from "@/types";
@@ -45,17 +45,19 @@ const PURPOSES = [
 ] as const;
 
 export default function TopUpRequestPage() {
+    // State Hooks
     const [selectedAmount, setSelectedAmount] = useState("450.73");
     const [selectedPurpose, setSelectedPurpose] = useState<TopUpPurpose | "">("");
     const [showDetails, setShowDetails] = useState(false);
 
+    // Derived State
     const convertedAmount = useMemo(() => {
         const amount = parseFloat(selectedAmount) || 0;
         return (amount * EXCHANGE_RATE).toFixed(1);
     }, [selectedAmount]);
 
     return (
-        <div className="space-y-8 pb-10">
+        <div className="space-y-8 pb-10 text-poppins">
             {/* Header */}
             <div>
                 <h1 className="text-2xl font-bold text-gray-900">My Wallet</h1>

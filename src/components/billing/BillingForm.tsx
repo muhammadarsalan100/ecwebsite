@@ -17,7 +17,7 @@ const BILLING_FIELDS: BillingField[] = [
 export function BillingForm() {
     return (
         <div className="flex-1 space-y-8">
-            <div className="space-y-12">
+            <div className="space-y-8 md:space-y-12">
                 {BILLING_FIELDS.map((field) => (
                     <div key={field.id} className="flex flex-col gap-3">
                         <label htmlFor={field.id} className="text-sm md:text-base text-gray-400">

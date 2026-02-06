@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Phone } from "lucide-react";
 import Image from "next/image";
+import { Phone } from "lucide-react";
+
 import { AppleStoreIcon, GooglePlayStoreIcon } from "@/assets/images";
 import whatsapp from "../../../public/whatsapp.svg";
 
 export default function Footer() {
   return (
     <footer
-      className='bg-[#0092FF] text-white relative overflow-hidden px-5 py-10 md:px-10 lg:px-[130px] lg:pt-[80px] lg:pb-[30px]'
+      className='bg-[#0092FF] text-white relative overflow-hidden px-5 py-10 md:px-10 lg:px-[130px] lg:pt-[80px] lg:pb-[30px] text-poppins'
     >
       {/* Decorative Circle Background */}
       <div className='absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none'></div>
@@ -39,7 +40,6 @@ export default function Footer() {
               <div className='space-y-0 lg:space-y-4'>
                 <div className='flex items-start space-x-3'>
                   <div className='mt-1'>
-                    {/* <MessageCircle className='w-6 h-6' /> */}
                     <Image
                       src={whatsapp}
                       alt='WhatsApp Icon'

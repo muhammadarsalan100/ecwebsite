@@ -4,7 +4,9 @@ import { CategoryNavBar } from "@/components/home/CategoryNavBar";
 import { BillingForm } from "@/components/billing/BillingForm";
 import { OrderSummary } from "@/components/billing/OrderSummary";
 
-export default function BillingPage() {
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+
+function BillingPage() {
     return (
         <>
             <CategoryNavBar />
@@ -28,5 +30,13 @@ export default function BillingPage() {
                 </div>
             </div>
         </>
+    );
+}
+
+export default function ProtectedBillingPage() {
+    return (
+        <ProtectedRoute>
+            <BillingPage />
+        </ProtectedRoute>
     );
 }

@@ -121,7 +121,7 @@ export function ProductInfo({
             {/* Actions */}
             <div className="flex flex-col gap-4 mt-4">
                 <div className="flex gap-4">
-                    <Button className="flex-1 bg-blue-500 hover:bg-blue-600 text-white h-12 rounded-lg font-medium text-base" size="lg">
+                    <Button className="flex-1 bg-primary hover:opacity-90 text-white h-12 rounded-lg font-medium text-base" size="lg">
                         <Share2 className="w-4 h-4 mr-2" />
                         <span>Add to cart</span>
                     </Button>

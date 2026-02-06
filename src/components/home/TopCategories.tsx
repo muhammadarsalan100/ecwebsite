@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import type { StaticImageData } from "next/image";
 import { motion } from "framer-motion";
 
 import { Category } from "@/types";
@@ -28,20 +27,19 @@ const itemVariants = {
     scale: 1,
     transition: {
       duration: 0.5,
-      ease: "easeOut" as const,
+      ease: "easeOut",
     },
   },
 };
 
 export function TopCategories({ categories }: TopCategoriesProps) {
   return (
-    <section className='w-full px-4 py-12 md:px-8 lg:px-12'>
+    <section className='w-full px-4 py-16 md:px-8 lg:px-12 bg-white'>
       <div className='mx-auto max-w-7xl'>
         {/* Title */}
         <motion.h2
-          className='text-3xl md:text-4xl font-bold text-foreground mb-12'
-          style={{ fontFamily: "var(--font-poppins)" }}
-          initial={{ opacity: 0, x: -30 }}
+          className='text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-12 text-center md:text-left font-poppins'
+          initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
@@ -49,9 +47,9 @@ export function TopCategories({ categories }: TopCategoriesProps) {
           Top Categories
         </motion.h2>
 
-        {/* Categories Grid */}
+        {/* Categories Flex Container */}
         <motion.div
-          className='flex items-center justify-between gap-6 flex-wrap md:flex-nowrap'
+          className='flex flex-wrap items-center justify-center md:justify-between gap-y-10 gap-x-4 md:gap-x-6 lg:gap-x-8'
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -60,27 +58,27 @@ export function TopCategories({ categories }: TopCategoriesProps) {
           {categories.map((category) => (
             <motion.div
               key={category.id}
-              className='flex flex-col items-center gap-4 cursor-pointer group'
+              className='flex flex-col items-center gap-5 cursor-pointer group shrink-0'
               variants={itemVariants}
-              whileHover={{ y: -10, transition: { duration: 0.3 } }}
             >
               {/* Circle Container */}
               <motion.div
-                className='w-40 h-40 md:w-48 md:h-48 rounded-full bg-[#F0F0F0] flex items-center justify-center overflow-hidden group-hover:bg-[#e5e5e5] transition-colors'
+                className='relative w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 lg:w-48 lg:h-48 rounded-full bg-[#F8F8F8] border border-gray-100 flex items-center justify-center overflow-hidden group-hover:bg-[#f0f0f0] group-hover:border-primary/20 transition-all duration-300 shadow-sm group-hover:shadow-md'
                 whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <div className='relative w-[100px] h-[93px]'>
+                <div className='relative w-[60%] h-[60%]'>
                   <Image
                     src={category.image}
                     alt={category.name}
                     fill
-                    className='object-contain group-hover:scale-110 transition-transform duration-300'
+                    className='object-contain group-hover:scale-110 transition-transform duration-500'
                   />
                 </div>
               </motion.div>
 
               {/* Category Name */}
-              <p className='text-base md:text-lg font-medium text-foreground text-center'>
+              <p className='text-sm sm:text-base md:text-lg font-bold text-gray-800 text-center group-hover:text-primary transition-colors font-poppins px-2'>
                 {category.name}
               </p>
             </motion.div>

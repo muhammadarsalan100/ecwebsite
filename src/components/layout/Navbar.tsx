@@ -1,6 +1,9 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   ShoppingCart,
   Search,
@@ -9,32 +12,48 @@ import {
   X,
   User,
 } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
-import { pakFlag } from "@/assets/images";
 import { motion, AnimatePresence } from "framer-motion";
+
+import { useAuth } from "@/lib/auth-context";
+import { pakFlag } from "@/assets/images";
 import { RegionSelector } from "./RegionSelector";
+import { LanguageSelector, LANGUAGES, Language } from "./LanguageSelector";
 
 const COUNTRIES = [
   { code: "PK", name: "Pakistan", flag: pakFlag },
-  { code: "US", name: "United States", flag: pakFlag },
-  { code: "UK", name: "United Kingdom", flag: pakFlag },
-  { code: "AE", name: "UAE", flag: pakFlag },
-  { code: "SA", name: "Saudi Arabia", flag: pakFlag },
+  { code: "US", name: "United States", flag: "/USAFlag.png" },
+  { code: "IN", name: "India", flag: "/INDFlag.png" },
+  { code: "UK", name: "United Kingdom", flag: "https://flagcdn.com/w80/gb.png" },
+  { code: "AE", name: "UAE", flag: "https://flagcdn.com/w80/ae.png" },
+  { code: "SA", name: "Saudi Arabia", flag: "https://flagcdn.com/w80/sa.png" },
 ];
 
 export default function Navbar() {
+  // State Hooks
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
   const [isMobileRegionOpen, setIsMobileRegionOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
-  const regionRef = useRef<HTMLDivElement>(null);
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const [selectedLang, setSelectedLang] = useState<Language>(LANGUAGES[0]);
 
+  // Ref Hooks
+  const regionRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
+
+  // Custom Hooks
+  const { isAuthenticated, user, logout, isLoading } = useAuth();
+  const router = useRouter();
+
+  // Effect Hooks
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (regionRef.current && !regionRef.current.contains(event.target as Node)) {
         setIsRegionOpen(false);
+      }
+      if (langRef.current && !langRef.current.contains(event.target as Node)) {
+        setIsLangOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -44,6 +63,16 @@ export default function Navbar() {
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "unset";
   }, [isMenuOpen]);
+
+  // Navigation Handlers
+  const handleProtectedNavigation = (e: React.MouseEvent, path: string) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      router.push("/auth");
+    } else {
+      router.push(path);
+    }
+  };
 
   return (
     <div className='flex flex-col w-full z-50 relative font-poppins'>
@@ -56,10 +85,14 @@ export default function Navbar() {
             <Link href='/shop' className='font-bold underline ml-2 hover:text-blue-400 transition-colors'>ShopNow</Link>
           </div>
           <div className='w-auto md:w-1/4 flex justify-center md:justify-end'>
-            <button className='flex items-center gap-1 hover:opacity-80 transition-opacity font-medium'>
-              <span>English</span>
-              <ChevronDown className='w-3 h-3 md:w-4 md:h-4' />
-            </button>
+            <div ref={langRef}>
+              <LanguageSelector
+                isOpen={isLangOpen}
+                setIsOpen={setIsLangOpen}
+                selectedLang={selectedLang}
+                onSelect={setSelectedLang}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -71,7 +104,7 @@ export default function Navbar() {
             {/* Logo & Location */}
             <div className='shrink-0 flex items-center gap-8'>
               <Link href='/' className='flex items-center gap-2 text-2xl font-bold tracking-tight'>
-                <Image src="/Logo1.png" alt="Logo" width={160} height={48} className="h-10 w-auto object-contain" />
+                <Image src="/Logo1.png" alt="Logo" width={160} height={48} className="h-10 w-auto object-contain" priority style={{ height: '40px', width: 'auto' }} />
               </Link>
 
               <div className="hidden lg:flex items-center gap-3 bg-[#0080E3] rounded-2xl px-4 py-2 min-w-[220px] transition-all hover:bg-[#0070C6] cursor-pointer group">
@@ -113,35 +146,88 @@ export default function Navbar() {
                 />
               </div>
 
-              <Link href='/auth' className='flex items-center gap-3 hover:scale-105 transition-transform'>
-                <User className='w-6 h-6' />
-                <div className="flex flex-col text-left leading-none gap-1">
-                  <span className="text-sm font-medium">Sign in</span>
-                  <span className="text-sm font-bold">Account</span>
+              {isLoading ? (
+                <div className="w-28 h-8 bg-white/10 animate-pulse rounded-full" />
+              ) : isAuthenticated ? (
+                <div className='flex items-center gap-3 group relative cursor-pointer'>
+                  <User className='w-6 h-6' />
+                  <div className="flex flex-col text-left leading-none gap-1">
+                    <span className="text-xs font-medium opacity-80">Hello,</span>
+                    <span className="text-sm font-bold truncate max-w-[100px]">{user?.split('@')[0]}</span>
+                  </div>
+                  {/* Dropdown for Sign Out */}
+                  <div className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-xl py-2 min-w-[150px] opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all translate-y-2 group-hover:translate-y-0 z-50">
+                    <button
+                      onClick={logout}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
                 </div>
-              </Link>
+              ) : (
+                <Link href='/auth' className='flex items-center gap-3 hover:scale-105 transition-transform'>
+                  <User className='w-6 h-6' />
+                  <div className="flex flex-col text-left leading-none gap-1">
+                    <span className="text-sm font-medium">Sign in</span>
+                    <span className="text-sm font-bold">Account</span>
+                  </div>
+                </Link>
+              )}
 
-              <Link href='/wallet' className='flex flex-col items-center leading-none gap-1 hover:scale-110 transition-transform'>
+              <Link
+                href='/wallet'
+                onClick={(e) => handleProtectedNavigation(e, '/wallet')}
+                className='flex flex-col items-center leading-none gap-1 hover:scale-110 transition-transform'
+              >
                 <Image src="/Wallet.png" alt="Wallet" width={24} height={24} className="w-6 h-6 object-contain" />
                 <span className="text-xs font-bold">$0.00</span>
               </Link>
 
-              <Link href='/billing' className='flex flex-col items-center leading-none gap-1 hover:scale-110 transition-transform'>
+              <Link
+                href='/billing'
+                onClick={(e) => handleProtectedNavigation(e, '/billing')}
+                className='flex flex-col items-center leading-none gap-1 hover:scale-110 transition-transform'
+              >
                 <ShoppingCart className='w-6 h-6' />
                 <span className="text-xs font-bold">$0.00</span>
               </Link>
             </div>
 
             {/* Mobile Menu Buttons */}
-            <div className='md:hidden flex items-center gap-3'>
-              <button onClick={() => { setIsMobileSearchOpen(!isMobileSearchOpen); setIsMenuOpen(false); }} className='p-2.5 hover:bg-white/10 rounded-full'>
+            <div className='md:hidden flex items-center gap-5'>
+              <button
+                onClick={() => { setIsMobileSearchOpen(!isMobileSearchOpen); setIsMenuOpen(false); }}
+                className='flex flex-col items-center gap-1 hover:opacity-80 transition-opacity'
+              >
                 <Search className='w-6 h-6' />
+                <span className="text-[10px] font-bold">Search</span>
               </button>
-              <Link href='/billing' className='p-2.5 hover:bg-white/10 rounded-full'>
-                <ShoppingCart className='w-6 h-6' />
+
+              <Link
+                href='/wallet'
+                onClick={(e) => handleProtectedNavigation(e, '/wallet')}
+                className='flex flex-col items-center gap-1 hover:opacity-80 transition-opacity'
+              >
+                <Image src="/Wallet.png" alt="Wallet" width={24} height={24} className="w-6 h-6 object-contain" />
+                <span className="text-[10px] font-bold">$0.00</span>
               </Link>
-              <button onClick={() => { setIsMenuOpen(true); setIsMobileSearchOpen(false); }} className='p-2.5 hover:bg-white/10 rounded-full'>
+
+              <Link
+                href='/billing'
+                onClick={(e) => handleProtectedNavigation(e, '/billing')}
+                className='flex flex-col items-center gap-1 hover:opacity-80 transition-opacity'
+              >
+                <ShoppingCart className='w-6 h-6' />
+                <span className="text-[10px] font-bold">$0.00</span>
+              </Link>
+
+              <button
+                onClick={() => { setIsMenuOpen(true); setIsMobileSearchOpen(false); }}
+                className='flex flex-col items-center gap-1 hover:opacity-80 transition-opacity'
+              >
                 <Menu className='w-7 h-7' />
+                <span className="text-[10px] font-bold">Menu</span>
               </button>
             </div>
           </div>
@@ -174,7 +260,7 @@ export default function Navbar() {
             >
               <div className='flex items-center justify-between px-6 py-4 border-b border-gray-100'>
                 <Link href='/' onClick={() => setIsMenuOpen(false)}>
-                  <Image src="/Logo1.png" alt="Logo" width={120} height={36} className="h-8 w-auto object-contain brightness-0" />
+                  <Image src="/Logo1.png" alt="Logo" width={120} height={36} className="h-8 w-auto object-contain brightness-0" priority style={{ height: '32px', width: 'auto' }} />
                 </Link>
                 <button onClick={() => setIsMenuOpen(false)} className='p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors'>
                   <X className='w-6 h-6' />
@@ -182,15 +268,47 @@ export default function Navbar() {
               </div>
 
               <div className='p-6 space-y-8'>
-                <Link href='/auth' className='flex items-center gap-4 px-5 py-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors' onClick={() => setIsMenuOpen(false)}>
-                  <div className='w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center'>
-                    <User className='w-6 h-6 text-gray-700' />
+                {isLoading ? (
+                  <div className="flex items-center gap-4 px-5 py-4 bg-gray-50 rounded-2xl animate-pulse">
+                    <div className="w-12 h-12 bg-gray-200 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-gray-200 rounded w-24" />
+                      <div className="h-3 bg-gray-200 rounded w-32" />
+                    </div>
                   </div>
-                  <div>
-                    <p className='font-bold text-gray-900'>My Account</p>
-                    <p className='text-xs text-gray-500'>Sign in or Register</p>
+                ) : isAuthenticated ? (
+                  <div className="space-y-3">
+                    <div className='flex items-center gap-4 px-5 py-4 bg-gray-50 rounded-2xl'>
+                      <div className='w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center shrink-0'>
+                        <User className='w-6 h-6 text-gray-700' />
+                      </div>
+                      <div className="min-w-0">
+                        <p className='font-bold text-gray-900 truncate'>Hello, {user?.split('@')[0]}</p>
+                        <p className='text-xs text-gray-500 truncate'>{user}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        logout();
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full px-5 py-4 text-sm font-bold text-red-600 bg-red-50 rounded-2xl hover:bg-red-100 transition-colors flex items-center gap-3"
+                    >
+                      <X className="w-5 h-5" />
+                      Sign Out
+                    </button>
                   </div>
-                </Link>
+                ) : (
+                  <Link href='/auth' className='flex items-center gap-4 px-5 py-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors' onClick={() => setIsMenuOpen(false)}>
+                    <div className='w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center'>
+                      <User className='w-6 h-6 text-gray-700' />
+                    </div>
+                    <div>
+                      <p className='font-bold text-gray-900'>My Account</p>
+                      <p className='text-xs text-gray-500'>Sign in or Register</p>
+                    </div>
+                  </Link>
+                )}
 
                 <div className='flex flex-col gap-2'>
                   {['Home', 'Shop', 'About Us'].map((item) => (

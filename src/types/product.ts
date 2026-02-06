@@ -49,10 +49,24 @@ export interface ProductInfoProps {
     subcategory: string;
 }
 
+export interface Review {
+    id: string;
+    user: string;
+    rating: number;
+    comment: string;
+    date: string;
+}
+
+export interface FAQ {
+    id: string;
+    question: string;
+    answer: string;
+}
+
 export interface ProductTabsProps {
     description: string;
-    reviews?: any[];
-    faqs?: any[];
+    reviews?: Review[];
+    faqs?: FAQ[];
 }
 
 export interface ProductGalleryProps {
