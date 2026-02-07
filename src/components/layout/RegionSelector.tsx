@@ -15,20 +15,20 @@ export function RegionSelector({
 }: RegionSelectorProps) {
     if (isMobile) {
         return (
-            <div className='rounded-xl overflow-hidden border border-gray-100'>
+            <div className='rounded-xl overflow-hidden border border-border'>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className='w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-gray-50 transition-colors'
+                    className='w-full flex items-center justify-between px-4 py-3 bg-card hover:bg-accent transition-colors'
                 >
                     <div className='flex items-center gap-3'>
-                        <Globe className='w-4 h-4 text-gray-500' />
-                        <span className='text-sm font-medium text-gray-700'>Region</span>
+                        <Globe className='w-4 h-4 text-muted-foreground' />
+                        <span className='text-sm font-medium text-foreground'>Region</span>
                     </div>
                     <div className='flex items-center gap-2'>
                         <div className='w-5 h-4 relative overflow-hidden rounded-sm shadow-sm'>
                             <Image src={selectedCountry.flag} alt='Flag' fill className='object-cover' />
                         </div>
-                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
                     </div>
                 </button>
 
@@ -38,7 +38,7 @@ export function RegionSelector({
                             initial={{ height: 0 }}
                             animate={{ height: "auto" }}
                             exit={{ height: 0 }}
-                            className='bg-gray-50 border-t border-gray-100'
+                            className='bg-muted/30 border-t border-border'
                         >
                             {countries.map((country) => (
                                 <button
@@ -48,8 +48,8 @@ export function RegionSelector({
                                         setIsOpen(false);
                                     }}
                                     className={`w-full flex items-center gap-3 px-11 py-2.5 transition-colors text-left text-sm ${selectedCountry.code === country.code
-                                        ? "text-[#0092FF] font-medium bg-blue-50/50"
-                                        : "text-gray-600 hover:text-gray-900"
+                                        ? "text-primary font-medium bg-primary/10"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                                         }`}
                                 >
                                     <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0 shadow-sm'>
@@ -85,7 +85,7 @@ export function RegionSelector({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
                         transition={{ duration: 0.2 }}
-                        className='absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-3 min-w-[200px] z-50 text-black'
+                        className='absolute top-full right-0 mt-2 bg-card border border-border rounded-lg shadow-lg py-3 min-w-[200px] z-50 text-foreground'
                     >
                         {countries.map((country) => (
                             <button
@@ -94,13 +94,13 @@ export function RegionSelector({
                                     setSelectedCountry(country);
                                     setIsOpen(false);
                                 }}
-                                className={`w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors ${selectedCountry.code === country.code ? "bg-gray-50" : ""
+                                className={`w-full flex items-center gap-3 px-5 py-3 hover:bg-accent transition-colors ${selectedCountry.code === country.code ? "bg-accent/50" : ""
                                     }`}
                             >
                                 <div className='w-6 h-5 relative overflow-hidden rounded-sm shrink-0'>
                                     <Image src={country.flag} alt={country.name} fill className='object-cover' />
                                 </div>
-                                <span className='text-base text-gray-700'>{country.name}</span>
+                                <span className='text-base text-foreground'>{country.name}</span>
                             </button>
                         ))}
                     </motion.div>

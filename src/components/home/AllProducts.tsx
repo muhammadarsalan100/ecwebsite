@@ -85,7 +85,7 @@ const ProductCard = ({ product }: { product: Product }) => (
 
 export function AllProducts({ products }: AllProductsProps) {
   return (
-    <section className='w-full px-4 py-12 md:px-8 lg:px-12'>
+    <section id="all-products" className='w-full px-4 py-12 md:px-8 lg:px-12'>
       <div className='mx-auto max-w-7xl'>
         <motion.h2
           className='mb-10 text-[32px] font-semibold text-black font-poppins'

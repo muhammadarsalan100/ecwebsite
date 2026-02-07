@@ -72,6 +72,9 @@ export function SummerHero() {
               </motion.p>
 
               <motion.button
+                onClick={() => {
+                  document.getElementById('all-products')?.scrollIntoView({ behavior: 'smooth' });
+                }}
                 className='group flex items-center gap-3 bg-white text-black pl-6 pr-2 py-2 rounded-full hover:bg-gray-100 transition-all duration-300'
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

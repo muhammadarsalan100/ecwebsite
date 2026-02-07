@@ -129,7 +129,7 @@ export default function Navbar() {
                 <input
                   type='text'
                   placeholder='Search essentials, groceries and more...'
-                  className='w-full bg-white border-none py-4 pl-14 pr-6 text-base focus:outline-none focus:ring-2 focus:ring-white/10 text-black shadow-lg shadow-black/5 rounded-[12px] placeholder:text-gray-400 font-medium'
+                  className='w-full bg-card border-border border py-4 pl-14 pr-6 text-base focus:outline-none focus:ring-2 focus:ring-primary/20 text-foreground shadow-lg shadow-black/5 rounded-[12px] placeholder:text-muted-foreground font-medium'
                 />
               </div>
             </div>
@@ -156,10 +156,10 @@ export default function Navbar() {
                     <span className="text-sm font-bold truncate max-w-[100px]">{user?.split('@')[0]}</span>
                   </div>
                   {/* Dropdown for Sign Out */}
-                  <div className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-xl py-2 min-w-[150px] opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all translate-y-2 group-hover:translate-y-0 z-50">
+                  <div className="absolute top-full right-0 mt-2 bg-card border border-border rounded-lg shadow-xl py-2 min-w-[150px] opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all translate-y-2 group-hover:translate-y-0 z-50">
                     <button
                       onClick={logout}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+                      className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-accent font-medium"
                     >
                       Sign Out
                     </button>
@@ -238,12 +238,12 @@ export default function Navbar() {
           {isMobileSearchOpen && (
             <motion.div
               initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-              className='md:hidden bg-white border-b border-gray-100 overflow-hidden'
+              className='md:hidden bg-background border-b border-border overflow-hidden'
             >
               <div className='p-4'>
                 <div className='relative'>
-                  <input type='text' autoFocus placeholder='What are you looking for?' className='w-full bg-gray-50 border border-gray-200 py-3 pl-10 pr-4 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092FF] text-black font-medium' />
-                  <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400' />
+                  <input type='text' autoFocus placeholder='What are you looking for?' className='w-full bg-card border border-border py-3 pl-10 pr-4 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground font-medium placeholder:text-muted-foreground' />
+                  <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
                 </div>
               </div>
             </motion.div>
@@ -256,35 +256,35 @@ export default function Navbar() {
             <motion.div
               initial={{ opacity: 0, x: "100%" }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className='fixed inset-0 z-[60] bg-white md:hidden overflow-y-auto'
+              className='fixed inset-0 z-[60] bg-background md:hidden overflow-y-auto'
             >
-              <div className='flex items-center justify-between px-6 py-4 border-b border-gray-100'>
+              <div className='flex items-center justify-between px-6 py-4 border-b border-border'>
                 <Link href='/' onClick={() => setIsMenuOpen(false)}>
-                  <Image src="/Logo1.png" alt="Logo" width={120} height={36} className="h-8 w-auto object-contain brightness-0" priority style={{ height: '32px', width: 'auto' }} />
+                  <Image src="/Logo1.png" alt="Logo" width={120} height={36} className="h-8 w-auto object-contain dark:invert" priority style={{ height: '32px', width: 'auto' }} />
                 </Link>
-                <button onClick={() => setIsMenuOpen(false)} className='p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors'>
+                <button onClick={() => setIsMenuOpen(false)} className='p-2 rounded-full hover:bg-accent text-muted-foreground transition-colors'>
                   <X className='w-6 h-6' />
                 </button>
               </div>
 
               <div className='p-6 space-y-8'>
                 {isLoading ? (
-                  <div className="flex items-center gap-4 px-5 py-4 bg-gray-50 rounded-2xl animate-pulse">
-                    <div className="w-12 h-12 bg-gray-200 rounded-full" />
+                  <div className="flex items-center gap-4 px-5 py-4 bg-muted rounded-2xl animate-pulse">
+                    <div className="w-12 h-12 bg-gray-200/20 rounded-full" />
                     <div className="flex-1 space-y-2">
-                      <div className="h-4 bg-gray-200 rounded w-24" />
-                      <div className="h-3 bg-gray-200 rounded w-32" />
+                      <div className="h-4 bg-gray-200/20 rounded w-24" />
+                      <div className="h-3 bg-gray-200/20 rounded w-32" />
                     </div>
                   </div>
                 ) : isAuthenticated ? (
                   <div className="space-y-3">
-                    <div className='flex items-center gap-4 px-5 py-4 bg-gray-50 rounded-2xl'>
-                      <div className='w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center shrink-0'>
-                        <User className='w-6 h-6 text-gray-700' />
+                    <div className='flex items-center gap-4 px-5 py-4 bg-card border border-border rounded-2xl'>
+                      <div className='w-12 h-12 bg-background rounded-full shadow-sm flex items-center justify-center shrink-0'>
+                        <User className='w-6 h-6 text-foreground' />
                       </div>
                       <div className="min-w-0">
-                        <p className='font-bold text-gray-900 truncate'>Hello, {user?.split('@')[0]}</p>
-                        <p className='text-xs text-gray-500 truncate'>{user}</p>
+                        <p className='font-bold text-foreground truncate'>Hello, {user?.split('@')[0]}</p>
+                        <p className='text-xs text-muted-foreground truncate'>{user}</p>
                       </div>
                     </div>
                     <button
@@ -292,34 +292,34 @@ export default function Navbar() {
                         logout();
                         setIsMenuOpen(false);
                       }}
-                      className="w-full px-5 py-4 text-sm font-bold text-red-600 bg-red-50 rounded-2xl hover:bg-red-100 transition-colors flex items-center gap-3"
+                      className="w-full px-5 py-4 text-sm font-bold text-red-600 bg-red-50/10 rounded-2xl hover:bg-red-100/20 transition-colors flex items-center gap-3"
                     >
                       <X className="w-5 h-5" />
                       Sign Out
                     </button>
                   </div>
                 ) : (
-                  <Link href='/auth' className='flex items-center gap-4 px-5 py-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors' onClick={() => setIsMenuOpen(false)}>
-                    <div className='w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center'>
-                      <User className='w-6 h-6 text-gray-700' />
+                  <Link href='/auth' className='flex items-center gap-4 px-5 py-4 bg-card border border-border rounded-2xl hover:bg-accent transition-colors' onClick={() => setIsMenuOpen(false)}>
+                    <div className='w-12 h-12 bg-background rounded-full shadow-sm flex items-center justify-center'>
+                      <User className='w-6 h-6 text-foreground' />
                     </div>
                     <div>
-                      <p className='font-bold text-gray-900'>My Account</p>
-                      <p className='text-xs text-gray-500'>Sign in or Register</p>
+                      <p className='font-bold text-foreground'>My Account</p>
+                      <p className='text-xs text-muted-foreground'>Sign in or Register</p>
                     </div>
                   </Link>
                 )}
 
                 <div className='flex flex-col gap-2'>
                   {['Home', 'Shop', 'About Us'].map((item) => (
-                    <Link key={item} href={item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '')}`} className='px-4 py-3 text-lg font-bold text-gray-800 hover:bg-gray-50 rounded-xl transition-colors' onClick={() => setIsMenuOpen(false)}>
+                    <Link key={item} href={item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '')}`} className='px-4 py-3 text-lg font-bold text-foreground hover:bg-accent rounded-xl transition-colors' onClick={() => setIsMenuOpen(false)}>
                       {item}
                     </Link>
                   ))}
                 </div>
 
-                <div className='pt-8 border-t border-gray-100'>
-                  <p className='px-4 mb-4 text-xs font-bold text-gray-400 uppercase tracking-widest'>Preferences</p>
+                <div className='pt-8 border-t border-border'>
+                  <p className='px-4 mb-4 text-xs font-bold text-muted-foreground uppercase tracking-widest'>Preferences</p>
                   <RegionSelector
                     isOpen={isMobileRegionOpen}
                     setIsOpen={setIsMobileRegionOpen}

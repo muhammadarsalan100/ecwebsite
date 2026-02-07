@@ -46,7 +46,7 @@ export function LanguageSelector({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2, ease: "easeOut" as const }}
-                        className="absolute right-0 top-full mt-3 bg-white rounded-[20px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] py-3 min-w-[200px] z-[100] border border-gray-100 overflow-hidden"
+                        className="absolute right-0 top-full mt-3 bg-card rounded-[20px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] py-3 min-w-[200px] z-[100] border border-border overflow-hidden"
                     >
                         {LANGUAGES.map((lang) => (
                             <button
@@ -55,10 +55,10 @@ export function LanguageSelector({
                                     onSelect(lang);
                                     setIsOpen(false);
                                 }}
-                                className="w-full flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors group/item"
+                                className="w-full flex items-center justify-between px-5 py-3 hover:bg-accent transition-colors group/item"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="w-7 h-7 relative rounded-full overflow-hidden border border-gray-100 shadow-sm shrink-0">
+                                    <div className="w-7 h-7 relative rounded-full overflow-hidden border border-border shadow-sm shrink-0">
                                         <Image
                                             src={lang.flag}
                                             alt={lang.name}
@@ -67,7 +67,7 @@ export function LanguageSelector({
                                             unoptimized
                                         />
                                     </div>
-                                    <span className={`text-[15px] font-medium transition-colors ${selectedLang.code === lang.code ? "text-gray-900" : "text-gray-600 group-hover/item:text-gray-900"}`}>
+                                    <span className={`text-[15px] font-medium transition-colors ${selectedLang.code === lang.code ? "text-foreground" : "text-muted-foreground group-hover/item:text-foreground"}`}>
                                         {lang.name}
                                     </span>
                                 </div>
