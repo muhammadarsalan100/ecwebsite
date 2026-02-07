@@ -13,6 +13,8 @@ import { LeatherBagBanner } from "@/components/home/LeatherBagBanner";
 import { SmartWearableBanner } from "@/components/home/SmartWearableBanner";
 import { CustomerReview } from "@/components/home/CustomerReview";
 import { Newsletter } from "@/components/home/Newsletter";
+import { Loader } from "@/components/ui/Loader";
+
 
 const featuredProducts = [
   {
@@ -275,17 +277,26 @@ const topSellingProducts = [
 
 export default function Home() {
   const [activeCountryId, setActiveCountryId] = useState("all");
+  const [loading, setLoading] = useState(false);
   
   const displayedProducts = activeCountryId === "all"
     ? countriesData.flatMap((c) => c.products)
     : countriesData.find((c) => c.id === activeCountryId)?.products || [];
+
+  const handleCountrySelect = (id: string) => {
+    setLoading(true);
+    setActiveCountryId(id);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  };
 
   return (
     <>
       <CountryNavBar 
         countries={countriesData} 
         activeCountryId={activeCountryId} 
-        onSelect={setActiveCountryId} 
+        onSelect={handleCountrySelect} 
       />
       <CategoryNavBar />
       <SummerHero />
@@ -297,6 +308,7 @@ export default function Home() {
       <SmartWearableBanner />
       <CustomerReview />
       <Newsletter />
+      {loading && <Loader />}
     </>
   );
 }
