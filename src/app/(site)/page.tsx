@@ -1,10 +1,15 @@
+"use client";
+
+import { useState } from "react";
+import { countriesData } from "@/data/countries";
+import { CountryNavBar } from "@/components/home/CountryNavBar";
+import { AllProducts } from "@/components/home/AllProducts";
 import { CategoryNavBar } from "@/components/home/CategoryNavBar";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { SummerHero } from "@/components/home/SummerHero";
 import { TopSellingProducts } from "@/components/home/TopSellingProducts";
 import { TopCategories } from "@/components/home/TopCategories";
 import { LeatherBagBanner } from "@/components/home/LeatherBagBanner";
-import { AllProducts } from "@/components/home/AllProducts";
 import { SmartWearableBanner } from "@/components/home/SmartWearableBanner";
 import { CustomerReview } from "@/components/home/CustomerReview";
 import { Newsletter } from "@/components/home/Newsletter";
@@ -269,15 +274,26 @@ const topSellingProducts = [
 ];
 
 export default function Home() {
+  const [activeCountryId, setActiveCountryId] = useState("all");
+  
+  const displayedProducts = activeCountryId === "all"
+    ? countriesData.flatMap((c) => c.products)
+    : countriesData.find((c) => c.id === activeCountryId)?.products || [];
+
   return (
     <>
+      <CountryNavBar 
+        countries={countriesData} 
+        activeCountryId={activeCountryId} 
+        onSelect={setActiveCountryId} 
+      />
       <CategoryNavBar />
       <SummerHero />
       <FeaturedProducts products={featuredProducts} />
       <TopSellingProducts products={topSellingProducts} />
       <TopCategories categories={topCategoriesData} />
       <LeatherBagBanner />
-      <AllProducts products={allProductsData} />
+      <AllProducts products={displayedProducts} />
       <SmartWearableBanner />
       <CustomerReview />
       <Newsletter />
