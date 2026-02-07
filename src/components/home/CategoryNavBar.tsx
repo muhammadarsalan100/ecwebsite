@@ -32,7 +32,7 @@ export function CategoryNavBar() {
                   flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200
                   ${activeCategory === category.id
                     ? "bg-[#0092FF] text-white shadow-sm shadow-blue-500/20"
-                    : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent"
+                    : "bg-[#F3F9FF] text-gray-600 hover:bg-[#E6F4FF]"
                   }
                 `}
               >
