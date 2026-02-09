@@ -16,6 +16,7 @@ export default function TopUpRequestPage() {
     const handleConfirm = () => {
         if (parseFloat(selectedAmount) > 0) {
             setIsConfirmed(true);
+            window.scrollTo(0, 0);
         }
     };
 
@@ -127,8 +128,8 @@ export default function TopUpRequestPage() {
                                     key={amount}
                                     onClick={() => setSelectedAmount(amount)}
                                     className={`px-4 py-3 rounded-xl border text-sm font-bold transition-all ${selectedAmount === amount
-                                            ? "bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-200"
-                                            : "bg-white border-gray-100 text-gray-600 hover:border-blue-400 hover:text-blue-500"
+                                        ? "bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-200"
+                                        : "bg-white border-gray-100 text-gray-600 hover:border-blue-400 hover:text-blue-500"
                                         }`}
                                 >
                                     ${amount}

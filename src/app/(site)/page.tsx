@@ -278,7 +278,7 @@ const topSellingProducts = [
 export default function Home() {
   const [activeCountryId, setActiveCountryId] = useState("all");
   const [loading, setLoading] = useState(false);
-  
+
   const displayedProducts = activeCountryId === "all"
     ? countriesData.flatMap((c) => c.products)
     : countriesData.find((c) => c.id === activeCountryId)?.products || [];
@@ -293,10 +293,10 @@ export default function Home() {
 
   return (
     <>
-      <CountryNavBar 
-        countries={countriesData} 
-        activeCountryId={activeCountryId} 
-        onSelect={handleCountrySelect} 
+      <CountryNavBar
+        countries={countriesData}
+        activeCountryId={activeCountryId}
+        onSelect={handleCountrySelect}
       />
       <CategoryNavBar />
       <SummerHero />
@@ -304,7 +304,7 @@ export default function Home() {
       <TopSellingProducts products={topSellingProducts} />
       <TopCategories categories={topCategoriesData} />
       <LeatherBagBanner />
-      <AllProducts products={displayedProducts} />
+      {!loading && <AllProducts key={activeCountryId} products={displayedProducts} />}
       <SmartWearableBanner />
       <CustomerReview />
       <Newsletter />

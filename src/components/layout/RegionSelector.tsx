@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { ChevronDown, Globe } from "lucide-react";
+import { ChevronDown, Globe, Check } from "lucide-react";
 import { RegionSelectorProps } from "@/types";
 
 export function RegionSelector({
@@ -94,13 +94,18 @@ export function RegionSelector({
                                     setSelectedCountry(country);
                                     setIsOpen(false);
                                 }}
-                                className={`w-full flex items-center gap-3 px-5 py-3 hover:bg-accent transition-colors ${selectedCountry.code === country.code ? "bg-accent/50" : ""
+                                className={`w-full flex items-center justify-between px-5 py-3 hover:bg-accent transition-colors ${selectedCountry.code === country.code ? "bg-accent/50" : ""
                                     }`}
                             >
-                                <div className='w-6 h-5 relative overflow-hidden rounded-sm shrink-0'>
-                                    <Image src={country.flag} alt={country.name} fill className='object-cover' />
+                                <div className="flex items-center gap-3">
+                                    <div className='w-6 h-5 relative overflow-hidden rounded-sm shrink-0'>
+                                        <Image src={country.flag} alt={country.name} fill className='object-cover' />
+                                    </div>
+                                    <span className='text-base text-foreground'>{country.name}</span>
                                 </div>
-                                <span className='text-base text-foreground'>{country.name}</span>
+                                {selectedCountry.code === country.code && (
+                                    <Check className="w-4 h-4 text-[#0092FF]" />
+                                )}
                             </button>
                         ))}
                     </motion.div>

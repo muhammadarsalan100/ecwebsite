@@ -16,7 +16,7 @@ export default function Footer() {
       <div className='absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none'></div>
 
       <div className='relative z-10'>
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-1 lg:gap-12 mb-12'>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-12 mb-12'>
           {/* Column 1: Brand & Contact */}
           <div className='space-y-8'>
             <h2
@@ -81,7 +81,7 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className='hidden lg:block space-y-4'>
+            <div className='hidden md:block space-y-4'>
               <div className='relative inline-block'>
                 <h3
                   className='text-white font-readex text-lg lg:text-[20px] font-normal leading-5'
@@ -271,7 +271,7 @@ export default function Footer() {
           </div>
 
           {/* Mobile Only: Download App (Moved to bottom) */}
-          <div className='block lg:hidden space-y-4'>
+          <div className='block md:hidden space-y-4'>
             <div className='relative inline-block'>
               <h3
                 className='text-white font-readex text-lg lg:text-[20px] font-normal leading-5'

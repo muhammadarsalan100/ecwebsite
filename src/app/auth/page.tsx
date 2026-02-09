@@ -15,7 +15,7 @@ export default function LoginPage() {
   const { login } = useAuth();
 
   // Constants
-  const targetEmail = "marsalanmalik455@gmail.com";
+  const targetEmail = "test@gmail.com";
 
   // Functions
   const handleAuth = () => {
