@@ -117,7 +117,7 @@ export function AllProducts({ products }: AllProductsProps) {
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <motion.button
-            className='text-white font-medium hover:opacity-90 transition-opacity bg-primary shadow-[0_18px_31px_0_rgba(0,146,255,0.15)] w-[160px] sm:w-[186px] h-[45px] sm:h-[50px] rounded-[9px] font-poppins text-[13px] sm:text-[14px]'
+            className='text-white font-medium hover:opacity-90 transition-opacity bg-[#0092FF] shadow-[0_18px_31px_0_rgba(0,146,255,0.15)] w-[160px] sm:w-[186px] h-[45px] sm:h-[50px] rounded-[9px] font-poppins text-[13px] sm:text-[14px]'
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

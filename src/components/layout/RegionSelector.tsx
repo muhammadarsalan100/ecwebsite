@@ -18,7 +18,7 @@ export function RegionSelector({
             <div className='rounded-xl overflow-hidden border border-border'>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className='w-full flex items-center justify-between px-4 py-3 bg-card hover:bg-accent transition-colors'
+                    className='w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-accent transition-colors'
                 >
                     <div className='flex items-center gap-3'>
                         <Globe className='w-4 h-4 text-muted-foreground' />
@@ -38,7 +38,7 @@ export function RegionSelector({
                             initial={{ height: 0 }}
                             animate={{ height: "auto" }}
                             exit={{ height: 0 }}
-                            className='bg-muted/30 border-t border-border'
+                            className='bg-white border-t border-border'
                         >
                             {countries.map((country) => (
                                 <button
@@ -48,7 +48,7 @@ export function RegionSelector({
                                         setIsOpen(false);
                                     }}
                                     className={`w-full flex items-center gap-3 px-11 py-2.5 transition-colors text-left text-sm ${selectedCountry.code === country.code
-                                        ? "text-primary font-medium bg-primary/10"
+                                        ? "text-[#0092FF] font-medium bg-[#0092FF]/10"
                                         : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                                         }`}
                                 >
