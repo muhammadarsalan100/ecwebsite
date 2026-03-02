@@ -13,7 +13,7 @@ import { LeatherBagBanner } from "@/components/home/LeatherBagBanner";
 import { SmartWearableBanner } from "@/components/home/SmartWearableBanner";
 import { CustomerReview } from "@/components/home/CustomerReview";
 import { Newsletter } from "@/components/sharedcomponent/Newsletter";
-import { Loader } from "@/components/ui/Loader";
+import { Loader } from "@/components/ui/loader";
 
 
 const featuredProducts = [
