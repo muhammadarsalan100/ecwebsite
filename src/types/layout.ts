@@ -1,7 +1,8 @@
 export interface NavbarCountry {
-    code: string;
+    id: number;
     name: string;
-    flag: any;
+    flagUrl: string;
+    shortCode: string;
 }
 
 export interface RegionSelectorProps {

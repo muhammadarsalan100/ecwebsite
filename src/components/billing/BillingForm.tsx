@@ -1,8 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { BillingField } from "@/types"
+import { billingSchema, type BillingSchema } from "@/schemas/billing.schema"
+import { z } from "zod"
 
 const BILLING_FIELDS: BillingField[] = [
     { id: "firstName", label: "First Name" },
@@ -15,6 +18,22 @@ const BILLING_FIELDS: BillingField[] = [
 ];
 
 export function BillingForm() {
+    const [formData, setFormData] = useState<Partial<BillingSchema>>({
+        saveInfo: false
+    });
+    const [errors, setErrors] = useState<Partial<Record<keyof BillingSchema, string>>>({});
+
+    const handleInputChange = (id: keyof BillingSchema, value: string | boolean) => {
+        setFormData(prev => ({ ...prev, [id]: value }));
+        if (errors[id]) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[id];
+                return newErrors;
+            });
+        }
+    };
+
     return (
         <div className="flex-1 space-y-8">
             <div className="space-y-8 md:space-y-12">
@@ -26,14 +45,24 @@ export function BillingForm() {
                         <Input
                             id={field.id}
                             type={field.type || "text"}
-                            className="h-12 bg-white border border-gray-200 focus-visible:ring-2 focus-visible:ring-[#0092FF] rounded-[4px]"
+                            value={(formData[field.id as keyof BillingSchema] as string) || ""}
+                            onChange={(e) => handleInputChange(field.id as keyof BillingSchema, e.target.value)}
+                            className={`h-12 bg-white border focus-visible:ring-2 focus-visible:ring-[#0092FF] rounded-[4px] ${errors[field.id as keyof BillingSchema] ? "border-red-500" : "border-gray-200"}`}
                         />
+                        {errors[field.id as keyof BillingSchema] && (
+                            <p className="text-xs text-red-500">{errors[field.id as keyof BillingSchema]}</p>
+                        )}
                     </div>
                 ))}
             </div>
 
             <div className="flex items-center space-x-3 pt-2">
-                <Checkbox id="saveInfo" className="border-gray-400 data-[state=checked]:bg-[#0092FF] data-[state=checked]:border-[#0092FF]" />
+                <Checkbox
+                    id="saveInfo"
+                    checked={formData.saveInfo}
+                    onCheckedChange={(checked) => handleInputChange("saveInfo", !!checked)}
+                    className="border-gray-400 data-[state=checked]:bg-[#0092FF] data-[state=checked]:border-[#0092FF]"
+                />
                 <label
                     htmlFor="saveInfo"
                     className="text-sm md:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-black"

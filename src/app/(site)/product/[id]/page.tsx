@@ -4,7 +4,7 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductInfo } from "@/components/product/ProductInfo";
 import { ProductTabs } from "@/components/product/ProductTabs";
 import { RelatedProducts } from "@/components/product/RelatedProducts";
-import { CategoryNavBar } from "@/components/home/CategoryNavBar";
+import { CategoryNavBar } from "@/components/common/CategoryNavBar";
 
 import { motion } from "framer-motion";
 

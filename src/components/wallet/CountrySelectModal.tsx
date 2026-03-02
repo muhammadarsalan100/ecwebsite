@@ -5,25 +5,24 @@ import { Search, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Country, CountrySelectModalProps } from "@/types";
-
-const countries: Country[] = [
-    { name: "Afghanistan", code: "af" },
-    { name: "Albania", code: "al" },
-    { name: "Algeria", code: "dz" },
-    { name: "American Samoa", code: "as" },
-    { name: "Andorra", code: "ad" },
-    { name: "Angola", code: "ao" },
-    { name: "Argentina", code: "ar" },
-    { name: "Australia", code: "au" },
-    { name: "Austria", code: "at" },
-];
+import { useConfigStore } from "@/lib/store/configStore";
 
 
-
-export function CountrySelectModal({ isOpen, onClose, onSelect, selectedCountry }: CountrySelectModalProps) {
+export function CountrySelectModal({ isOpen, onClose, onSelect, selectedCountry: propSelectedCountry }: CountrySelectModalProps) {
+    const { countries, fetchCountries, isLoading } = useConfigStore();
     const [searchTerm, setSearchTerm] = useState("");
 
-    const filteredCountries = countries.filter((c) =>
+    const getFlagUrl = (country: Country) => {
+        return country.flagUrl;
+    };
+
+    useEffect(() => {
+        if (isOpen && countries.length === 0) {
+            fetchCountries();
+        }
+    }, [isOpen, countries.length, fetchCountries]);
+
+    const filteredCountries = countries.filter((c: Country) =>
         c.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -81,41 +80,48 @@ export function CountrySelectModal({ isOpen, onClose, onSelect, selectedCountry 
 
                     {/* Country List */}
                     <div className="flex-1 overflow-y-auto px-4 pb-8 custom-scrollbar">
-                        <div className="space-y-1">
-                            {filteredCountries.map((country) => (
-                                <button
-                                    key={country.code}
-                                    onClick={() => {
-                                        onSelect(country);
-                                        onClose();
-                                    }}
-                                    className="w-full flex items-center justify-between p-4 px-6 hover:bg-gray-50 rounded-2xl transition-colors group"
-                                >
-                                    <div className="flex items-center gap-4">
-                                        <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-100 shadow-sm shrink-0">
-                                            <Image
-                                                src={`https://flagcdn.com/w80/${country.code}.png`}
-                                                alt={country.name}
-                                                fill
-                                                className="object-cover"
-                                                unoptimized
-                                            />
+                        {isLoading ? (
+                            <div className="flex flex-col items-center justify-center h-full space-y-4">
+                                <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                <p className="text-gray-500 font-medium">Loading countries...</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-1">
+                                {filteredCountries.map((country: Country) => (
+                                    <button
+                                        key={country.id}
+                                        onClick={() => {
+                                            onSelect(country);
+                                            onClose();
+                                        }}
+                                        className="w-full flex items-center justify-between p-4 px-6 hover:bg-gray-50 rounded-2xl transition-colors group"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-100 shadow-sm shrink-0">
+                                                <Image
+                                                    src={getFlagUrl(country)}
+                                                    alt={country.name}
+                                                    fill
+                                                    className="object-cover"
+                                                    unoptimized
+                                                />
+                                            </div>
+                                            <span className={`text-[16px] font-bold ${propSelectedCountry === country.name ? 'text-blue-600' : 'text-gray-900'}`}>
+                                                {country.name}
+                                            </span>
                                         </div>
-                                        <span className={`text-[16px] font-bold ${selectedCountry === country.name ? 'text-blue-600' : 'text-gray-900'}`}>
-                                            {country.name}
-                                        </span>
+                                        {propSelectedCountry === country.name && (
+                                            <Check className="w-5 h-5 text-blue-600" />
+                                        )}
+                                    </button>
+                                ))}
+                                {filteredCountries.length === 0 && (
+                                    <div className="text-center py-10 text-gray-400">
+                                        No countries found
                                     </div>
-                                    {selectedCountry === country.name && (
-                                        <Check className="w-5 h-5 text-blue-600" />
-                                    )}
-                                </button>
-                            ))}
-                            {filteredCountries.length === 0 && (
-                                <div className="text-center py-10 text-gray-400">
-                                    No countries found
-                                </div>
-                            )}
-                        </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </motion.div>
             </div>

@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
-import { useState } from "react";
 import { WomanInYellowDress, ModelWearingCollection } from "@/assets/images";
 import { motion } from "framer-motion";
 
@@ -33,16 +32,10 @@ const reviews = [
   },
 ];
 
+import { useCyclicIndex } from "@/hooks/useCyclicIndex";
+
 export function CustomerReview() {
-  const [currentIndex, setCurrentIndex] = useState(1);
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? reviews.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev === reviews.length - 1 ? 0 : prev + 1));
-  };
+  const { index: currentIndex, next: handleNext, prev: handlePrev } = useCyclicIndex(reviews.length, 1);
 
   const getVisibleReviews = () => {
     const prev = currentIndex === 0 ? reviews.length - 1 : currentIndex - 1;

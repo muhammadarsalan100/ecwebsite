@@ -25,8 +25,12 @@ export function RegionSelector({
                         <span className='text-sm font-medium text-foreground'>Region</span>
                     </div>
                     <div className='flex items-center gap-2'>
-                        <div className='w-5 h-4 relative overflow-hidden rounded-sm shadow-sm'>
-                            <Image src={selectedCountry.flag} alt='Flag' fill className='object-cover' />
+                        <div className='w-5 h-4 relative overflow-hidden rounded-sm shadow-sm bg-gray-100 flex items-center justify-center font-bold'>
+                            {selectedCountry?.flagUrl ? (
+                                <Image src={selectedCountry.flagUrl} alt='Flag' fill className='object-cover' unoptimized />
+                            ) : (
+                                <Globe className="w-3 h-3 text-gray-400" />
+                            )}
                         </div>
                         <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
                     </div>
@@ -42,18 +46,18 @@ export function RegionSelector({
                         >
                             {countries.map((country) => (
                                 <button
-                                    key={country.code}
+                                    key={country.id}
                                     onClick={() => {
                                         setSelectedCountry(country);
                                         setIsOpen(false);
                                     }}
-                                    className={`w-full flex items-center gap-3 px-11 py-2.5 transition-colors text-left text-sm ${selectedCountry.code === country.code
+                                    className={`w-full flex items-center gap-3 px-11 py-2.5 transition-colors text-left text-sm ${selectedCountry?.shortCode === country.shortCode
                                         ? "text-[#0092FF] font-medium bg-[#0092FF]/10"
                                         : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                                         }`}
                                 >
                                     <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0 shadow-sm'>
-                                        <Image src={country.flag} alt={country.name} fill className='object-cover' />
+                                        <Image src={country.flagUrl} alt={country.name} fill className='object-cover' unoptimized />
                                     </div>
                                     <span>{country.name}</span>
                                 </button>
@@ -71,8 +75,12 @@ export function RegionSelector({
                 onClick={() => setIsOpen(!isOpen)}
                 className='flex items-center gap-2.5 hover:opacity-80 transition-opacity'
             >
-                <div className='w-6 h-5 relative overflow-hidden rounded-sm shrink-0'>
-                    <Image src={selectedCountry.flag} alt='Flag' fill className='object-cover' />
+                <div className='w-6 h-5 relative overflow-hidden rounded-sm shrink-0 bg-white/10 flex items-center justify-center'>
+                    {selectedCountry?.flagUrl ? (
+                        <Image src={selectedCountry.flagUrl} alt='Flag' fill className='object-cover' unoptimized />
+                    ) : (
+                        <Globe className="w-4 h-4 text-white/40" />
+                    )}
                 </div>
                 <span className="font-medium text-base text-white">Region</span>
                 <ChevronDown className='w-4 h-4 text-white' />
@@ -89,21 +97,21 @@ export function RegionSelector({
                     >
                         {countries.map((country) => (
                             <button
-                                key={country.code}
+                                key={country.id}
                                 onClick={() => {
                                     setSelectedCountry(country);
                                     setIsOpen(false);
                                 }}
-                                className={`w-full flex items-center justify-between px-5 py-3 hover:bg-accent transition-colors ${selectedCountry.code === country.code ? "bg-accent/50" : ""
+                                className={`w-full flex items-center justify-between px-5 py-3 hover:bg-accent transition-colors ${selectedCountry?.shortCode === country.shortCode ? "bg-accent/50" : ""
                                     }`}
                             >
                                 <div className="flex items-center gap-3">
                                     <div className='w-6 h-5 relative overflow-hidden rounded-sm shrink-0'>
-                                        <Image src={country.flag} alt={country.name} fill className='object-cover' />
+                                        <Image src={country.flagUrl} alt={country.name} fill className='object-cover' unoptimized />
                                     </div>
                                     <span className='text-base text-foreground'>{country.name}</span>
                                 </div>
-                                {selectedCountry.code === country.code && (
+                                {selectedCountry?.shortCode === country.shortCode && (
                                     <Check className="w-4 h-4 text-[#0092FF]" />
                                 )}
                             </button>

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { countriesData } from "@/data/countries";
-import { CountryNavBar } from "@/components/home/CountryNavBar";
+import { useEffect } from "react";
+import { CountryNavBar } from "@/components/common/CountryNavBar";
+import { useConfigStore } from "@/lib/store/configStore";
 import { AllProducts } from "@/components/home/AllProducts";
-import { CategoryNavBar } from "@/components/home/CategoryNavBar";
+import { CategoryNavBar } from "@/components/common/CategoryNavBar";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { SummerHero } from "@/components/home/SummerHero";
 import { TopSellingProducts } from "@/components/home/TopSellingProducts";
@@ -12,8 +12,8 @@ import { TopCategories } from "@/components/home/TopCategories";
 import { LeatherBagBanner } from "@/components/home/LeatherBagBanner";
 import { SmartWearableBanner } from "@/components/home/SmartWearableBanner";
 import { CustomerReview } from "@/components/home/CustomerReview";
-import { Newsletter } from "@/components/home/Newsletter";
-import { Loader } from "@/components/ui/Loader";
+import { Newsletter } from "@/components/sharedcomponent/Newsletter";
+import { Loader } from "@/components/ui/loader";
 
 
 const featuredProducts = [
@@ -37,6 +37,7 @@ const featuredProducts = [
   },
 ];
 
+/*
 const topCategoriesData = [
   {
     id: "1",
@@ -64,6 +65,7 @@ const topCategoriesData = [
     image: "/p-5.jpg",
   },
 ];
+*/
 
 const allProductsData = [
   {
@@ -275,40 +277,104 @@ const topSellingProducts = [
   },
 ];
 
+import { useAuth } from "@/lib/auth-context";
+
 export default function Home() {
-  const [activeCountryId, setActiveCountryId] = useState("all");
-  const [loading, setLoading] = useState(false);
+  const { isLoading: isAuthLoading } = useAuth();
+  const {
+    countries,
+    fetchCountries,
+    categories,
+    fetchCategories,
+    selectedCountry,
+    setSelectedCountry,
+    activeCategoryId,
+    fetchCatalogItems,
+    isItemsLoading,
+    items
+  } = useConfigStore();
 
-  const displayedProducts = activeCountryId === "all"
-    ? countriesData.flatMap((c) => c.products)
-    : countriesData.find((c) => c.id === activeCountryId)?.products || [];
+  // 1. Initial Data Load
+  useEffect(() => {
+    if (!isAuthLoading) {
+      if (countries.length === 0) fetchCountries();
+      if (categories.length === 0) fetchCategories();
+    }
+  }, [isAuthLoading, countries.length, categories.length, fetchCountries, fetchCategories]);
 
-  const handleCountrySelect = (id: string) => {
-    setLoading(true);
-    setActiveCountryId(id);
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
-  };
+  // 2. Select Default Country (UAE or PK preference)
+  useEffect(() => {
+    if (countries.length > 0 && !selectedCountry) {
+      const uae = countries.find(c =>
+        c.shortCode?.toUpperCase() === 'UAE' ||
+        c.shortCode?.toUpperCase() === 'AE'
+      );
+      const pk = countries.find(c =>
+        c.shortCode?.toUpperCase() === 'PK'
+      );
+      setSelectedCountry(uae || pk || countries[0]);
+    }
+  }, [countries, selectedCountry, setSelectedCountry]);
+
+  // 3. Fetch Items when Country or Category changes
+  useEffect(() => {
+    if (selectedCountry && activeCategoryId) {
+      fetchCatalogItems(selectedCountry.shortCode, activeCategoryId);
+    }
+  }, [selectedCountry, activeCategoryId, fetchCatalogItems]);
+
+  // 4. Transform Backend Items to Frontend Product list
+  const displayedProducts = items.map((item: any) => ({
+    id: String(item.id),
+    name: item.name,
+    brand: item.vendor?.fullName || "Store",
+    image: item.icon || (item.images?.length > 0 ? item.images[0].url : "/p-1.jpg"),
+    price: item.price,
+    rating: item.rating || 5,
+    reviews: "120", // Static for now as not in search response
+    almostSoldOut: item.manageStock && item.minimumStockThreshhold > 0,
+  }));
+
+  // 5. Transform Categories for TopCategories view
+  const mappedTopCategories = categories.slice(0, 5).map(cat => ({
+    ...cat,
+    image: cat.icon || (cat.images?.length > 0 ? cat.images[0].url : "/p-2.jpg")
+  }));
 
   return (
     <>
       <CountryNavBar
-        countries={countriesData}
-        activeCountryId={activeCountryId}
-        onSelect={handleCountrySelect}
+        countries={countries}
+        activeCountryId={String(selectedCountry?.id || "")}
+        onSelect={(id) => {
+          const c = countries.find(country => String(country.id) === String(id));
+          if (c) setSelectedCountry(c);
+        }}
       />
       <CategoryNavBar />
       <SummerHero />
       <FeaturedProducts products={featuredProducts} />
-      <TopSellingProducts products={topSellingProducts} />
-      <TopCategories categories={topCategoriesData} />
+      <TopSellingProducts />
+      <TopCategories categories={mappedTopCategories as any[]} />
       <LeatherBagBanner />
-      {!loading && <AllProducts key={activeCountryId} products={displayedProducts} />}
+
+      {/* All Products Section */}
+      <div className="min-h-[400px] relative">
+        {isItemsLoading ? (
+          <div className="py-20 flex justify-center">
+            <Loader />
+          </div>
+        ) : (
+          <AllProducts
+            key={`prod-${selectedCountry?.id}-${activeCategoryId}`}
+            products={displayedProducts}
+          />
+        )}
+      </div>
+
       <SmartWearableBanner />
       <CustomerReview />
       <Newsletter />
-      {loading && <Loader />}
     </>
   );
 }

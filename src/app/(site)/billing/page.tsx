@@ -1,6 +1,6 @@
 "use client";
 
-import { CategoryNavBar } from "@/components/home/CategoryNavBar";
+import { CategoryNavBar } from "@/components/common/CategoryNavBar";
 import { BillingForm } from "@/components/billing/BillingForm";
 import { OrderSummary } from "@/components/billing/OrderSummary";
 

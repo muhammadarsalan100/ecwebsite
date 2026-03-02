@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { SectionHeader } from "./SectionHeader";
+import { SectionHeader } from "@/components/common/SectionHeader";
 import type { StaticImageData } from "next/image";
 
 import { Category } from "@/types";

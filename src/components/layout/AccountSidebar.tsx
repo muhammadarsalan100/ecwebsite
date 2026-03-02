@@ -56,7 +56,7 @@ export function AccountSidebar() {
     const { user, logout } = useAuth();
 
     // Derived State
-    const displayName = user ? user.split('@')[0] : "Petter Harry";
+    const displayName = user?.name || (user?.email ? user.email.split('@')[0] : "Petter Harry");
 
     return (
         <aside className="w-full md:w-[280px] md:min-w-[280px] bg-[#0092FF] text-white rounded-2xl flex-shrink-0 h-auto md:h-[650px] flex flex-col justify-between py-6 md:py-8 px-4 shadow-lg text-poppins">

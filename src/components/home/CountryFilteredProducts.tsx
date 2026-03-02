@@ -2,40 +2,35 @@
 
 import { useState, useMemo } from "react";
 import { countriesData } from "@/data/countries";
-import { CountryNavBar } from "@/components/home/CountryNavBar";
+import { CountryNavBar } from "@/components/common/CountryNavBar";
 import { AllProducts } from "@/components/home/AllProducts";
 
 export function CountryFilteredProducts() {
-  const [activeCountryId, setActiveCountryId] = useState("all");
+  const [activeCountryId, setActiveCountryId] = useState<string | number>(countriesData[0]?.id || "");
 
   // Get the filtered products based on the active country
   const { products, title } = useMemo(() => {
-    if (activeCountryId === "all") {
-      // Combine all products from all countries
-      const allProducts = countriesData.flatMap((country) => country.products);
-      return {
-        products: allProducts,
-        title: "All"
-      };
-    }
-
     // Find the specific country
-    const activeCountry = countriesData.find((c) => c.id === activeCountryId);
+    const activeCountry = countriesData.find((c) => c.id === activeCountryId) || countriesData[0];
 
-    if (activeCountry) {
-      return {
-        products: activeCountry.products,
-        title: activeCountry.name
-      };
-    }
-
-    // Fallback to all products if country not found
-    const allProducts = countriesData.flatMap((country) => country.products);
     return {
-      products: allProducts,
-      title: "All"
+      products: activeCountry.products,
+      title: activeCountry.name
     };
   }, [activeCountryId]);
+
+  // Map static countries to match the dynamic Country interface expected by CountryNavBar
+  const mappedCountries = useMemo(() => {
+    return countriesData.map(c => ({
+      id: c.id,
+      name: c.name,
+      shortCode: c.code,
+      language: 'en',
+      flagUrl: c.flag,
+      currency: { name: 'USD', shortCode: 'USD', symbolUrl: '$' },
+      code: c.code
+    }));
+  }, []);
 
   return (
     <section className="flex flex-col">
@@ -46,7 +41,7 @@ export function CountryFilteredProducts() {
       </div>
 
       <CountryNavBar
-        countries={countriesData}
+        countries={mappedCountries as any}
         activeCountryId={activeCountryId}
         onSelect={setActiveCountryId}
       />

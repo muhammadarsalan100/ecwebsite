@@ -10,95 +10,93 @@ import {
   CarouselItem,
   type CarouselApi,
 } from "@/components/ui/carousel";
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
-import { Product } from "@/types";
-
-interface TopSellingProductsProps {
-  products: Product[];
-}
+import { useCarousel } from "@/hooks/useCarousel";
+import { productService } from "@/services/productService";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { SectionHeader } from "@/components/common/SectionHeader";
 
 // Card heights sequence based on Figma
 const cardHeights = [251, 370, 293, 251];
 
-export function TopSellingProducts({ products }: TopSellingProductsProps) {
-  const [api, setApi] = useState<CarouselApi>();
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
+interface TopSellingProductsProps {
+  initialProducts?: any[];
+}
+
+export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsProps) {
+  const { setApi, scrollPrev, scrollNext } = useCarousel();
+  const { isLoading: isAuthLoading, isAuthenticated } = useAuth();
+  const [products, setProducts] = useState<any[]>(initialProducts);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!api) return;
-
-    const onSelect = () => {
-      setCanScrollPrev(api.canScrollPrev());
-      setCanScrollNext(api.canScrollNext());
+    const fetchTopSold = async () => {
+      if (isAuthLoading || !isAuthenticated) {
+        setIsLoading(false);
+        return;
+      }
+      try {
+        const response = await productService.getTopSoldProducts();
+        if (response && response.data && response.data.length > 0) {
+          // Map API response to UI expected format
+          const mappedProducts = response.data.map((item: any) => ({
+            id: item.itemId,
+            name: item.item.itemName,
+            image: item.item.icon || "/p-1.jpg",
+            price: item.totalSale ? (item.totalSale / 10) : 0, // Mock price if not available, or just use 0
+            reviews: item.totalSale || "0",
+            rating: 5,
+          }));
+          setProducts(mappedProducts);
+        } else if (initialProducts.length > 0) {
+          setProducts(initialProducts);
+        }
+      } catch (error) {
+        console.error("Failed to fetch top sold products:", error);
+        if (initialProducts.length > 0) setProducts(initialProducts);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    onSelect();
-    api.on("select", onSelect);
-    api.on("reInit", onSelect);
+    fetchTopSold();
+  }, [isAuthLoading, isAuthenticated, initialProducts]);
 
-    return () => {
-      api.off("select", onSelect);
-    };
-  }, [api]);
+  if (isLoading) {
+    return (
+      <section className='w-full px-4 py-12 md:px-8 lg:px-12 border-t border-gray-200'>
+        <div className='mx-auto max-w-7xl'>
+          <div className="h-8 w-64 bg-gray-100 animate-pulse rounded-lg mb-10" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="space-y-4">
+                <div className="aspect-[4/5] bg-gray-100 animate-pulse rounded-3xl" />
+                <div className="h-4 bg-gray-100 animate-pulse rounded w-3/4" />
+                <div className="h-4 bg-gray-100 animate-pulse rounded w-1/2" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
-  const scrollPrev = () => api?.scrollPrev();
-  const scrollNext = () => api?.scrollNext();
+  if (products.length === 0 && !isLoading) return null;
 
   return (
     <section className='w-full px-4 py-12 md:px-8 lg:px-12 border-t border-gray-200'>
       <div className='mx-auto max-w-7xl'>
         {/* Header */}
-        <motion.div
-          className='flex items-start justify-between mb-10'
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <motion.h2
-            className='text-3xl md:text-4xl font-bold text-foreground leading-tight'
-            style={{ fontFamily: "var(--font-poppins)" }}
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            Top-Selling Products
-            <br />
-            of the year Collection
-          </motion.h2>
-
-          {/* Navigation Arrows */}
-          <motion.div
-            className='flex items-center gap-2'
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <motion.button
-              onClick={scrollPrev}
-              disabled={!canScrollPrev}
-              className='w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed'
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <ChevronLeft className='w-5 h-5 text-gray-600' />
-            </motion.button>
-            <motion.button
-              onClick={scrollNext}
-              disabled={!canScrollNext}
-              className='w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed'
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <ChevronRight className='w-5 h-5 text-gray-600' />
-            </motion.button>
-          </motion.div>
-        </motion.div>
+        <SectionHeader
+          titleFull="Top-Selling Products of the year Collection"
+          variant="poppins"
+          showNavigation={true}
+          onPrevious={scrollPrev}
+          onNext={scrollNext}
+          className="mb-10"
+        />
 
         {/* Products Carousel */}
         <motion.div

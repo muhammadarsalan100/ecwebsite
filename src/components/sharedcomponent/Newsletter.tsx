@@ -4,8 +4,28 @@ import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
+import { newsletterSchema } from "@/schemas/misc.schema";
+import { z } from "zod";
+
 export function Newsletter() {
   const [email, setEmail] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<"idle" | "success">("idle");
+
+  const handleSubscribe = () => {
+    try {
+      newsletterSchema.parse({ email });
+      setError(null);
+      setStatus("success");
+      setEmail("");
+      // Add success message or further logic here
+      setTimeout(() => setStatus("idle"), 3000);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setError(err.issues[0].message);
+      }
+    }
+  };
 
   return (
     <section className='w-full overflow-hidden mt-12 mb-12 lg:mt-[150px] lg:mb-[120px]'>
@@ -69,18 +89,30 @@ export function Newsletter() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               {/* Email Input */}
-              <input
-                type='email'
-                placeholder='michael@ymail.com'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className='w-full outline-none text-[#8A8A8A] font-poppins text-sm text-center p-3 bg-transparent'
-              />
+              <div className="w-full relative">
+                <input
+                  type='email'
+                  placeholder='johndoe@example.com'
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError(null);
+                  }}
+                  className='w-full outline-none text-[#8A8A8A] font-poppins text-sm text-center p-3 bg-transparent'
+                />
+                {error && (
+                  <p className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-medium text-red-500 whitespace-nowrap">{error}</p>
+                )}
+                {status === "success" && (
+                  <p className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-medium text-green-500 whitespace-nowrap">Successfully subscribed!</p>
+                )}
+              </div>
             </motion.div>
 
             {/* Subscribe Button */}
             <motion.button
-              className='bg-[#0092FF] text-white font-poppins text-sm font-medium rounded-lg mt-6 shadow-[0_16px_29px_rgba(0,146,254,0.15)] hover:shadow-[0_20px_35px_rgba(0,146,254,0.25)] transition-all'
+              onClick={handleSubscribe}
+              className='bg-[#0092FF] text-white font-poppins text-sm font-medium rounded-lg mt-8 shadow-[0_16px_29px_rgba(0,146,254,0.15)] hover:shadow-[0_20px_35px_rgba(0,146,254,0.25)] transition-all'
               style={{
                 width: "173px",
                 height: "47px",

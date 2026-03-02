@@ -56,7 +56,7 @@ export default function Footer() {
                     <p
                       className='text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px]'
                     >
-                      +1 202-918-2132
+                      +1 205 828 2929
                     </p>
                   </div>
                 </div>
@@ -74,7 +74,7 @@ export default function Footer() {
                     <p
                       className='text-white font-readex text-sm lg:text-[16px] font-normal leading-loose lg:leading-[37px]'
                     >
-                      +1 202-918-2132
+                      +1 205 828 2929
                     </p>
                   </div>
                 </div>

@@ -32,20 +32,18 @@ const itemVariants = {
   },
 };
 
+import { SectionHeader } from "@/components/common/SectionHeader";
+
 export function TopCategories({ categories }: TopCategoriesProps) {
   return (
     <section className='w-full px-4 py-16 md:px-8 lg:px-12 bg-white'>
       <div className='mx-auto max-w-7xl'>
         {/* Title */}
-        <motion.h2
-          className='text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-12 text-center md:text-left font-poppins'
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          Top Categories
-        </motion.h2>
+        <SectionHeader
+          titleFull="Top Categories"
+          variant="poppins"
+          className="mb-12"
+        />
 
         {/* Categories Flex Container */}
         <motion.div
@@ -69,7 +67,7 @@ export function TopCategories({ categories }: TopCategoriesProps) {
               >
                 <div className='relative w-[60%] h-[60%]'>
                   <Image
-                    src={category.image}
+                    src={category.image || category.icon || "/Logo.png"}
                     alt={category.name}
                     fill
                     className='object-contain group-hover:scale-110 transition-transform duration-500'
