@@ -23,7 +23,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     const config: RequestInit = {
         ...rest,
         headers: {
-            "Content-Type": "application/json",
+            ...(rest.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
             ...authHeaders,
             ...headers,
         },
@@ -39,7 +39,14 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
             response.headers.get("x-secure-token");
 
         if (!response.ok) {
-            const errorMessage = data.Message || data.message || data.Error || data.error || `API Error: ${response.status}`;
+            let errorMessage = data.Message || data.message || data.title || data.Error || data.error;
+
+            if (!errorMessage && data.errors) {
+                // Handle ASP.NET Core style validation errors
+                errorMessage = Object.values(data.errors).flat().join(", ");
+            }
+
+            errorMessage = errorMessage || `API Error: ${response.status}`;
             throw new Error(errorMessage);
         }
 
@@ -59,11 +66,33 @@ export const api = {
     get: <T>(url: string, options?: RequestOptions) =>
         request<T>(url, { ...options, method: "GET" }),
 
-    post: <T>(url: string, body: any, options?: RequestOptions) =>
-        request<T>(url, { ...options, method: "POST", body: JSON.stringify(body) }),
+    post: <T>(url: string, body: any, options?: RequestOptions) => {
+        const isFormData = body instanceof FormData;
+        const config: RequestOptions = {
+            ...options,
+            method: "POST",
+            body: isFormData ? body : JSON.stringify(body),
+        };
+        if (isFormData) {
+            config.headers = { ...options?.headers };
+            delete (config.headers as any)["Content-Type"];
+        }
+        return request<T>(url, config);
+    },
 
-    put: <T>(url: string, body: any, options?: RequestOptions) =>
-        request<T>(url, { ...options, method: "PUT", body: JSON.stringify(body) }),
+    put: <T>(url: string, body: any, options?: RequestOptions) => {
+        const isFormData = body instanceof FormData;
+        const config: RequestOptions = {
+            ...options,
+            method: "PUT",
+            body: isFormData ? body : JSON.stringify(body),
+        };
+        if (isFormData) {
+            config.headers = { ...options?.headers };
+            delete (config.headers as any)["Content-Type"];
+        }
+        return request<T>(url, config);
+    },
 
     delete: <T>(url: string, options?: RequestOptions) =>
         request<T>(url, { ...options, method: "DELETE" }),

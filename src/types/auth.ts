@@ -4,6 +4,7 @@ export interface AuthLandingProps {
     onSignIn: () => void;
     onCreateAccount: () => void;
     onSkip: () => void;
+    onBecomeSeller?: () => void;
 }
 
 export interface AuthLoginProps {

@@ -1,5 +1,5 @@
 import { api, withAuth } from "./apiClient";
-import { Product, TopSoldItem, CatalogSearchResponse } from "@/types/product";
+import { Product, TopSoldItem, CatalogSearchResponse, CatalogItem } from "@/types/product";
 import { ApiResponse } from "@/types/auth";
 
 /**
@@ -29,6 +29,12 @@ export const productService = {
      */
     getTopSoldProducts: () =>
         withAuth(api.get)<ApiResponse<TopSoldItem[]>>("/api/v1.0/catalog/item/getTopSold"),
+
+    /**
+     * Get a single catalog item by ID
+     */
+    getCatalogItemById: (id: number | string) =>
+        withAuth(api.get)<ApiResponse<CatalogItem>>(`/api/v1.0/catalog/item/${id}`),
 
     /**
      * Search catalog items by country and category

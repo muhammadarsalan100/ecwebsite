@@ -51,7 +51,7 @@ export function TopCategories({ categories }: TopCategoriesProps) {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
+          viewport={{ once: false }}
         >
           {categories.map((category) => (
             <motion.div

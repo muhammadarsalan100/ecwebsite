@@ -39,6 +39,7 @@ export default function LoginPage() {
             onSignIn={() => setView("LOGIN")}
             onCreateAccount={() => setView("REGISTER")}
             onSkip={() => router.push("/")}
+            onBecomeSeller={() => router.push("/vendor/auth")}
           />
         );
       case "LOGIN":

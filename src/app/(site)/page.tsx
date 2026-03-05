@@ -286,6 +286,7 @@ export default function Home() {
     fetchCountries,
     categories,
     fetchCategories,
+    isCategoriesLoading,
     selectedCountry,
     setSelectedCountry,
     activeCategoryId,
@@ -355,7 +356,22 @@ export default function Home() {
       <SummerHero />
       <FeaturedProducts products={featuredProducts} />
       <TopSellingProducts />
-      <TopCategories categories={mappedTopCategories as any[]} />
+      {isCategoriesLoading ? (
+        <section className="w-full px-4 py-16 md:px-8 lg:px-12 bg-white">
+          <div className="mx-auto max-w-7xl">
+            <div className="flex flex-wrap items-center justify-center md:justify-between gap-y-10 gap-x-4 md:gap-x-6 lg:gap-x-8">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex flex-col items-center gap-5">
+                  <div className="w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 lg:w-48 lg:h-48 rounded-full bg-gray-100 animate-pulse" />
+                  <div className="w-24 h-4 bg-gray-100 rounded animate-pulse" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : (
+        <TopCategories categories={mappedTopCategories as any[]} />
+      )}
       <LeatherBagBanner />
 
       {/* All Products Section */}
