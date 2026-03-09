@@ -59,6 +59,22 @@ export interface CountrySelectModalProps {
     selectedCountry?: string;
 }
 
+export interface StateSelectModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSelect: (state: State) => void;
+    selectedState?: string;
+    countryId?: number | string;
+}
+
+export interface CitySelectModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSelect: (city: City) => void;
+    selectedCity?: string;
+    stateId?: number | string;
+}
+
 export interface TransactionSuccessModalProps {
     isOpen: boolean;
     onClose: () => void;

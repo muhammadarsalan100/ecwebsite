@@ -23,7 +23,7 @@ interface Step4IdentityProofProps {
     data: Step4Data;
     onChange: (data: Step4Data) => void;
     onDone: () => void;
-    onCancel: () => void;
+    onBack: () => void;
     isLoading?: boolean;
 }
 
@@ -154,7 +154,7 @@ export function Step4IdentityProof({
     data,
     onChange,
     onDone,
-    onCancel,
+    onBack,
     isLoading = false,
 }: Step4IdentityProofProps) {
     const [errors, setErrors] = useState<Errors>({});
@@ -419,18 +419,18 @@ export function Step4IdentityProof({
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
+                <div className="flex flex-col sm:flex-row items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
                     <button
-                        onClick={onCancel}
-                        className="h-11 px-8 border border-gray-300 text-gray-600 font-bold text-sm rounded-xl hover:bg-gray-50 transition-all font-poppins"
+                        onClick={onBack}
+                        className="h-12 w-full sm:w-auto sm:px-8 order-2 sm:order-1 border border-gray-300 text-gray-600 font-bold text-sm rounded-xl hover:bg-gray-50 transition-all font-poppins active:scale-95"
                         style={{ fontFamily: "var(--font-poppins)" }}
                     >
-                        Cancel
+                        Back
                     </button>
                     <button
                         onClick={handleDone}
                         disabled={isLoading}
-                        className="h-11 px-12 bg-[#0092FF] hover:bg-[#0081E0] disabled:bg-[#0092FF]/50 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-blue-500/20 font-poppins flex items-center justify-center gap-2"
+                        className="h-12 w-full sm:w-auto sm:px-12 order-1 sm:order-2 bg-[#0092FF] hover:bg-[#0081E0] disabled:bg-[#0092FF]/50 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-blue-500/20 font-poppins flex items-center justify-center gap-2 active:scale-95"
                         style={{ fontFamily: "var(--font-poppins)" }}
                     >
                         {isLoading ? (

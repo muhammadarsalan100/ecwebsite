@@ -18,7 +18,7 @@ interface Step2BankAccountProps {
     data: Step2Data;
     onChange: (data: Step2Data) => void;
     onNext: () => void;
-    onCancel: () => void;
+    onBack: () => void;
 }
 
 type Errors = Partial<Record<keyof Step2Data, string>>;
@@ -33,7 +33,7 @@ const errorClass = "mt-1.5 text-xs text-red-500";
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function Step2BankAccount({ data, onChange, onNext, onCancel }: Step2BankAccountProps) {
+export function Step2BankAccount({ data, onChange, onNext, onBack }: Step2BankAccountProps) {
     const [errors, setErrors] = useState<Errors>({});
     const [submitted, setSubmitted] = useState(false);
     const [dragOver, setDragOver] = useState(false);
@@ -192,9 +192,21 @@ export function Step2BankAccount({ data, onChange, onNext, onCancel }: Step2Bank
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-end gap-3 mt-8">
-                <button onClick={onCancel} className="h-11 px-8 border border-gray-300 text-gray-600 font-bold text-sm rounded-xl hover:bg-gray-50 transition-all font-poppins" style={{ fontFamily: "var(--font-poppins)" }}>Cancel</button>
-                <button onClick={handleNext} className="h-11 px-10 bg-[#0092FF] hover:bg-[#0081E0] text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-blue-500/20 font-poppins" style={{ fontFamily: "var(--font-poppins)" }}>Next</button>
+            <div className="flex flex-col sm:flex-row items-center justify-end gap-3 mt-10">
+                <button
+                    onClick={onBack}
+                    className="h-12 w-full sm:w-auto sm:px-8 order-2 sm:order-1 border border-gray-300 text-gray-600 font-bold text-sm rounded-xl hover:bg-gray-50 transition-all font-poppins active:scale-95"
+                    style={{ fontFamily: "var(--font-poppins)" }}
+                >
+                    Back
+                </button>
+                <button
+                    onClick={handleNext}
+                    className="h-12 w-full sm:w-auto sm:px-12 order-1 sm:order-2 bg-[#0092FF] hover:bg-[#0081E0] text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-blue-500/20 font-poppins active:scale-95"
+                    style={{ fontFamily: "var(--font-poppins)" }}
+                >
+                    Next
+                </button>
             </div>
         </div>
     );

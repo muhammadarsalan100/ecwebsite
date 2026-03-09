@@ -84,6 +84,7 @@ export interface ProductColor {
 }
 
 export interface ProductInfoProps {
+    id: string | number;
     title: string;
     price: number;
     rating: number;

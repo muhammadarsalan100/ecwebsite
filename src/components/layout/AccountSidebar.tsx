@@ -1,10 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
     User,
+    CreditCard,
     ShoppingBag,
     Wallet,
     Heart,
@@ -16,12 +18,16 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 
-// Constants
 const sidebarItems = [
     {
         title: "Personal Data",
-        href: "/account/profile",
+        href: "/account/personal-data",
         icon: User,
+    },
+    {
+        title: "Payments",
+        href: "/account/payments",
+        icon: CreditCard,
     },
     {
         title: "Orders",
@@ -35,7 +41,7 @@ const sidebarItems = [
     },
     {
         title: "Wish list",
-        href: "/account/wishlist",
+        href: "/account/wish-list",
         icon: Heart,
     },
     {
@@ -45,7 +51,7 @@ const sidebarItems = [
     },
     {
         title: "Contact Us",
-        href: "/contact",
+        href: "/account/contact-us",
         icon: HeadphonesIcon,
     },
 ];
@@ -55,61 +61,73 @@ export function AccountSidebar() {
     const pathname = usePathname();
     const { user, logout } = useAuth();
 
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     // Derived State
-    const displayName = user?.name || (user?.email ? user.email.split('@')[0] : "Petter Harry");
+    const displayName = mounted && user
+        ? (user.fullName || user.fullname || user.name || (user.email ? user.email.split('@')[0] : "User"))
+        : "Loading...";
 
     return (
-        <aside className="w-full md:w-[280px] md:min-w-[280px] bg-[#0092FF] text-white rounded-2xl flex-shrink-0 h-auto md:h-[650px] flex flex-col justify-between py-6 md:py-8 px-4 shadow-lg text-poppins">
-            <div>
-                {/* Profile Section */}
-                <div className="flex flex-row md:flex-col items-center gap-4 mb-6 md:mb-5 md:text-center">
-                    <div className="relative w-16 h-16 md:w-24 md:h-24 shrink-0">
-                        <Image
-                            src="/ProfileImg.png"
-                            alt="Profile"
-                            fill
-                            className="object-cover"
-                            unoptimized
-                        />
-                    </div>
-                    <div>
-                        <h3 className="font-bold text-lg md:text-xl text-white capitalize">{displayName}</h3>
-                        <p className="text-white/60 text-xs md:hidden">Manage your account</p>
-                    </div>
+        <aside className="w-full md:w-[280px] md:min-w-[280px] bg-[#0092FF] text-white rounded-[32px] flex-shrink-0 min-h-[600px] flex flex-col py-8 px-6 shadow-xl shadow-blue-500/10">
+            {/* Profile Section */}
+            <div className="flex items-center gap-4 mb-10">
+                <div className="relative w-20 h-20 shrink-0 rounded-full border-2 border-white/20 overflow-hidden shadow-inner">
+                    <Image
+                        src="/ProfileImg.png"
+                        alt="Profile"
+                        fill
+                        className="object-cover"
+                        unoptimized
+                    />
                 </div>
-
-                {/* Navigation */}
-                <nav className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-4 md:pb-0 scrollbar-hide">
-                    {sidebarItems.map((item) => {
-                        const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
-
-                        return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={cn(
-                                    "flex items-center gap-3 md:gap-4 px-4 py-3 rounded-lg transition-all duration-200 text-sm font-medium whitespace-nowrap",
-                                    isActive
-                                        ? "bg-white text-[#0092FF] shadow-sm md:bg-white/10 md:text-white"
-                                        : "hover:bg-white/5 opacity-80 hover:opacity-100"
-                                )}
-                            >
-                                <item.icon className="w-5 h-5" />
-                                <span>{item.title}</span>
-                            </Link>
-                        );
-                    })}
-                </nav>
+                <div className="min-w-0">
+                    <h3 className="font-bold text-lg text-white truncate" style={{ fontFamily: "var(--font-poppins)" }}>
+                        {displayName}
+                    </h3>
+                </div>
             </div>
 
-            {/* Logout */}
-            <div className="pt-4 md:pt-6 mt-4 md:mt-6 border-t border-white/20 hidden md:block">
+            {/* Navigation */}
+            <nav className="flex flex-col gap-1.5 flex-1">
+                {sidebarItems.map((item) => {
+                    const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                    const Icon = item.icon;
+
+                    return (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={cn(
+                                "flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group",
+                                isActive
+                                    ? "text-white opacity-100"
+                                    : "text-white/60 hover:text-white hover:opacity-100"
+                            )}
+                        >
+                            <Icon className={cn(
+                                "w-5 h-5 transition-colors",
+                                isActive ? "text-white" : "text-white/60 group-hover:text-white"
+                            )} />
+                            <span className="text-sm font-medium" style={{ fontFamily: "var(--font-poppins)" }}>
+                                {item.title}
+                            </span>
+                        </Link>
+                    );
+                })}
+            </nav>
+
+            <div className="mt-10 pt-4 border-t border-white/10">
                 <button
                     onClick={logout}
-                    className="flex items-center gap-4 px-4 py-3 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 w-full rounded-lg transition-colors"
+                    className="flex items-center gap-4 px-4 py-3 text-red-200 hover:text-red-100 group w-full transition-all"
                 >
-                    <LogOut className="w-5 h-5 text-red-200" />
-                    <span className="text-red-100 font-semibold">Log Out</span>
+                    <LogOut className="w-5 h-5 text-red-300 group-hover:text-red-200" />
+                    <span className="text-sm font-bold" style={{ fontFamily: "var(--font-poppins)" }}>Log Out</span>
                 </button>
             </div>
         </aside>

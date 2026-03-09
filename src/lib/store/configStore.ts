@@ -119,11 +119,6 @@ export const useConfigStore = create<ConfigState>()(
             selectedCategory: null,
 
             fetchCountries: async () => {
-                const token = typeof window !== 'undefined' ? localStorage.getItem("auth_token") : null;
-                if (!token) {
-                    console.warn("fetchCountries: No auth token available. Skipping.");
-                    return;
-                }
                 set({ isLoading: true, error: null });
                 try {
                     const response = await authService.getCountries();
@@ -180,11 +175,6 @@ export const useConfigStore = create<ConfigState>()(
             },
 
             fetchCategories: async () => {
-                const token = typeof window !== 'undefined' ? localStorage.getItem("auth_token") : null;
-                if (!token) {
-                    console.warn("fetchCategories: No auth token available. Skipping.");
-                    return;
-                }
                 set({ isCategoriesLoading: true, error: null });
                 try {
                     const response = await productService.getCatalogCategories();

@@ -1,14 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Share2, Truck, RefreshCw, ShieldCheck, ChevronRight } from "lucide-react";
+import { Star, Share2, Truck, RefreshCw, ShieldCheck, ChevronRight, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
+import { authService } from "@/services/authService";
+import { Toast, ToastType } from "@/components/ui/toast";
 
 import { ProductInfoProps } from "@/types";
 
 export function ProductInfo({
+    id,
     title,
     price,
     rating,
@@ -19,8 +24,68 @@ export function ProductInfo({
     category,
     subcategory,
 }: ProductInfoProps) {
+    const { isAuthenticated } = useAuth();
+    const router = useRouter();
     const [selectedColor, setSelectedColor] = useState(colors[0]?.name);
     const [selectedSize, setSelectedSize] = useState(sizes[0]);
+    const [isWishlisted, setIsWishlisted] = useState(false);
+    const [isAdding, setIsAdding] = useState(false);
+    const [toast, setToast] = useState<{ isVisible: boolean; message: string; type: ToastType }>({
+        isVisible: false,
+        message: "",
+        type: "info"
+    });
+
+    const handleWishlist = async () => {
+        if (!isAuthenticated) {
+            setToast({
+                isVisible: true,
+                message: "Please login to add items to your wishlist",
+                type: "auth"
+            });
+            return;
+        }
+
+        if (isWishlisted) {
+            setToast({
+                isVisible: true,
+                message: "Item is already in your wishlist",
+                type: "info"
+            });
+            return;
+        }
+
+        try {
+            setIsAdding(true);
+            const response = await authService.addToWishlist(id);
+            if (response.code === "Created" || response.code === "OK") {
+                setIsWishlisted(true);
+                setToast({
+                    isVisible: true,
+                    message: "Product added to wishlist successfully!",
+                    type: "success"
+                });
+            }
+        } catch (error: any) {
+            console.error("Error adding to wishlist:", error);
+            if (error.response?.data?.message?.includes("already")) {
+                setIsWishlisted(true);
+                setToast({
+                    isVisible: true,
+                    message: "Item is already in your wishlist",
+                    type: "info"
+                });
+            } else {
+                setToast({
+                    isVisible: true,
+                    message: "Failed to add to wishlist. Please try again.",
+                    type: "error"
+                });
+            }
+        } finally {
+            setIsAdding(false);
+        }
+    };
 
     return (
         <div className="flex flex-col gap-6">
@@ -38,24 +103,39 @@ export function ProductInfo({
             </nav>
 
             {/* Header */}
-            <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50">{title}</h1>
+            <div className="space-y-2 flex justify-between items-start">
+                <div className="space-y-2 overflow-hidden">
+                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50">{title}</h1>
 
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center text-yellow-400">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                            <Star
-                                key={i}
-                                className={cn("w-5 h-5", i < Math.floor(rating) ? "fill-current" : "text-gray-300 dark:text-gray-600")}
-                            />
-                        ))}
-                        <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">({reviewsCount} reviews)</span>
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center text-yellow-400">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <Star
+                                    key={i}
+                                    className={cn("w-5 h-5", i < Math.floor(rating) ? "fill-current" : "text-gray-300 dark:text-gray-600")}
+                                />
+                            ))}
+                            <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">({reviewsCount} reviews)</span>
+                        </div>
+                        <div className="h-4 w-px bg-gray-300 dark:bg-gray-700" />
+                        <span className={cn("text-sm", rating > 4 ? "text-green-600" : "text-gray-500")}>
+                            In Stock
+                        </span>
                     </div>
-                    <div className="h-4 w-px bg-gray-300 dark:bg-gray-700" />
-                    <span className={cn("text-sm", rating > 4 ? "text-green-600" : "text-gray-500")}>
-                        In Stock
-                    </span>
                 </div>
+
+                <button
+                    onClick={handleWishlist}
+                    disabled={isAdding}
+                    className={cn(
+                        "p-3 rounded-full border transition-all duration-300 shrink-0",
+                        isWishlisted
+                            ? "bg-red-50 border-red-100 text-red-500"
+                            : "bg-white border-gray-100 text-gray-400 hover:text-red-500 hover:border-red-100 hover:bg-red-50"
+                    )}
+                >
+                    <Heart className={cn("w-6 h-6", isWishlisted && "fill-current")} />
+                </button>
             </div>
 
             {/* Description */}
@@ -144,7 +224,6 @@ export function ProductInfo({
                 <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 dark:bg-gray-800">
                         <div className="relative">
-                            {/* Simple shirt icon representation or similar */}
                             <span className="font-bold text-lg select-none">T</span>
                         </div>
                     </div>
@@ -166,6 +245,18 @@ export function ProductInfo({
                     </div>
                 </div>
             </div>
+
+            <Toast
+                isVisible={toast.isVisible}
+                message={toast.message}
+                type={toast.type}
+                duration={toast.type === "auth" ? 8000 : 3000}
+                action={toast.type === "auth" ? {
+                    label: "Login",
+                    onClick: () => router.push("/auth")
+                } : undefined}
+                onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
+            />
         </div>
     );
 }

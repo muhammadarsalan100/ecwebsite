@@ -33,25 +33,26 @@ export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsP
 
   useEffect(() => {
     const fetchTopSold = async () => {
-      if (isAuthLoading || !isAuthenticated) {
-        setIsLoading(false);
-        return;
-      }
+      if (isAuthLoading) return;
+
       try {
         const response = await productService.getTopSoldProducts();
+        console.log("[DEBUG] TopSold Response:", response);
         if (response && response.data && response.data.length > 0) {
           // Map API response to UI expected format
           const mappedProducts = response.data.map((item: any) => ({
             id: item.itemId,
-            name: item.item.itemName,
-            image: item.item.icon || "/p-1.jpg",
-            price: item.totalSale ? (item.totalSale / 10) : 0, // Mock price if not available, or just use 0
+            name: item?.item?.itemName || "Product",
+            image: item?.item?.icon || "/p-1.jpg",
+            price: item.totalSale ? (item.totalSale / 10) : 0,
             reviews: item.totalSale || "0",
             rating: 5,
           }));
+          console.log("[DEBUG] Mapped Products:", mappedProducts);
           setProducts(mappedProducts);
-        } else if (initialProducts.length > 0) {
-          setProducts(initialProducts);
+        } else {
+          console.log("[DEBUG] No top sold products found in response");
+          if (initialProducts.length > 0) setProducts(initialProducts);
         }
       } catch (error) {
         console.error("Failed to fetch top sold products:", error);
@@ -62,7 +63,7 @@ export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsP
     };
 
     fetchTopSold();
-  }, [isAuthLoading, isAuthenticated, initialProducts]);
+  }, [isAuthLoading, isAuthenticated]); // Removed initialProducts from dependencies to prevent infinite loop
 
   if (isLoading) {
     return (
@@ -83,6 +84,7 @@ export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsP
     );
   }
 
+  console.log("[DEBUG] Render State:", { productsCount: products.length, isLoading });
   if (products.length === 0 && !isLoading) return null;
 
   return (
@@ -133,7 +135,7 @@ export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsP
                       <Link href={`/product/${product.id}`} className="block h-full">
                         {/* Product Image */}
                         <div
-                          className='relative w-full mb-4 overflow-hidden bg-gray-100 rounded-[20px]'
+                          className='relative w-full mb-4 overflow-hidden bg-gray-100 rounded-[20px] flex items-center justify-center'
                           style={{
                             height: `${height}px`,
                           }}

@@ -1,8 +1,37 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+function subscribeTokenRefresh(cb: (token: string) => void) {
+    refreshSubscribers.push(cb);
+}
+
+function onRefreshed(token: string) {
+    refreshSubscribers.map((cb) => cb(token));
+    refreshSubscribers = [];
+}
+
 export interface RequestOptions extends RequestInit {
     params?: Record<string, string>;
     token?: string;
+}
+
+/**
+ * Checks if a JWT token is expired or about to expire.
+ */
+function isTokenExpired(token: string): boolean {
+    if (!token || token === "") return true;
+    try {
+        const parts = token.split('.');
+        if (parts.length !== 3) return true;
+        const payload = JSON.parse(atob(parts[1]));
+        const now = Math.floor(Date.now() / 1000);
+        // Expiration check with 30s buffer
+        return payload.exp < now + 10;
+    } catch (e) {
+        return true;
+    }
 }
 
 async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
@@ -23,7 +52,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     const config: RequestInit = {
         ...rest,
         headers: {
-            ...(rest.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
+            ...(rest.body && !(rest.body instanceof FormData) ? { "Content-Type": "application/json" } : {}),
             ...authHeaders,
             ...headers,
         },
@@ -32,7 +61,105 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     console.log(`[API REQUEST] ${options.method || 'GET'} ${url}`, config);
 
     try {
-        const response = await fetch(url, config);
+        let response = await fetch(url, config);
+
+        // Handle 401 Unauthorized - Attempt Token Refresh if candidate
+        if (response.status === 401 && typeof window !== 'undefined') {
+            const userEmail = localStorage.getItem("user_email");
+            const refreshToken = localStorage.getItem("refresh_token");
+
+            // Only attempt refresh if user was actually logged in (not guest session)
+            if (userEmail && refreshToken) {
+                if (!isRefreshing) {
+                    isRefreshing = true;
+                    try {
+                        console.log("[AUTH] Token expired, attempting refresh...");
+                        const refreshResponse = await fetch(`${BASE_URL}/api/v1.0/account/refresh-token`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                data: {
+                                    username: userEmail,
+                                    refreshToken: refreshToken
+                                }
+                            })
+                        });
+
+                        if (refreshResponse.ok) {
+                            const refreshData = await refreshResponse.json();
+                            const newToken = refreshData.data?.accessToken;
+                            const newRefreshToken = refreshData.data?.refreshToken;
+                            const newIdToken = refreshData.data?.idToken;
+
+                            if (newToken) {
+                                localStorage.setItem("auth_token", newToken);
+                                if (newRefreshToken) localStorage.setItem("refresh_token", newRefreshToken);
+                                if (newIdToken) localStorage.setItem("id_token", newIdToken);
+
+                                // Update user_data in localStorage if it exists
+                                const userDataStr = localStorage.getItem("user_data");
+                                if (userDataStr) {
+                                    const userData = JSON.parse(userDataStr);
+                                    userData.accessToken = newToken;
+                                    if (newRefreshToken) userData.refreshToken = newRefreshToken;
+                                    if (newIdToken) userData.idToken = newIdToken;
+                                    localStorage.setItem("user_data", JSON.stringify(userData));
+                                }
+
+                                console.log("[AUTH] Token refreshed successfully.");
+                                onRefreshed(newToken);
+                                isRefreshing = false;
+
+                                // Retry original request with new token
+                                const newConfig = { ...config };
+                                (newConfig.headers as any)["Authorization"] = `Bearer ${newToken}`;
+                                response = await fetch(url, newConfig);
+                            } else {
+                                throw new Error("No token in refresh response");
+                            }
+                        } else {
+                            throw new Error("Refresh failed");
+                        }
+                    } catch (error) {
+                        console.error("[AUTH] Global refresh failure:", error);
+                        isRefreshing = false;
+                        // Hard logout
+                        localStorage.removeItem("user_data");
+                        localStorage.removeItem("auth_token");
+                        localStorage.removeItem("refresh_token");
+                        localStorage.removeItem("user_email");
+                        localStorage.removeItem("id_token");
+                        window.location.href = "/auth";
+                        throw new Error("Session expired. Please log in again.");
+                    }
+                } else {
+                    // Already refreshing, wait for it to finish then retry
+                    return new Promise((resolve, reject) => {
+                        subscribeTokenRefresh(async (newToken) => {
+                            try {
+                                const newConfig = { ...config };
+                                (newConfig.headers as any)["Authorization"] = `Bearer ${newToken}`;
+                                const retryResponse = await fetch(url, newConfig);
+                                if (retryResponse.status === 401) {
+                                    window.location.href = "/auth";
+                                    reject(new Error("Unauthorized after refresh"));
+                                    return;
+                                }
+                                const data = await retryResponse.json().catch(() => ({}));
+                                if (retryResponse.ok) {
+                                    resolve(data as T);
+                                } else {
+                                    reject(new Error(data.message || "Retry failed after refresh"));
+                                }
+                            } catch (e) {
+                                reject(e);
+                            }
+                        });
+                    });
+                }
+            }
+        }
+
         const data = await response.json().catch(() => ({}));
         const authHeader = response.headers.get("Authorization") ||
             response.headers.get("secure-token") ||
@@ -96,36 +223,47 @@ export const api = {
 
     delete: <T>(url: string, options?: RequestOptions) =>
         request<T>(url, { ...options, method: "DELETE" }),
+
+    patch: <T>(url: string, body: any, options?: RequestOptions) => {
+        const isFormData = body instanceof FormData;
+        const config: RequestOptions = {
+            ...options,
+            method: "PATCH",
+            body: isFormData ? body : JSON.stringify(body),
+        };
+        if (isFormData) {
+            config.headers = { ...options?.headers };
+            delete (config.headers as any)["Content-Type"];
+        }
+        return request<T>(url, config);
+    },
 };
 
 export function withAuth<T extends (...args: any[]) => Promise<any>>(apiMethod: T): T {
     return (async (...args: any[]): Promise<any> => {
-        const token = typeof window !== "undefined"
+        let token = typeof window !== "undefined"
             ? localStorage.getItem("auth_token") || ""
             : "";
 
-        /**
-         * Explicitly identify the index for the 'options' object.
-         * api.get/delete(url, options?) -> options is index 1
-         * api.post/put(url, body, options?) -> options is index 2
-         * 
-         * We check the arguments count passed to the inner function
-         * or derive it from the expected signature.
-         */
-        const isFullMethod = args.length >= 2 && typeof args[1] === 'object' && !Array.isArray(args[1]);
-
-        // If it's a POST/PUT, the options is at index 2. 
-        // If it's a GET/DELETE, it's at index 1.
-        // We can determine this by looking at how many arguments the service passed us.
-        let targetOptionsIndex = 1;
-
-        // If the 2nd argument exists and is NOT an object (meaning it's the 'body'), 
-        // then the 3rd argument (index 2) must be the options.
-        if (args.length >= 2 && (typeof args[1] === 'string' || (typeof args[1] === 'object' && args[1]?.data))) {
-            targetOptionsIndex = 2;
+        // Proactive Refresh: Check if token is expired before making the call
+        if (token && typeof window !== "undefined" && localStorage.getItem("user_email")) {
+            if (isTokenExpired(token)) {
+                console.log("[AUTH] Proactive Check: Token expired or expiring soon.");
+                // We let the request proceed to trigger the 401 logic in 'request' 
+                // OR we could trigger refresh here. 
+                // Given the existing structure, letting the request proceed and trigger 401 
+                // is cleaner as it reuses the 'isRefreshing' logic.
+            }
         }
 
-        // Ensure we don't skip arguments
+        const hasBodyAsSecondArg = args.length >= 2 &&
+            (typeof args[1] === 'string' || (typeof args[1] === 'object' && args[1] !== null && 'data' in args[1]));
+
+        const userEmail = typeof window !== "undefined" ? localStorage.getItem("user_email") : null;
+        const isGuest = token && !userEmail;
+
+        const targetOptionsIndex = hasBodyAsSecondArg ? 2 : 1;
+
         while (args.length <= targetOptionsIndex) {
             args.push(undefined);
         }
@@ -133,19 +271,16 @@ export function withAuth<T extends (...args: any[]) => Promise<any>>(apiMethod: 
         const existingOptions = args[targetOptionsIndex] || {};
         args[targetOptionsIndex] = {
             ...existingOptions,
-            token,
+            // Only send Bearer token if NOT a guest
+            token: isGuest ? undefined : token,
             headers: {
                 ...existingOptions.headers,
-                // If it's a guest token, some backends prefer it in a specific header
-                ...(token && !localStorage.getItem("user_email") ? { "x-guest-token": localStorage.getItem("auth_token") || "" } : {})
+                // Only send x-guest-token if IS a guest
+                ...(isGuest ? { "x-guest-token": token } : {})
             }
         };
-
-        console.log(`[AUTH WRAPPER] Injecting token into index ${targetOptionsIndex}`, {
-            method: args[0],
-            hasToken: !!token
-        });
 
         return apiMethod(...args);
     }) as T;
 }
+

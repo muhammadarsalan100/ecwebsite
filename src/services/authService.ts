@@ -129,8 +129,38 @@ export const authService = {
         withAuth(api.get)<ApiResponse<any>>("/api/v1.0/account"),
 
     /**
-     * Update profile (Requires Auth)
+     * Update base profile details (Requires Auth)
+     */
+    updateBaseProfile: (data: any) =>
+        withAuth(api.patch)<ApiResponse<any>>("/api/v1.0/user/update-base-profile", { data }),
+
+    /**
+     * Update account (Requires Auth)
      */
     updateProfile: (data: any) =>
         withAuth(api.put)("/api/v1.0/account", { data }),
+
+    /**
+     * Get list of payment modes (Requires Auth)
+     */
+    getPaymentModes: () =>
+        withAuth(api.get)<ApiResponse<any>>("/api/v1.0/payment-mode"),
+
+    /**
+     * Get user wishlist (Requires Auth)
+     */
+    getWishlist: () =>
+        withAuth(api.get)<ApiResponse<any>>("/api/v1.0/user/customer/wishlist"),
+
+    /**
+     * Add item to wishlist (Requires Auth)
+     */
+    addToWishlist: (id: number | string) =>
+        withAuth(api.post)<ApiResponse<any>>(`/api/v1.0/user/customer/wishlist/add/${id}`, { data: {} }),
+
+    /**
+     * Remove item from wishlist (Requires Auth)
+     */
+    removeFromWishlist: (id: number | string) =>
+        withAuth(api.delete)<ApiResponse<any>>(`/api/v1.0/user/customer/wishlist/remove/${id}`),
 };

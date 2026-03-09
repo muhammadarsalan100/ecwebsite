@@ -23,7 +23,7 @@ export function VendorSidebar({ email, currentStep }: VendorSidebarProps) {
         : "Seller";
 
     return (
-        <aside className="w-[240px] min-w-[240px] bg-[#0092FF] rounded-2xl flex flex-col py-8 px-5 gap-8 shadow-lg shadow-blue-500/20 self-start">
+        <aside className="w-48 lg:w-60 bg-[#0092FF] rounded-2xl flex flex-col py-8 px-4 lg:px-5 gap-6 lg:gap-8 shadow-lg shadow-blue-500/20 self-start">
             {/* Profile */}
             <div className="flex flex-col items-center gap-3 pt-2">
                 <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center overflow-hidden">

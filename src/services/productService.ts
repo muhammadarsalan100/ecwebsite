@@ -47,25 +47,4 @@ export const productService = {
             }
         }),
 
-    /**
-     * Public call: Get all products
-     */
-    getProducts: () => api.get<Product[]>("/products"),
-
-    /**
-     * Public call: Get single product
-     */
-    getProductById: (id: string) => api.get<Product>(`/products/${id}`),
-
-    /**
-     * Protected call: Add to wishlist (Associates token via wrapper)
-     */
-    addToWishlist: (productId: string) =>
-        withAuth(api.post)(`/wishlist`, { productId }),
-
-    /**
-     * Protected call: Get user wishlist
-     */
-    getWishlist: () =>
-        withAuth(api.get)("/wishlist"),
 };

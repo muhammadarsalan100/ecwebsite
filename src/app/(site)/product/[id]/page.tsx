@@ -77,6 +77,7 @@ function extractImages(item: CatalogItem): string[] {
  */
 function mapToProductInfoProps(item: CatalogItem) {
   return {
+    id: item.id,
     title: item.name,
     price: item.price,
     rating: item.rating ?? 0,

@@ -52,10 +52,21 @@ export default function VendorRegisterPage() {
         }
     }, [router]);
 
+    // Scroll to top when step changes
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, [currentStep]);
+
     const [isLoading, setIsLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
 
-    const handleCancel = () => setCurrentStep((p) => Math.max(1, p - 1));
+    const handleBack = () => {
+        if (currentStep === 1) {
+            router.push("/vendor/auth");
+            return;
+        }
+        setCurrentStep((p) => p - 1);
+    };
 
     const handleDone = async () => {
         setIsLoading(true);
@@ -74,10 +85,9 @@ export default function VendorRegisterPage() {
                     // Note: 'iban' removed from JSON if not in Postman example
                 },
                 business: {
-                    // Convert potential input strings to numbers or fallback to a default if testing
-                    countryId: parseInt(step3.country) || 3,
-                    stateId: parseInt(step3.state) || 3,
-                    cityId: parseInt(step3.city) || 3,
+                    countryId: parseInt(step3.countryId?.toString() || "") || 3,
+                    stateId: parseInt(step3.stateId?.toString() || "") || 3,
+                    cityId: parseInt(step3.cityId?.toString() || "") || 3,
                     addressLine1: step3.addressLine1,
                     addressLine2: step3.addressLine2,
                     zipCode: step3.zipCode
@@ -127,15 +137,15 @@ export default function VendorRegisterPage() {
     };
 
     if (isChecking) {
-        return <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        return <div className="h-[400px] sm:h-[600px] flex items-center justify-center bg-gray-50">
             <div className="w-8 h-8 border-4 border-[#0092FF] border-t-transparent rounded-full animate-spin"></div>
         </div>;
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-0 sm:min-h-screen bg-gray-50">
             {/* Breadcrumb */}
-            <div className="px-4 md:px-8 lg:px-16 py-5">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-5">
                 <nav className="flex items-center gap-1 text-sm text-gray-500" style={{ fontFamily: "var(--font-poppins)" }}>
                     <Link href="/" className="hover:text-[#0092FF] transition-colors">Home</Link>
                     <ChevronRight className="w-4 h-4" />
@@ -146,14 +156,14 @@ export default function VendorRegisterPage() {
             </div>
 
             {/* Main content */}
-            <div className="px-4 md:px-8 lg:px-16 pb-16 flex gap-8 items-start">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pb-8 sm:pb-16 flex gap-6 lg:gap-8 items-start">
                 {/* Left Sidebar */}
                 <div className="hidden md:block sticky top-24">
                     <VendorSidebar email={email} currentStep={currentStep} />
                 </div>
 
                 {/* Right Form Panel */}
-                <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
+                <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-8 min-h-0 sm:min-h-[500px]">
                     {apiError && (
                         <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-sm animate-shake">
                             <span className="font-semibold">Error:</span> {apiError}
@@ -164,6 +174,7 @@ export default function VendorRegisterPage() {
                             data={step1}
                             onChange={setStep1}
                             onNext={() => setCurrentStep(2)}
+                            onBack={handleBack}
                         />
                     )}
                     {currentStep === 2 && (
@@ -171,7 +182,7 @@ export default function VendorRegisterPage() {
                             data={step2}
                             onChange={setStep2}
                             onNext={() => setCurrentStep(3)}
-                            onCancel={handleCancel}
+                            onBack={handleBack}
                         />
                     )}
                     {currentStep === 3 && (
@@ -179,7 +190,7 @@ export default function VendorRegisterPage() {
                             data={step3}
                             onChange={setStep3}
                             onNext={() => setCurrentStep(4)}
-                            onCancel={handleCancel}
+                            onBack={handleBack}
                         />
                     )}
                     {currentStep === 4 && (
@@ -187,7 +198,7 @@ export default function VendorRegisterPage() {
                             data={step4}
                             onChange={setStep4}
                             onDone={handleDone}
-                            onCancel={handleCancel}
+                            onBack={handleBack}
                             isLoading={isLoading}
                         />
                     )}

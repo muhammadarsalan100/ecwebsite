@@ -3,12 +3,20 @@
 import { useState } from "react";
 import { VendorStepIndicator } from "@/components/vendor/VendorStepIndicator";
 import { vendorStep3Schema } from "@/schemas/vendor.schema";
+import { CountrySelectModal } from "@/components/wallet/CountrySelectModal";
+import { StateSelectModal } from "@/components/wallet/StateSelectModal";
+import { CitySelectModal } from "@/components/wallet/CitySelectModal";
+import { ChevronDown } from "lucide-react";
+import { Country, State, City } from "@/types";
 
 export interface Step3Data {
     country: string;
+    countryId?: string | number;
     zipCode: string;
     state: string;
+    stateId?: string | number;
     city: string;
+    cityId?: string | number;
     addressLine1: string;
     addressLine2: string;
 }
@@ -17,7 +25,7 @@ interface Step3BusinessInfoProps {
     data: Step3Data;
     onChange: (data: Step3Data) => void;
     onNext: () => void;
-    onCancel: () => void;
+    onBack: () => void;
 }
 
 type Errors = Partial<Record<keyof Step3Data, string>>;
@@ -32,9 +40,16 @@ const errorClass = "mt-1.5 text-xs text-red-500";
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function Step3BusinessInfo({ data, onChange, onNext, onCancel }: Step3BusinessInfoProps) {
+export function Step3BusinessInfo({ data, onChange, onNext, onBack }: Step3BusinessInfoProps) {
     const [errors, setErrors] = useState<Errors>({});
     const [submitted, setSubmitted] = useState(false);
+
+    const [countryId, setCountryId] = useState<string | number | null>(data.countryId || null);
+    const [stateId, setStateId] = useState<string | number | null>(data.stateId || null);
+
+    const [isCountryModalOpen, setCountryModalOpen] = useState(false);
+    const [isStateModalOpen, setStateModalOpen] = useState(false);
+    const [isCityModalOpen, setCityModalOpen] = useState(false);
 
     const handleChange = (field: keyof Step3Data) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -71,6 +86,56 @@ export function Step3BusinessInfo({ data, onChange, onNext, onCancel }: Step3Bus
         onNext();
     };
 
+    const handleSelectCountry = (country: Country) => {
+        const newData = {
+            ...data,
+            country: country.name,
+            countryId: country.id,
+            state: "",
+            stateId: undefined,
+            city: "",
+            cityId: undefined
+        };
+        onChange(newData);
+        setCountryId(country.id);
+        setStateId(null);
+        if (submitted) validateField("country", country.name);
+    };
+
+    const handleSelectState = (state: State) => {
+        const newData = {
+            ...data,
+            state: state.name,
+            stateId: state.id,
+            city: "",
+            cityId: undefined
+        };
+        onChange(newData);
+        setStateId(state.id);
+        if (submitted) validateField("state", state.name);
+    };
+
+    const handleSelectCity = (city: City) => {
+        const newData = {
+            ...data,
+            city: city.name,
+            cityId: city.id
+        };
+        onChange(newData);
+        if (submitted) validateField("city", city.name);
+    };
+
+    const validateField = (field: keyof Step3Data, value: string) => {
+        const newData = { ...data, [field]: value };
+        const result = vendorStep3Schema.safeParse(newData);
+        if (!result.success) {
+            const fieldError = result.error.issues.find(err => err.path[0] === field)?.message;
+            setErrors(prev => ({ ...prev, [field]: fieldError }));
+        } else {
+            setErrors(prev => ({ ...prev, [field]: undefined }));
+        }
+    };
+
     const field = (key: keyof Step3Data, label: string, placeholder: string, optional = false) => (
         <div>
             <label className={labelClass} style={{ fontFamily: "var(--font-poppins)" }}>
@@ -88,6 +153,25 @@ export function Step3BusinessInfo({ data, onChange, onNext, onCancel }: Step3Bus
         </div>
     );
 
+    const selectField = (key: keyof Step3Data, label: string, placeholder: string, onClick: () => void) => (
+        <div>
+            <label className={labelClass} style={{ fontFamily: "var(--font-poppins)" }}>
+                {label} <span className="text-red-400">*</span>
+            </label>
+            <div
+                onClick={onClick}
+                className={`flex items-center justify-between cursor-pointer ${errors[key] ? inputError : inputNormal}`}
+                style={{ fontFamily: "var(--font-poppins)" }}
+            >
+                <span className={`text-sm ${data[key] ? "text-gray-800" : "text-gray-400"}`}>
+                    {data[key] || placeholder}
+                </span>
+                <ChevronDown className="w-5 h-5 text-gray-400" />
+            </div>
+            {errors[key] && <p className={errorClass} style={{ fontFamily: "var(--font-poppins)" }}>{errors[key]}</p>}
+        </div>
+    );
+
     return (
         <div>
             <div className="mb-6">
@@ -98,18 +182,52 @@ export function Step3BusinessInfo({ data, onChange, onNext, onCancel }: Step3Bus
             <VendorStepIndicator currentStep={3} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {field("country", "Select Country", "Enter Country")}
+                {selectField("country", "Select Country", "Enter Country", () => setCountryModalOpen(true))}
                 {field("zipCode", "ZIP / Postal Code", "Enter ZIP / Postal Code")}
-                {field("state", "State / Region", "Enter State / Region")}
-                {field("city", "City / Town", "Enter City / Town")}
+                {selectField("state", "State / Region", "Enter State / Region", () => setStateModalOpen(true))}
+                {selectField("city", "City / Town", "Enter City / Town", () => setCityModalOpen(true))}
                 {field("addressLine1", "Address Line 1", "Enter Address Line 1")}
                 {field("addressLine2", "Address Line 2", "Enter Address Line 2 (optional)", true)}
             </div>
 
+            {/* Modals */}
+            <CountrySelectModal
+                isOpen={isCountryModalOpen}
+                onClose={() => setCountryModalOpen(false)}
+                onSelect={handleSelectCountry}
+                selectedCountry={data.country}
+            />
+            <StateSelectModal
+                isOpen={isStateModalOpen}
+                onClose={() => setStateModalOpen(false)}
+                onSelect={handleSelectState}
+                selectedState={data.state}
+                countryId={countryId || ""}
+            />
+            <CitySelectModal
+                isOpen={isCityModalOpen}
+                onClose={() => setCityModalOpen(false)}
+                onSelect={handleSelectCity}
+                selectedCity={data.city}
+                stateId={stateId || ""}
+            />
+
             {/* Actions */}
-            <div className="flex items-center justify-end gap-3 mt-8">
-                <button onClick={onCancel} className="h-11 px-8 border border-gray-300 text-gray-600 font-bold text-sm rounded-xl hover:bg-gray-50 transition-all font-poppins" style={{ fontFamily: "var(--font-poppins)" }}>Cancel</button>
-                <button onClick={handleNext} className="h-11 px-10 bg-[#0092FF] hover:bg-[#0081E0] text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-blue-500/20 font-poppins" style={{ fontFamily: "var(--font-poppins)" }}>Next</button>
+            <div className="flex flex-col sm:flex-row items-center justify-end gap-3 mt-10">
+                <button
+                    onClick={onBack}
+                    className="h-12 w-full sm:w-auto sm:px-8 order-2 sm:order-1 border border-gray-300 text-gray-600 font-bold text-sm rounded-xl hover:bg-gray-50 transition-all font-poppins active:scale-95"
+                    style={{ fontFamily: "var(--font-poppins)" }}
+                >
+                    Back
+                </button>
+                <button
+                    onClick={handleNext}
+                    className="h-12 w-full sm:w-auto sm:px-12 order-1 sm:order-2 bg-[#0092FF] hover:bg-[#0081E0] text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-blue-500/20 font-poppins active:scale-95"
+                    style={{ fontFamily: "var(--font-poppins)" }}
+                >
+                    Next
+                </button>
             </div>
         </div>
     );
