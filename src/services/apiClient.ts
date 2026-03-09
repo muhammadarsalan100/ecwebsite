@@ -260,7 +260,19 @@ export function withAuth<T extends (...args: any[]) => Promise<any>>(apiMethod: 
             (typeof args[1] === 'string' || (typeof args[1] === 'object' && args[1] !== null && 'data' in args[1]));
 
         const userEmail = typeof window !== "undefined" ? localStorage.getItem("user_email") : null;
-        const isGuest = token && !userEmail;
+        const userDataStr = typeof window !== "undefined" ? localStorage.getItem("user_data") : null;
+
+        // A session is only a "guest" if there is NO email stored anywhere.
+        let hasUserEmail = !!userEmail;
+        if (!hasUserEmail && userDataStr) {
+            try {
+                const ud = JSON.parse(userDataStr);
+                if (ud.email || ud.user?.email) hasUserEmail = true;
+            } catch { }
+        }
+
+        const isGuest = !hasUserEmail;
+        const staticGuestToken = process.env.NEXT_PUBLIC_GUEST_TOKEN || "";
 
         const targetOptionsIndex = hasBodyAsSecondArg ? 2 : 1;
 
@@ -271,16 +283,15 @@ export function withAuth<T extends (...args: any[]) => Promise<any>>(apiMethod: 
         const existingOptions = args[targetOptionsIndex] || {};
         args[targetOptionsIndex] = {
             ...existingOptions,
-            // Only send Bearer token if NOT a guest
-            token: isGuest ? undefined : token,
+            // Only send Bearer token if we have a real one in localStorage
+            token: token || undefined,
             headers: {
                 ...existingOptions.headers,
-                // Only send x-guest-token if IS a guest
-                ...(isGuest ? { "x-guest-token": token } : {})
+                // Always send the static guest token key for guest requests
+                ...(isGuest ? { "x-guest-token": staticGuestToken } : {})
             }
         };
 
         return apiMethod(...args);
     }) as T;
 }
-
