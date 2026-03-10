@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Share2, Truck, RefreshCw, ShieldCheck, ChevronRight, Heart } from "lucide-react";
+import { Star, Share2, Truck, RefreshCw, ShieldCheck, ChevronRight, Heart, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -9,12 +9,14 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { authService } from "@/services/authService";
 import { Toast, ToastType } from "@/components/ui/toast";
+import { useCartStore } from "@/lib/store/cartStore";
 
 import { ProductInfoProps } from "@/types";
 
 export function ProductInfo({
     id,
     title,
+    image,
     price,
     rating,
     reviewsCount,
@@ -26,15 +28,56 @@ export function ProductInfo({
 }: ProductInfoProps) {
     const { isAuthenticated } = useAuth();
     const router = useRouter();
+    const addItem = useCartStore((state) => state.addItem);
     const [selectedColor, setSelectedColor] = useState(colors[0]?.name);
     const [selectedSize, setSelectedSize] = useState(sizes[0]);
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
     const [toast, setToast] = useState<{ isVisible: boolean; message: string; type: ToastType }>({
         isVisible: false,
         message: "",
         type: "info"
     });
+
+    const handleAddToCart = () => {
+        if (!isAuthenticated) {
+            setToast({
+                isVisible: true,
+                message: "Please login to add items to your cart",
+                type: "auth"
+            });
+            return;
+        }
+
+        try {
+            setIsAddingToCart(true);
+            addItem({
+                id,
+                title,
+                price,
+                image,
+                quantity: 1,
+                color: selectedColor,
+                size: selectedSize,
+            });
+
+            setToast({
+                isVisible: true,
+                message: `${title} added to cart!`,
+                type: "success"
+            });
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            setToast({
+                isVisible: true,
+                message: "Failed to add to cart.",
+                type: "error"
+            });
+        } finally {
+            setIsAddingToCart(false);
+        }
+    };
 
     const handleWishlist = async () => {
         if (!isAuthenticated) {
@@ -201,9 +244,14 @@ export function ProductInfo({
             {/* Actions */}
             <div className="flex flex-col gap-4 mt-4">
                 <div className="flex gap-4">
-                    <Button className="flex-1 bg-[#0092FF] hover:opacity-90 text-white h-12 rounded-lg font-medium text-base" size="lg">
-                        <Share2 className="w-4 h-4 mr-2" />
-                        <span>Add to cart</span>
+                    <Button
+                        onClick={handleAddToCart}
+                        disabled={isAddingToCart}
+                        className="flex-1 bg-[#0092FF] hover:opacity-90 text-white h-12 rounded-lg font-medium text-base"
+                        size="lg"
+                    >
+                        <ShoppingCart className="size-6 mr-3" />
+                        <span>{isAddingToCart ? "Adding..." : "Add to cart"}</span>
                     </Button>
                     <div className="h-12 px-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-900 font-bold bg-white dark:bg-gray-900 dark:border-gray-800 dark:text-gray-100 min-w-[120px]">
                         ${price.toFixed(2)}

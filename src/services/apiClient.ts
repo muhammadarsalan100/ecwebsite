@@ -63,12 +63,11 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     try {
         let response = await fetch(url, config);
 
-        // Handle 401 Unauthorized - Attempt Token Refresh if candidate
+        // Handle 401 Unauthorized - Attempt Refresh (User) or Re-auth (Guest)
         if (response.status === 401 && typeof window !== 'undefined') {
             const userEmail = localStorage.getItem("user_email");
             const refreshToken = localStorage.getItem("refresh_token");
 
-            // Only attempt refresh if user was actually logged in (not guest session)
             if (userEmail && refreshToken) {
                 if (!isRefreshing) {
                     isRefreshing = true;
@@ -150,6 +149,85 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                                     resolve(data as T);
                                 } else {
                                     reject(new Error(data.message || "Retry failed after refresh"));
+                                }
+                            } catch (e) {
+                                reject(e);
+                            }
+                        });
+                    });
+                }
+            } else {
+                // Guest Session handling: If guest token is expired, just get a new guest session
+                if (!isRefreshing) {
+                    isRefreshing = true;
+                    try {
+                        console.log("[AUTH] Guest session expired, re-authenticating...");
+                        const guestResponse = await fetch(`${BASE_URL}/api/v1.0/account/login/guest-session`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'x-guest-token': process.env.NEXT_PUBLIC_GUEST_TOKEN || ""
+                            },
+                            body: JSON.stringify({})
+                        });
+
+                        if (guestResponse.ok) {
+                            const guestData = await guestResponse.json();
+                            const newToken = guestData.data?.accessToken;
+                            const newIdToken = guestData.data?.idToken;
+
+                            if (newToken) {
+                                localStorage.setItem("auth_token", newToken);
+                                if (newIdToken) localStorage.setItem("id_token", newIdToken);
+
+                                // Update user_data for hydration consistency
+                                const userDataStr = localStorage.getItem("user_data");
+                                if (userDataStr) {
+                                    try {
+                                        const userData = JSON.parse(userDataStr);
+                                        userData.accessToken = newToken;
+                                        if (newIdToken) userData.idToken = newIdToken;
+                                        localStorage.setItem("user_data", JSON.stringify(userData));
+                                    } catch (e) { }
+                                }
+
+                                console.log("[AUTH] Guest session restored.");
+                                onRefreshed(newToken);
+                                isRefreshing = false;
+
+                                // Retry original request
+                                const newConfig = { ...config };
+                                (newConfig.headers as any)["Authorization"] = `Bearer ${newToken}`;
+                                response = await fetch(url, newConfig);
+                            } else {
+                                throw new Error("Invalid guest session response");
+                            }
+                        } else {
+                            throw new Error("Guest re-auth failed");
+                        }
+                    } catch (error) {
+                        console.error("[AUTH] Guest re-auth failure:", error);
+                        isRefreshing = false;
+                        // If guest re-auth fails, we throw the error so the app knows it can't proceed
+                        throw error;
+                    }
+                } else {
+                    // Already refreshing guest (or user) token, wait in queue
+                    return new Promise((resolve, reject) => {
+                        subscribeTokenRefresh(async (newToken) => {
+                            try {
+                                const newConfig = { ...config };
+                                (newConfig.headers as any)["Authorization"] = `Bearer ${newToken}`;
+                                const retryResponse = await fetch(url, newConfig);
+                                if (retryResponse.status === 401) {
+                                    reject(new Error("Unauthorized after guest session reset"));
+                                    return;
+                                }
+                                const data = await retryResponse.json().catch(() => ({}));
+                                if (retryResponse.ok) {
+                                    resolve(data as T);
+                                } else {
+                                    reject(new Error(data.message || "Retry failed after guest reset"));
                                 }
                             } catch (e) {
                                 reject(e);
@@ -245,8 +323,9 @@ export function withAuth<T extends (...args: any[]) => Promise<any>>(apiMethod: 
             ? localStorage.getItem("auth_token") || ""
             : "";
 
-        // Proactive Refresh: Check if token is expired before making the call
-        if (token && typeof window !== "undefined" && localStorage.getItem("user_email")) {
+        // Proactive Check: If token is expired, we let it proceed to trigger the standard 
+        // 401 handling in 'request' which will execute the appropriate refresh/re-auth logic.
+        if (token && typeof window !== "undefined") {
             if (isTokenExpired(token)) {
                 console.log("[AUTH] Proactive Check: Token expired or expiring soon.");
                 // We let the request proceed to trigger the 401 logic in 'request' 

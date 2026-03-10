@@ -19,6 +19,7 @@ import { SearchBar } from "./navbar/SearchBar";
 import { UserActions } from "./navbar/UserActions";
 import { MobileMenu } from "./navbar/MobileMenu";
 import { Language, LANGUAGES } from "./LanguageSelector";
+import { useCartStore, useCartSubtotal } from "@/lib/store/cartStore";
 import { useConfigStore } from "@/lib/store/configStore";
 
 
@@ -108,6 +109,9 @@ export default function Navbar() {
     }
   };
 
+  const cartItems = useCartStore((state) => state.items);
+  const subtotal = useCartSubtotal();
+
   return (
     <div className='flex flex-col w-full z-50 relative font-poppins text-foreground'>
       <NavTopBar
@@ -188,12 +192,19 @@ export default function Navbar() {
               </Link>
 
               <Link
-                href='/billing'
-                onClick={(e) => handleProtectedNavigation(e, '/billing')}
+                href='/cart'
+                onClick={(e) => handleProtectedNavigation(e, '/cart')}
                 className='flex flex-col items-center gap-1 hover:opacity-80 transition-opacity'
               >
-                <ShoppingCart className='w-6 h-6' />
-                <span className="text-[10px] font-bold">$0.00</span>
+                <div className="relative">
+                  <ShoppingCart className='w-6 h-6' />
+                  {cartItems.length > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                      {cartItems.length}
+                    </span>
+                  )}
+                </div>
+                <span className="text-[10px] font-bold">${subtotal.toFixed(2)}</span>
               </Link>
 
               <button

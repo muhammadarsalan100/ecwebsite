@@ -54,20 +54,9 @@ export default function PersonalDataPage() {
         setIsSaving(true);
         setSaveStatus(null);
         try {
-            const updateData: any = {
+            const updateData = {
                 fullName: formData.fullName,
                 phoneNo: formData.phoneNumber,
-            };
-
-            // Only add password if changed from the masked value
-            if (formData.password !== "************") {
-                updateData.password = formData.password;
-            }
-
-            // Included business details if your API supports it on this endpoint
-            updateData.business = {
-                addressLine1: formData.streetAddress,
-                zipCode: formData.postalCode,
             };
 
             await authService.updateBaseProfile(updateData);
@@ -102,6 +91,10 @@ export default function PersonalDataPage() {
                 <p className="text-gray-400 mt-1 font-medium text-xs sm:text-sm" style={{ fontFamily: "var(--font-poppins)" }}>
                     Verify your identify
                 </p>
+                <div className="mt-4 p-3 bg-blue-50/50 border border-blue-100 rounded-xl flex items-center gap-2 text-[#0092FF] text-[10px] sm:text-xs font-medium">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    <span>Only your Full Name and Phone Number can be updated in this section.</span>
+                </div>
             </div>
 
             {/* Form Grid */}
@@ -126,7 +119,7 @@ export default function PersonalDataPage() {
                         type="email"
                         value={formData.email}
                         readOnly
-                        className={cn(inputClass, "bg-gray-50/50 text-gray-400 cursor-not-allowed")}
+                        className={cn(inputClass, "bg-gray-50/80 text-gray-400 cursor-not-allowed border-gray-100")}
                         style={{ fontFamily: "var(--font-poppins)" }}
                     />
                 </div>
@@ -151,22 +144,22 @@ export default function PersonalDataPage() {
                         <input
                             type="password"
                             value={formData.password}
-                            onChange={handleChange("password")}
-                            className={inputClass}
+                            readOnly
+                            className={cn(inputClass, "bg-gray-50/80 text-gray-400 cursor-not-allowed border-gray-100")}
                             style={{ fontFamily: "var(--font-poppins)" }}
                         />
                     </div>
                 </div>
 
                 {/* Street Address */}
-                <div className="space-y-1 md:col-span-1">
+                <div className="space-y-1">
                     <label className={labelClass} style={{ fontFamily: "var(--font-poppins)" }}>Street Address</label>
                     <input
                         type="text"
                         value={formData.streetAddress}
-                        onChange={handleChange("streetAddress")}
-                        placeholder="700 N Main St, #201 Victoria, TX 77901"
-                        className={inputClass}
+                        readOnly
+                        placeholder="Not set"
+                        className={cn(inputClass, "bg-gray-50/80 text-gray-400 cursor-not-allowed border-gray-100")}
                         style={{ fontFamily: "var(--font-poppins)" }}
                     />
                 </div>
@@ -177,9 +170,9 @@ export default function PersonalDataPage() {
                     <input
                         type="text"
                         value={formData.postalCode}
-                        onChange={handleChange("postalCode")}
-                        placeholder="Postal Code"
-                        className={inputClass}
+                        readOnly
+                        placeholder="Not set"
+                        className={cn(inputClass, "bg-gray-50/80 text-gray-400 cursor-not-allowed border-gray-100")}
                         style={{ fontFamily: "var(--font-poppins)" }}
                     />
                 </div>

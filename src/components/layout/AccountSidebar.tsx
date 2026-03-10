@@ -17,8 +17,9 @@ import {
 
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
-const sidebarItems = [
+export const sidebarItems = [
     {
         title: "Personal Data",
         href: "/account/personal-data",
@@ -72,19 +73,24 @@ export function AccountSidebar() {
         ? (user.fullName || user.fullname || user.name || (user.email ? user.email.split('@')[0] : "User"))
         : "Loading...";
 
+    const initials = mounted && user
+        ? (user.fullName || user.fullname || user.name || user.email || "U").charAt(0).toUpperCase()
+        : "";
+
     return (
-        <aside className="w-full md:w-[280px] md:min-w-[280px] bg-[#0092FF] text-white rounded-[32px] flex-shrink-0 min-h-[600px] flex flex-col py-8 px-6 shadow-xl shadow-blue-500/10">
+        <aside className="w-full md:w-[280px] md:min-w-[280px] bg-[#0092FF] text-white rounded-[24px] md:rounded-[32px] flex-shrink-0 md:min-h-[600px] flex flex-col py-6 md:py-8 px-5 md:px-6 shadow-xl shadow-blue-500/10">
             {/* Profile Section */}
             <div className="flex items-center gap-4 mb-10">
-                <div className="relative w-20 h-20 shrink-0 rounded-full border-2 border-white/20 overflow-hidden shadow-inner">
-                    <Image
-                        src="/ProfileImg.png"
+                <Avatar className="w-20 h-20 border-2 border-white/20 shadow-inner">
+                    <AvatarImage
+                        src={user?.personImageUrl || user?.imageUrl}
                         alt="Profile"
-                        fill
                         className="object-cover"
-                        unoptimized
                     />
-                </div>
+                    <AvatarFallback className="bg-white/10 text-white font-bold text-2xl uppercase">
+                        {initials}
+                    </AvatarFallback>
+                </Avatar>
                 <div className="min-w-0">
                     <h3 className="font-bold text-lg text-white truncate" style={{ fontFamily: "var(--font-poppins)" }}>
                         {displayName}

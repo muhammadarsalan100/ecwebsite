@@ -136,7 +136,7 @@ export function SmartWearableBanner() {
           </motion.div>
 
           {/* Content Flex Container */}
-          <div className='relative z-10 flex flex-col-reverse md:flex-row h-auto md:h-[308px] overflow-visible'>
+          <div className='relative z-10 flex flex-col-reverse md:flex-row h-auto md:h-[308px] overflow-hidden'>
 
             {/* Left Text Content */}
             <div className='flex-1 flex flex-col justify-center px-6 py-8 md:pl-16 md:pr-8 text-center md:text-left'>

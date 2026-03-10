@@ -1,13 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { Star, Heart } from "lucide-react";
+import { Star, Heart, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Product } from "@/types";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
+import { useCartStore } from "@/lib/store/cartStore";
 import { authService } from "@/services/authService";
 import { cn } from "@/lib/utils";
 import { Toast, ToastType } from "@/components/ui/toast";
@@ -41,6 +42,48 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
     });
 
     const router = useRouter();
+    const addItem = useCartStore((state) => state.addItem);
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!isAuthenticated) {
+            setToast({
+                isVisible: true,
+                message: "Please login to add items to your cart",
+                type: "auth"
+            });
+            return;
+        }
+
+        try {
+            setIsAddingToCart(true);
+            addItem({
+                id: product.id,
+                title: product.name,
+                price: Number(product.price),
+                image: product.image,
+                quantity: 1,
+            });
+
+            setToast({
+                isVisible: true,
+                message: `${product.name} added to cart!`,
+                type: "success"
+            });
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            setToast({
+                isVisible: true,
+                message: "Failed to add to cart.",
+                type: "error"
+            });
+        } finally {
+            setIsAddingToCart(false);
+        }
+    };
 
     const handleWishlist = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -176,6 +219,18 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
                     )}
                 </div>
             </Link>
+
+            <button
+                onClick={handleAddToCart}
+                disabled={isAddingToCart}
+                className={cn(
+                    "mt-4 w-full h-11 bg-[#0092FF] hover:bg-[#0081E0] text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 active:scale-95",
+                    isAddingToCart && "opacity-70 cursor-not-allowed"
+                )}
+            >
+                <ShoppingCart className="w-4 h-4" />
+                <span>{isAddingToCart ? "Adding..." : "Add to cart"}</span>
+            </button>
 
             <Toast
                 isVisible={toast.isVisible}

@@ -76,9 +76,11 @@ function extractImages(item: CatalogItem): string[] {
  * so we default to empty arrays and let the UI gracefully handle it.
  */
 function mapToProductInfoProps(item: CatalogItem) {
+  const images = extractImages(item);
   return {
     id: item.id,
     title: item.name,
+    image: images[0] || "/p-1.jpg",
     price: item.price,
     rating: item.rating ?? 0,
     reviewsCount: 0, // not in this endpoint

@@ -8,7 +8,7 @@ export function LeatherBagBanner() {
     <section className='w-full pt-12 pb-12 md:pt-32'>
       <div className='mx-auto max-w-7xl px-4 md:px-8 lg:px-12'>
         <motion.div
-          className='relative overflow-visible w-full rounded-[30px]'
+          className='relative overflow-hidden w-full rounded-[30px]'
           style={{
             background: "#F8F8F8",
           }}

@@ -90,6 +90,8 @@ export interface ProfileData {
     id: number;
     code: string;
     active: boolean;
+    personImageUrl?: string;
+    imageUrl?: string;
     createDate: string;
     modifiedDate: string;
 }

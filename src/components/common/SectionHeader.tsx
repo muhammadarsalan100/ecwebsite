@@ -19,19 +19,19 @@ export function SectionHeader({
   return (
     <div className={`mb-8 ${className}`}>
       <div className='flex items-start justify-between'>
-        <div>
+        <div className="flex-1 min-w-0 pr-4">
           {variant === "serif" ? (
-            <h2 className='text-3xl md:text-4xl mb-1'>
+            <h2 className='text-2xl md:text-3xl lg:text-4xl mb-1 break-words'>
               <span className='font-serif italic'>{titleBold}</span>{" "}
               <span className='font-sans font-light'>{titleLight}</span>
             </h2>
           ) : (
-            <h2 className='text-3xl md:text-4xl font-bold font-poppins text-foreground leading-tight'>
+            <h2 className='text-2xl md:text-3xl lg:text-4xl font-bold font-poppins text-foreground leading-tight break-words whitespace-normal'>
               {titleFull || <>{titleBold} {titleLight}</>}
             </h2>
           )}
 
-          {variant === "serif" && <div className='w-65 h-px bg-gray-300 mt-4 mb-3' />}
+          {variant === "serif" && <div className='w-full max-w-[260px] h-px bg-gray-300 mt-4 mb-3' />}
 
           {subtitle && (
             <p className='text-muted-foreground text-sm mt-2'>{subtitle}</p>

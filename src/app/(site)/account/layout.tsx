@@ -1,10 +1,11 @@
 "use client";
 
-import { AccountSidebar } from "@/components/layout/AccountSidebar";
+import { AccountSidebar, sidebarItems } from "@/components/layout/AccountSidebar";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { cn } from "@/lib/utils";
 
 const PAGE_NAMES: Record<string, string> = {
     "personal-data": "Personal Data",
@@ -36,13 +37,41 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
                 {/* Main Content Area */}
                 <div className="max-w-7xl mx-auto px-4 md:px-8 pb-10 sm:pb-20 flex flex-col lg:flex-row gap-8">
-                    {/* Sidebar - Hidden on mobile, sticky on desktop */}
+                    {/* Sidebar - Persistent on desktop, icon bar on mobile */}
                     <div className="hidden lg:block sticky top-24">
                         <AccountSidebar />
                     </div>
 
+                    {/* Mobile Navigation Bar - Horizontal Icons */}
+                    <div className="lg:hidden">
+                        <div className="bg-[#0092FF] rounded-2xl p-4 flex gap-4 overflow-x-auto scrollbar-hide mb-2 border border-blue-400/20">
+                            {sidebarItems.map((item) => {
+                                const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                                const Icon = item.icon;
+                                return (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        className={cn(
+                                            "flex flex-col items-center gap-1.5 min-w-[80px] transition-all",
+                                            isActive ? "text-white scale-110" : "text-white/60"
+                                        )}
+                                    >
+                                        <div className={cn(
+                                            "w-10 h-10 rounded-xl flex items-center justify-center transition-colors",
+                                            isActive ? "bg-white/20 border border-white/20 shadow-sm" : ""
+                                        )}>
+                                            <Icon className="w-5 h-5 border-none" />
+                                        </div>
+                                        <span className="text-[10px] font-bold whitespace-nowrap">{item.title}</span>
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    </div>
+
                     {/* Content Panel */}
-                    <main className="flex-1 bg-white rounded-[24px] sm:rounded-[40px] shadow-sm border border-gray-100 p-6 md:p-10 min-h-0 sm:min-h-[600px]">
+                    <main className="flex-1 bg-white rounded-[24px] sm:rounded-[40px] shadow-sm border border-gray-100 p-5 sm:p-10 min-h-0 sm:min-h-[600px]">
                         {children}
                     </main>
                 </div>

@@ -156,14 +156,28 @@ export default function VendorRegisterPage() {
             </div>
 
             {/* Main content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pb-8 sm:pb-16 flex gap-6 lg:gap-8 items-start">
-                {/* Left Sidebar */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pb-8 sm:pb-16 flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
+                {/* Mobile Step Indicator */}
+                <div className="w-full md:hidden bg-white rounded-2xl p-4 border border-gray-100 shadow-sm mb-2">
+                    <div className="flex items-center justify-between mb-4">
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Step {currentStep} of {STEP_LABELS.length}</span>
+                        <span className="text-sm font-bold text-[#0092FF]">{STEP_LABELS[currentStep - 1]}</span>
+                    </div>
+                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                            className="h-full bg-[#0092FF] transition-all duration-500"
+                            style={{ width: `${(currentStep / STEP_LABELS.length) * 100}%` }}
+                        />
+                    </div>
+                </div>
+
+                {/* Left Sidebar - Desktop only */}
                 <div className="hidden md:block sticky top-24">
                     <VendorSidebar email={email} currentStep={currentStep} />
                 </div>
 
                 {/* Right Form Panel */}
-                <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-8 min-h-0 sm:min-h-[500px]">
+                <div className="flex-1 w-full bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-10 min-h-0 sm:min-h-[600px]">
                     {apiError && (
                         <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-sm animate-shake">
                             <span className="font-semibold">Error:</span> {apiError}

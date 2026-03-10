@@ -7,10 +7,10 @@ export default function SiteLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="flex flex-col min-h-screen overflow-x-hidden">
       <Navbar />
-      <main className='grow'>{children}</main>
+      <main className='grow overflow-x-hidden w-full'>{children}</main>
       <Footer />
-    </>
+    </div>
   );
 }

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { X, Home, Store, ShieldCheck, LogOut, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RegionSelector } from "../RegionSelector";
+import { useCartStore } from "@/lib/store/cartStore";
 
 interface MobileMenuProps {
     isOpen: boolean;
@@ -33,6 +34,8 @@ export function MobileMenu({
     setSelectedCountry,
     countries
 }: MobileMenuProps) {
+    const cartItems = useCartStore((state) => state.items);
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -99,12 +102,17 @@ export function MobileMenu({
                                         <span className="text-sm font-bold text-gray-700 group-hover:text-[#0092FF] transition-colors">Wallet</span>
                                     </Link>
                                     <Link
-                                        href="/billing"
+                                        href="/cart"
                                         onClick={() => setIsOpen(false)}
                                         className="flex flex-col items-center justify-center gap-3 p-5 bg-white shadow-sm hover:shadow-md border border-gray-100 hover:border-blue-200 rounded-3xl transition-all group"
                                     >
-                                        <div className="w-12 h-12 bg-[#0092FF] rounded-full shadow-lg shadow-blue-200 group-hover:scale-110 transition-transform flex items-center justify-center">
+                                        <div className="w-12 h-12 bg-[#0092FF] rounded-full shadow-lg shadow-blue-200 group-hover:scale-110 transition-transform flex items-center justify-center relative">
                                             <ShoppingCart className="w-6 h-6 text-white" />
+                                            {cartItems.length > 0 && (
+                                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
+                                                    {cartItems.length}
+                                                </span>
+                                            )}
                                         </div>
                                         <span className="text-sm font-bold text-gray-700 group-hover:text-[#0092FF] transition-colors">Cart</span>
                                     </Link>
