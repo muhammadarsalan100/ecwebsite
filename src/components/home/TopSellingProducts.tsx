@@ -13,7 +13,7 @@ import {
 import { motion } from "framer-motion";
 
 import { useCarousel } from "@/hooks/useCarousel";
-import { productService } from "@/services/productService";
+import { authService } from "@/services/authService";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { SectionHeader } from "@/components/common/SectionHeader";
@@ -36,26 +36,28 @@ export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsP
       if (isAuthLoading) return;
 
       try {
-        const response = await productService.getTopSoldProducts();
-        console.log("[DEBUG] TopSold Response:", response);
-        if (response && response.data && response.data.length > 0) {
-          // Map API response to UI expected format
-          const mappedProducts = response.data.map((item: any) => ({
-            id: item.itemId,
-            name: item?.item?.itemName || "Product",
-            image: item?.item?.icon || "/p-1.jpg",
-            price: item.totalSale ? (item.totalSale / 10) : 0,
-            reviews: item.totalSale || "0",
+        const response = await authService.getTopVendors();
+        const vendors: any[] = response?.data?.items || [];
+
+        // Flatten all topProducts from every vendor into one list
+        const mappedProducts = vendors.flatMap((vendor: any) =>
+          (vendor.topProducts || []).map((product: any) => ({
+            id: product.listingId || product.itemId,
+            name: product.itemName || "Product",
+            image: product.logo || "/p-1.jpg",
+            price: product.currentPrice || 0,
+            reviews: product.unitsSold || 0,
             rating: 5,
-          }));
-          console.log("[DEBUG] Mapped Products:", mappedProducts);
+          }))
+        );
+
+        if (mappedProducts.length > 0) {
           setProducts(mappedProducts);
-        } else {
-          console.log("[DEBUG] No top sold products found in response");
-          if (initialProducts.length > 0) setProducts(initialProducts);
+        } else if (initialProducts.length > 0) {
+          setProducts(initialProducts);
         }
       } catch (error) {
-        console.error("Failed to fetch top sold products:", error);
+        console.error("Failed to fetch top vendors:", error);
         if (initialProducts.length > 0) setProducts(initialProducts);
       } finally {
         setIsLoading(false);
@@ -63,7 +65,7 @@ export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsP
     };
 
     fetchTopSold();
-  }, [isAuthLoading, isAuthenticated]); // Removed initialProducts from dependencies to prevent infinite loop
+  }, [isAuthLoading, isAuthenticated]);
 
   if (isLoading) {
     return (

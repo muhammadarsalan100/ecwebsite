@@ -163,4 +163,10 @@ export const authService = {
      */
     removeFromWishlist: (id: number | string) =>
         withAuth(api.delete)<ApiResponse<any>>(`/api/v1.0/user/customer/wishlist/remove/${id}`),
+
+    /**
+     * Get top vendors with their top products (works for both auth and guest tokens)
+     */
+    getTopVendors: () =>
+        withAuth(api.get)<ApiResponse<any>>("/api/v1.0/user/vendor/top-vendors"),
 };

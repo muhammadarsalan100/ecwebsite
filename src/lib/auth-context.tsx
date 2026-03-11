@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { authService } from "@/services/authService";
 import { ProfileData } from "@/types/auth";
 import { useConfigStore } from "@/lib/store/configStore";
+import { useCartStore } from "@/lib/store/cartStore";
 
 // Types
 export interface User extends Partial<ProfileData> {
@@ -115,6 +116,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem("id_token");
         localStorage.removeItem("refresh_token");
         localStorage.removeItem("user_email");
+
+        // Clear cart data
+        try {
+            const { clearCart } = useCartStore.getState();
+            clearCart();
+        } catch (error) {
+            console.error("Failed to clear cart during logout:", error);
+        }
 
         // Clear config data
         try {
