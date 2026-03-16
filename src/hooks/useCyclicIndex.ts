@@ -1,5 +1,15 @@
 import { useState, useCallback } from "react";
 
+/**
+ * Manages a cyclically incrementing/decrementing index within a fixed-length array.
+ * Wraps around at both ends — useful for carousels, slideshows, and image galleries.
+ *
+ * @param length - The total number of items (upper bound, exclusive).
+ * @param initialIndex - Starting index (defaults to 0).
+ *
+ * @example
+ * const { index, next, prev } = useCyclicIndex(images.length);
+ */
 export function useCyclicIndex(length: number, initialIndex: number = 0) {
     const [index, setIndex] = useState(initialIndex);
 

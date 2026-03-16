@@ -1,36 +1,37 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
+/**
+ * A hook that syncs state with localStorage.
+ * Works safely in SSR environments — returns the initial value during server-side rendering.
+ *
+ * @param key - The localStorage key to read/write.
+ * @param initialValue - The initial value if no stored value exists.
+ * @returns A stateful value and a setter function that also persists to localStorage.
+ *
+ * @example
+ * const [theme, setTheme] = useLocalStorage("theme", "light");
+ */
 export function useLocalStorage<T>(key: string, initialValue: T) {
-    // State to store our value
-    // Pass initial state function to useState so logic is only executed once
     const [storedValue, setStoredValue] = useState<T>(() => {
-        if (typeof window === "undefined") {
-            return initialValue;
-        }
+        if (typeof window === "undefined") return initialValue;
         try {
             const item = window.localStorage.getItem(key);
-            return item ? JSON.parse(item) : initialValue;
+            return item ? (JSON.parse(item) as T) : initialValue;
         } catch (error) {
-            console.log(error);
+            console.error(`[useLocalStorage] Failed to read key "${key}":`, error);
             return initialValue;
         }
     });
 
-    // Return a wrapped version of useState's setter function that ...
-    // ... persists the new value to localStorage.
     const setValue = (value: T | ((val: T) => T)) => {
         try {
-            // Allow value to be a function so we have same API as useState
-            const valueToStore =
-                value instanceof Function ? value(storedValue) : value;
-            // Save state
+            const valueToStore = value instanceof Function ? value(storedValue) : value;
             setStoredValue(valueToStore);
-            // Save to local storage
             if (typeof window !== "undefined") {
                 window.localStorage.setItem(key, JSON.stringify(valueToStore));
             }
         } catch (error) {
-            console.log(error);
+            console.error(`[useLocalStorage] Failed to write key "${key}":`, error);
         }
     };
 

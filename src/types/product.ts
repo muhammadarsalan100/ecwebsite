@@ -1,5 +1,7 @@
 import { StaticImageData } from "next/image";
 
+// ─── UI Display Types ──────────────────────────────────────────────────────────
+
 export interface Product {
     id: string;
     name: string;
@@ -18,6 +20,60 @@ export interface FeaturedProductCard {
     title: string;
     subtitle?: string;
 }
+
+export interface ProductItem {
+    id: string;
+    name: string;
+    image: string;
+    price: number;
+}
+
+export interface ProductColor {
+    name: string;
+    value: string;
+}
+
+// ─── Component Props ───────────────────────────────────────────────────────────
+
+export interface ProductInfoProps {
+    id: string | number;
+    title: string;
+    image: string;
+    price: number;
+    rating: number;
+    reviewsCount: number;
+    description: string;
+    colors: ProductColor[];
+    sizes: string[];
+    category: string;
+    subcategory: string;
+}
+
+export interface ProductGalleryProps {
+    images: string[];
+}
+
+export interface Review {
+    id: string;
+    user: string;
+    rating: number;
+    comment: string;
+    date: string;
+}
+
+export interface FAQ {
+    id: string;
+    question: string;
+    answer: string;
+}
+
+export interface ProductTabsProps {
+    description: string;
+    reviews?: Review[];
+    faqs?: FAQ[];
+}
+
+// ─── Category & Attribute API Types ──────────────────────────────────────────
 
 export interface CategoryImage {
     url: string;
@@ -71,89 +127,11 @@ export interface Category {
     modifiedDate: string | null;
 }
 
-export interface ProductItem {
-    id: string;
-    name: string;
-    image: string;
-    price: number;
-}
-
-export interface ProductColor {
-    name: string;
-    value: string;
-}
-
-export interface ProductInfoProps {
-    id: string | number;
-    title: string;
-    image: string;
-    price: number;
-    rating: number;
-    reviewsCount: number;
-    description: string;
-    colors: ProductColor[];
-    sizes: string[];
-    category: string;
-    subcategory: string;
-}
-
-export interface Review {
-    id: string;
-    user: string;
-    rating: number;
-    comment: string;
-    date: string;
-}
-
-export interface FAQ {
-    id: string;
-    question: string;
-    answer: string;
-}
-
-export interface ProductTabsProps {
-    description: string;
-    reviews?: Review[];
-    faqs?: FAQ[];
-}
-
-export interface ProductGalleryProps {
-    images: string[];
-}
-
-export interface TopSoldItem {
-    vendorId: number;
-    itemId: number;
-    totalSale: number;
-    item: {
-        itemId: number;
-        itemName: string;
-        icon: string;
-    };
-}
+// ─── Catalog API Types ─────────────────────────────────────────────────────────
 
 export interface CatalogItemImage {
     url: string;
     id: number | string;
-    code: string;
-    active: boolean;
-    createDate: string;
-    modifiedDate: string | null;
-}
-
-export interface Vendor {
-    email: string;
-    fullName: string;
-    firstName: string;
-    lastName: string;
-    role: string;
-    status: string;
-    dob: string | null;
-    gender: string;
-    phoneNo: string | null;
-    lastLoginAt: string | null;
-    approvedDate: string | null;
-    id: number;
     code: string;
     active: boolean;
     createDate: string;
@@ -179,7 +157,24 @@ export interface CatalogItem {
     rating: number;
     images: CatalogItemImage[];
     category: Category;
-    vendor: Vendor;
+    vendor: {
+        email: string;
+        fullName: string;
+        firstName: string;
+        lastName: string;
+        role: string;
+        status: string;
+        dob: string | null;
+        gender: string;
+        phoneNo: string | null;
+        lastLoginAt: string | null;
+        approvedDate: string | null;
+        id: number;
+        code: string;
+        active: boolean;
+        createDate: string;
+        modifiedDate: string | null;
+    };
     id: number;
     code: string;
     active: boolean;
@@ -195,4 +190,51 @@ export interface CatalogSearchResponse {
     totalPages: number;
     hasPrevious: boolean;
     hasNext: boolean;
+}
+
+export interface TopSoldItem {
+    vendorId: number;
+    itemId: number;
+    totalSale: number;
+    item: {
+        itemId: number;
+        itemName: string;
+        icon: string;
+    };
+}
+
+// ─── Top Vendors API Types ────────────────────────────────────────────────────
+
+export interface TopVendorProduct {
+    itemId: number;
+    itemName: string;
+    logo: string;
+    unitsSold: number;
+    totalSale: number;
+    listingId: number;
+    currentPrice: number;
+    categoryId: number;
+    categoryName: string;
+}
+
+export interface TopVendor {
+    vendorId: number;
+    storeId: number;
+    storeName: string;
+    vendorName: string;
+    totalUnitsSold: number;
+    totalSale: number;
+    followersCount: number;
+    isFollowed: boolean;
+    topProducts: TopVendorProduct[];
+}
+
+export interface TopVendorsResponse {
+    items: TopVendor[];
+    nextCursor: {
+        lastStoreId: number;
+        lastVendorId: number;
+        lastTotalUnitsSold: number;
+        lastTotalSale: number;
+    } | null;
 }

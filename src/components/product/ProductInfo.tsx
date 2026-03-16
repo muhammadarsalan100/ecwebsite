@@ -111,7 +111,7 @@ export function ProductInfo({
             }
         } catch (error: any) {
             console.error("Error adding to wishlist:", error);
-            if (error.response?.data?.message?.includes("already")) {
+            if (error.message?.toLowerCase().includes("already")) {
                 setIsWishlisted(true);
                 setToast({
                     isVisible: true,
@@ -121,7 +121,7 @@ export function ProductInfo({
             } else {
                 setToast({
                     isVisible: true,
-                    message: "Failed to add to wishlist. Please try again.",
+                    message: error.message || "Failed to add to wishlist.",
                     type: "error"
                 });
             }
@@ -182,9 +182,10 @@ export function ProductInfo({
             </div>
 
             {/* Description */}
-            <p className="text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                {description}
-            </p>
+            <div 
+                className="text-base text-gray-600 dark:text-gray-300 leading-relaxed product-description"
+                dangerouslySetInnerHTML={{ __html: description }}
+            />
 
             <div className="h-px bg-gray-200 dark:bg-gray-800 my-2" />
 

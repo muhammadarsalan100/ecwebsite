@@ -210,3 +210,52 @@ body {
 .animate-shake {
   animation: shake 0.4s ease-in-out;
 }
+
+/* Product Description Styling */
+.product-description h1, 
+.product-description h2, 
+.product-description h3, 
+.product-description h4 {
+  font-weight: 700;
+  color: var(--foreground);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.product-description h3 {
+  font-size: 1.125rem;
+}
+
+.product-description p {
+  margin-bottom: 1rem;
+  line-height: 1.625;
+}
+
+.product-description ul {
+  list-style-type: disc;
+  list-style-position: outside;
+  margin-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.product-description ol {
+  list-style-type: decimal;
+  list-style-position: outside;
+  margin-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.product-description li {
+  margin-bottom: 0.25rem;
+}
+
+.product-description strong {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.product-description br {
+  display: block;
+  content: "";
+  margin-top: 0.5rem;
+}

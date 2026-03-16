@@ -120,7 +120,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
             }
         } catch (error: any) {
             console.error("Error adding to wishlist:", error);
-            if (error.response?.data?.message?.includes("already")) {
+            if (error.message?.toLowerCase().includes("already")) {
                 setIsWishlisted(true);
                 setToast({
                     isVisible: true,
@@ -130,7 +130,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
             } else {
                 setToast({
                     isVisible: true,
-                    message: "Failed to add to wishlist. Please try again.",
+                    message: error.message || "Failed to add to wishlist.",
                     type: "error"
                 });
             }
@@ -153,7 +153,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
                 {/* Image Container with Wishlist Button */}
                 <div className='relative w-full aspect-[3/2] mb-3 sm:mb-4 bg-[#F5F5F5] rounded-[9px] min-h-[180px] sm:min-h-[200px] flex items-center justify-center overflow-hidden'>
                     <Image
-                        src={product.image}
+                        src={product.image || "/p-1.jpg"}
                         alt={product.name}
                         fill
                         className='object-contain p-2 group-hover/card:scale-105 transition-transform duration-500'

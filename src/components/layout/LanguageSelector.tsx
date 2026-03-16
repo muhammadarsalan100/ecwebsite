@@ -60,7 +60,7 @@ export function LanguageSelector({
                                 <div className="flex items-center gap-3">
                                     <div className="w-7 h-7 relative rounded-full overflow-hidden border border-border shadow-sm shrink-0">
                                         <Image
-                                            src={lang.flag}
+                                            src={lang.flag || "https://flagcdn.com/w80/us.png"}
                                             alt={lang.name}
                                             fill
                                             className="object-cover"

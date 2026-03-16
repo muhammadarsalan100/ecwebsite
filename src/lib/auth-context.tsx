@@ -44,9 +44,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const initializeAuth = async () => {
             if (typeof window === "undefined") return;
 
-            // If we have an existing user (already logged in), we're done
+            // If we have an existing user (already logged in), we trigger a background refresh to ensure data consistency
             if (user) {
-                setIsLoading(false);
+                if (user.role !== "PlatformGuests") {
+                    refreshUser().finally(() => {
+                        setIsLoading(false);
+                    });
+                } else {
+                    setIsLoading(false);
+                }
                 return;
             }
 

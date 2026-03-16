@@ -54,7 +54,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
               {/* Product Image */}
               <div className='relative h-72 md:h-80'>
                 <Image
-                  src={product.image}
+                  src={product.image || "/feat-1.jpg"}
                   alt={product.title}
                   fill
                   className='object-cover object-center group-hover:scale-105 transition-transform duration-500'

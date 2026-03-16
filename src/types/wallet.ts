@@ -1,38 +1,7 @@
-export interface Country {
-    id: number | string;
-    name: string;
-    shortCode: string;
-    language: string;
-    flagUrl: string;
-    currency: {
-        name: string;
-        shortCode: string;
-        symbolUrl: string;
-    };
-    code: string;
-}
+import { StaticImageData } from "next/image";
+import { Country, State, City } from "./config";
 
-export interface State {
-    id: number | string;
-    name: string;
-    shortCode: string;
-    countryId: number | string;
-    code: string;
-    active: boolean;
-    createDate?: string;
-    modifiedDate?: string | null;
-}
-
-export interface City {
-    id: number | string;
-    name: string;
-    shortCode: string;
-    stateId: number | string;
-    code: string;
-    active: boolean;
-    createDate?: string;
-    modifiedDate?: string | null;
-}
+export type { Country, State, City };
 
 export interface TransactionData {
     amount: string;

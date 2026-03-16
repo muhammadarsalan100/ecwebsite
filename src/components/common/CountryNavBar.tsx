@@ -31,15 +31,21 @@ export function CountryNavBar({ countries, activeCountryId, onSelect }: CountryN
                       }
                     `}
                   >
-                    <div className="relative w-5 h-5 rounded-full overflow-hidden shrink-0">
-                      <Image
-                        src={country.flagUrl}
-                        alt={country.name}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
+                    {country.flagUrl ? (
+                      <div className="relative w-5 h-5 rounded-full overflow-hidden shrink-0">
+                        <Image
+                          src={country.flagUrl}
+                          alt={country.name}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-5 h-5 rounded-full bg-gray-200 shrink-0 flex items-center justify-center text-[8px] text-gray-400">
+                        {country.shortCode || '?'}
+                      </div>
+                    )}
                     <span>{country.name}</span>
                   </button>
                 );

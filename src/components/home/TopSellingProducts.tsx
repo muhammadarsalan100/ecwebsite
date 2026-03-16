@@ -143,7 +143,7 @@ export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsP
                           }}
                         >
                           <Image
-                            src={product.image}
+                            src={product.image || "/p-1.jpg"}
                             alt={product.name}
                             fill
                             className='object-cover group-hover:scale-105 transition-transform duration-500'

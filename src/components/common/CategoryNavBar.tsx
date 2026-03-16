@@ -11,10 +11,10 @@ export function CategoryNavBar() {
   const { isLoading: isAuthLoading } = useAuth();
 
   useEffect(() => {
-    if (!isAuthLoading && categories.length === 0) {
+    if (!isAuthLoading) {
       fetchCategories();
     }
-  }, [categories.length, fetchCategories, isAuthLoading]);
+  }, [fetchCategories, isAuthLoading]);
 
   // When categories load, select the first one if nothing is selected
   useEffect(() => {

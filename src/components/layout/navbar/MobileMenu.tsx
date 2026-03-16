@@ -79,7 +79,11 @@ export function MobileMenu({
                             </div>
                         ) : isAuthenticated ? (
                             <div className="space-y-4">
-                                <div className='flex items-center gap-4 px-5 py-6 bg-white border border-blue-100 rounded-3xl shadow-sm hover:shadow-md transition-shadow'>
+                                <Link 
+                                    href="/account/personal-data"
+                                    onClick={() => setIsOpen(false)}
+                                    className='flex items-center gap-4 px-5 py-6 bg-white border border-blue-100 rounded-3xl shadow-sm hover:shadow-md transition-shadow block'
+                                >
                                     <div className='w-14 h-14 bg-[#0092FF] text-white rounded-full shadow-lg shadow-blue-200 flex items-center justify-center shrink-0 text-xl font-bold'>
                                         {(user?.name || user?.email)?.charAt(0).toUpperCase()}
                                     </div>
@@ -88,7 +92,7 @@ export function MobileMenu({
                                         <p className='font-bold text-gray-900 truncate text-lg leading-tight'>{user?.name || user?.email?.split('@')[0]}</p>
                                         <p className='text-xs text-gray-400 truncate mt-0.5'>{user?.email}</p>
                                     </div>
-                                </div>
+                                </Link>
 
                                 <div className="grid grid-cols-2 gap-3">
                                     <Link

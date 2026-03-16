@@ -16,6 +16,7 @@ interface AddressModalProps {
 export const AddressModal = ({ isOpen, onClose, onSuccess, initialData }: AddressModalProps) => {
     const [isSaving, setIsSaving] = useState(false);
     const [isLoadingLocations, setIsLoadingLocations] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -57,6 +58,7 @@ export const AddressModal = ({ isOpen, onClose, onSuccess, initialData }: Addres
 
     const handleSave = async () => {
         setIsSaving(true);
+        setError(null);
         try {
             // Mapping to the backend expected structure for business profile update
             // Since we don't have a clear "Address" object standalone, we update the account/profile
@@ -73,8 +75,9 @@ export const AddressModal = ({ isOpen, onClose, onSuccess, initialData }: Addres
             await authService.updateBaseProfile(updateData);
             onSuccess();
             onClose();
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to save address:", error);
+            setError(error.message || "Failed to save address. Please try again.");
         } finally {
             setIsSaving(false);
         }
@@ -203,6 +206,11 @@ export const AddressModal = ({ isOpen, onClose, onSuccess, initialData }: Addres
 
                         {/* Footer */}
                         <div className="px-8 pb-8 pt-4">
+                            {error && (
+                                <p className="text-sm font-medium text-red-500 text-center mb-4">
+                                    {error}
+                                </p>
+                            )}
                             <button
                                 onClick={handleSave}
                                 disabled={isSaving}

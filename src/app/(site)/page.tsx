@@ -298,10 +298,10 @@ export default function Home() {
   // 1. Initial Data Load
   useEffect(() => {
     if (!isAuthLoading) {
-      if (countries.length === 0) fetchCountries();
-      if (categories.length === 0) fetchCategories();
+      fetchCountries();
+      fetchCategories();
     }
-  }, [isAuthLoading, countries.length, categories.length, fetchCountries, fetchCategories]);
+  }, [isAuthLoading, fetchCountries, fetchCategories]);
 
   // 2. Select Default Country (UAE or PK preference)
   useEffect(() => {

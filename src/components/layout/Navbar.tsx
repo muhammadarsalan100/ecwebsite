@@ -43,10 +43,10 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (!isLoading && countries.length === 0) {
+    if (!isLoading) {
       fetchCountries();
     }
-  }, [countries.length, fetchCountries, isLoading]);
+  }, [fetchCountries, isLoading]);
 
   useEffect(() => {
     // Only set default if we have hydrated and still no country is selected

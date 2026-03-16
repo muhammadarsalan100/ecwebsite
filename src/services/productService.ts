@@ -1,5 +1,10 @@
 import { api, withAuth } from "./apiClient";
-import { Product, TopSoldItem, CatalogSearchResponse, CatalogItem } from "@/types/product";
+import { 
+    Category, 
+    TopSoldItem, 
+    CatalogSearchResponse, 
+    CatalogItem 
+} from "@/types/product";
 import { ApiResponse } from "@/types/auth";
 
 /**
@@ -10,19 +15,19 @@ export const productService = {
      * Get all categories with subcategories
      */
     getCatalogCategories: () =>
-        withAuth(api.get)<ApiResponse<any>>("/api/v1.0/catalog/category"),
+        withAuth(api.get)<ApiResponse<Category[]>>("/api/v1.0/catalog/category"),
 
     /**
      * Get single category by ID
      */
     getCategoryById: (id: number | string) =>
-        withAuth(api.get)<ApiResponse<any>>(`/api/v1.0/catalog/category/${id}`),
+        withAuth(api.get)<ApiResponse<Category>>(`/api/v1.0/catalog/category/${id}`),
 
     /**
      * Get category with its attributes
      */
     getCategoryWithAttributes: (id: number | string) =>
-        withAuth(api.get)<ApiResponse<any>>(`/api/v1.0/catalog/category/getWithAttributes/${id}`),
+        withAuth(api.get)<ApiResponse<Category>>(`/api/v1.0/catalog/category/getWithAttributes/${id}`),
 
     /**
      * Get top-selling products

@@ -56,8 +56,12 @@ export function RegionSelector({
                                         : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                                         }`}
                                 >
-                                    <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0 shadow-sm'>
-                                        <Image src={country.flagUrl} alt={country.name} fill className='object-cover' unoptimized />
+                                    <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0 shadow-sm bg-gray-100 flex items-center justify-center'>
+                                        {country.flagUrl ? (
+                                            <Image src={country.flagUrl} alt={country.name} fill className='object-cover' unoptimized />
+                                        ) : (
+                                            <span className="text-[8px] font-bold text-gray-400">{country.shortCode || '?'}</span>
+                                        )}
                                     </div>
                                     <span>{country.name}</span>
                                 </button>
@@ -106,8 +110,12 @@ export function RegionSelector({
                                     }`}
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className='w-6 h-5 relative overflow-hidden rounded-sm shrink-0'>
-                                        <Image src={country.flagUrl} alt={country.name} fill className='object-cover' unoptimized />
+                                    <div className='w-6 h-5 relative overflow-hidden rounded-sm shrink-0 bg-gray-100 flex items-center justify-center shadow-sm'>
+                                        {country.flagUrl ? (
+                                            <Image src={country.flagUrl} alt={country.name} fill className='object-cover' unoptimized />
+                                        ) : (
+                                            <span className="text-[10px] font-bold text-gray-400">{country.shortCode || '?'}</span>
+                                        )}
                                     </div>
                                     <span className='text-base text-foreground'>{country.name}</span>
                                 </div>

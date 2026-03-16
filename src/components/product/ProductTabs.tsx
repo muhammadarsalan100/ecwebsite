@@ -76,9 +76,10 @@ export function ProductTabs({ description }: ProductTabsProps) {
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                                 {/* Left Content */}
                                 <div className="lg:col-span-2">
-                                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
-                                        {description}
-                                    </p>
+                                    <div 
+                                        className="text-gray-600 dark:text-gray-400 leading-relaxed mb-8 product-description"
+                                        dangerouslySetInnerHTML={{ __html: description }}
+                                    />
 
                                     <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6">
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-4">

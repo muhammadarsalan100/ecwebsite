@@ -5,49 +5,9 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { authService } from "@/services/authService";
 import { productService } from "@/services/productService";
 import { Category } from "@/types/product";
+import { Country, State, City, Currency } from "@/types/config";
 
-export interface Country {
-    id: number;
-    name: string;
-    shortCode: string;
-    language: string;
-    flagUrl: string;
-    currency: {
-        name: string;
-        shortCode: string;
-        symbolUrl: string;
-    };
-    code: string;
-}
-export interface State {
-    id: number;
-    name: string;
-    shortCode: string;
-    countryId: number;
-    code: string;
-    active: boolean;
-    createDate?: string;
-    modifiedDate?: string | null;
-}
-
-export interface City {
-    id: number;
-    name: string;
-    shortCode: string;
-    stateId: number;
-    code: string;
-    active: boolean;
-    createDate?: string;
-    modifiedDate?: string | null;
-}
-
-export interface Currency {
-    id: number;
-    name: string;
-    shortCode: string;
-    symbolUrl: string | null;
-    code: string;
-}
+export type { Country, State, City, Currency };
 
 interface ConfigState {
     activeCategoryId: string | null;
@@ -93,7 +53,7 @@ interface ConfigState {
 
 export const useConfigStore = create<ConfigState>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             activeCategoryId: null,
             countries: [],
             states: [],
@@ -119,6 +79,7 @@ export const useConfigStore = create<ConfigState>()(
             selectedCategory: null,
 
             fetchCountries: async () => {
+                if (get().isLoading) return;
                 set({ isLoading: true, error: null });
                 try {
                     const response = await authService.getCountries();
@@ -175,6 +136,7 @@ export const useConfigStore = create<ConfigState>()(
             },
 
             fetchCategories: async () => {
+                if (get().isCategoriesLoading) return;
                 set({ isCategoriesLoading: true, error: null });
                 try {
                     const response = await productService.getCatalogCategories();

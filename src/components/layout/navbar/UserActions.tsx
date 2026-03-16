@@ -71,12 +71,14 @@ export function UserActions({
             {isLoading ? (
                 <div className="w-28 h-8 bg-white/10 animate-pulse rounded-full" />
             ) : isAuthenticated ? (
-                <div className='flex items-center gap-3 group relative cursor-pointer'>
-                    <User className='w-6 h-6' />
-                    <div className="flex flex-col text-left leading-none gap-1">
-                        <span className="text-xs font-medium opacity-80">Hello,</span>
-                        <span className="text-sm font-bold truncate max-w-[100px]">{user?.name || user?.email?.split('@')[0]}</span>
-                    </div>
+                <div className='group relative'>
+                    <Link href="/account/personal-data" className='flex items-center gap-3 cursor-pointer'>
+                        <User className='w-6 h-6' />
+                        <div className="flex flex-col text-left leading-none gap-1">
+                            <span className="text-xs font-medium opacity-80">Hello,</span>
+                            <span className="text-sm font-bold truncate max-w-[100px]">{user?.name || user?.email?.split('@')[0]}</span>
+                        </div>
+                    </Link>
                     <div className="absolute top-full right-0 pt-2 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity z-50">
                         <div className="bg-card border border-border rounded-lg shadow-xl py-2 min-w-[150px]">
                             <button

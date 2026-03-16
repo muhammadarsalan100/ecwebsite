@@ -34,6 +34,24 @@ function isTokenExpired(token: string): boolean {
     }
 }
 
+/**
+ * Extracts a human-readable error message from API response data.
+ */
+function extractErrorMessage(data: any, status: number): string {
+    // Priority: Message (exact match), message, detail, title, then other common keys
+    let message = data.Message || data.message || data.detail || data.title || data.Error || data.error;
+
+    if (!message && data.errors) {
+        // Handle ASP.NET Core style validation errors or other structured errors
+        const errorValues = Object.values(data.errors);
+        if (errorValues.length > 0) {
+            message = errorValues.flat().join(", ");
+        }
+    }
+
+    return message || `API Error: ${status}`;
+}
+
 async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     const { params, headers, token, ...rest } = options;
 
@@ -58,8 +76,6 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
         },
     };
 
-    console.log(`[API REQUEST] ${options.method || 'GET'} ${url}`, config);
-
     try {
         let response = await fetch(url, config);
 
@@ -72,7 +88,6 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                 if (!isRefreshing) {
                     isRefreshing = true;
                     try {
-                        console.log("[AUTH] Token expired, attempting refresh...");
                         const refreshResponse = await fetch(`${BASE_URL}/api/v1.0/account/refresh-token`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -105,7 +120,6 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                                     localStorage.setItem("user_data", JSON.stringify(userData));
                                 }
 
-                                console.log("[AUTH] Token refreshed successfully.");
                                 onRefreshed(newToken);
                                 isRefreshing = false;
 
@@ -148,7 +162,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                                 if (retryResponse.ok) {
                                     resolve(data as T);
                                 } else {
-                                    reject(new Error(data.message || "Retry failed after refresh"));
+                                    reject(new Error(extractErrorMessage(data, retryResponse.status)));
                                 }
                             } catch (e) {
                                 reject(e);
@@ -161,7 +175,6 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                 if (!isRefreshing) {
                     isRefreshing = true;
                     try {
-                        console.log("[AUTH] Guest session expired, re-authenticating...");
                         const guestResponse = await fetch(`${BASE_URL}/api/v1.0/account/login/guest-session`, {
                             method: 'POST',
                             headers: {
@@ -191,7 +204,6 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                                     } catch (e) { }
                                 }
 
-                                console.log("[AUTH] Guest session restored.");
                                 onRefreshed(newToken);
                                 isRefreshing = false;
 
@@ -227,7 +239,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                                 if (retryResponse.ok) {
                                     resolve(data as T);
                                 } else {
-                                    reject(new Error(data.message || "Retry failed after guest reset"));
+                                    reject(new Error(extractErrorMessage(data, retryResponse.status)));
                                 }
                             } catch (e) {
                                 reject(e);
@@ -244,15 +256,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
             response.headers.get("x-secure-token");
 
         if (!response.ok) {
-            let errorMessage = data.Message || data.message || data.title || data.Error || data.error;
-
-            if (!errorMessage && data.errors) {
-                // Handle ASP.NET Core style validation errors
-                errorMessage = Object.values(data.errors).flat().join(", ");
-            }
-
-            errorMessage = errorMessage || `API Error: ${response.status}`;
-            throw new Error(errorMessage);
+            throw new Error(extractErrorMessage(data, response.status));
         }
 
         // Return data. Only attach _authToken if data is a non-array object.
@@ -327,11 +331,8 @@ export function withAuth<T extends (...args: any[]) => Promise<any>>(apiMethod: 
         // 401 handling in 'request' which will execute the appropriate refresh/re-auth logic.
         if (token && typeof window !== "undefined") {
             if (isTokenExpired(token)) {
-                console.log("[AUTH] Proactive Check: Token expired or expiring soon.");
-                // We let the request proceed to trigger the 401 logic in 'request' 
-                // OR we could trigger refresh here. 
-                // Given the existing structure, letting the request proceed and trigger 401 
-                // is cleaner as it reuses the 'isRefreshing' logic.
+                // Let the request proceed to trigger the 401 logic in 'request',
+                // which will execute the appropriate refresh/re-auth logic.
             }
         }
 
