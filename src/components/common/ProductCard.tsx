@@ -64,7 +64,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
                 id: product.id,
                 title: product.name,
                 price: Number(product.price),
-                image: product.image,
+                image: product.image || "/p-1.jpg",
                 quantity: 1,
             });
 

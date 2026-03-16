@@ -52,4 +52,15 @@ export const productService = {
             }
         }),
 
+    /**
+     * Search catalog items by country and search key
+     */
+    searchCatalogItemsByKey: (countryCode: string, searchKey: string) =>
+        withAuth(api.get)<ApiResponse<CatalogSearchResponse>>("/api/v1.0/catalog/item/search", {
+            params: {
+                countryCode,
+                searchKey
+            }
+        }),
+
 };

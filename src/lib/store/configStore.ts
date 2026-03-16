@@ -28,6 +28,7 @@ interface ConfigState {
     isCategoryDetailLoading: boolean;
     isCategoryAttributesLoading: boolean;
     isItemsLoading: boolean;
+    isSearchLoading: boolean;
     error: string | null;
 
     fetchCountries: () => Promise<void>;
@@ -38,8 +39,10 @@ interface ConfigState {
     fetchCategoryById: (id: number | string) => Promise<void>;
     fetchCategoryWithAttributes: (id: number | string) => Promise<void>;
     fetchCatalogItems: (countryCode: string, categoryId: number | string) => Promise<void>;
+    fetchSearchItems: (searchKey: string) => Promise<void>;
     categories: Category[];
     items: any[];
+    searchItems: any[];
     totalItems: number;
     selectedCategory: Category | null;
     setSelectedCountry: (country: Country) => void;
@@ -72,9 +75,11 @@ export const useConfigStore = create<ConfigState>()(
             isCategoryDetailLoading: false,
             isCategoryAttributesLoading: false,
             isItemsLoading: false,
+            isSearchLoading: false,
             error: null,
             categories: [],
             items: [],
+            searchItems: [],
             totalItems: 0,
             selectedCategory: null,
 
@@ -194,6 +199,24 @@ export const useConfigStore = create<ConfigState>()(
                     }
                 } catch (err: any) {
                     set({ error: err.message || "An error occurred", isItemsLoading: false });
+                }
+            },
+
+            fetchSearchItems: async (searchKey: string) => {
+                const countryCode = get().selectedCountry?.shortCode || "UAE";
+                set({ isSearchLoading: true, error: null });
+                try {
+                    const response = await productService.searchCatalogItemsByKey(countryCode, searchKey);
+                    if (response && response.data) {
+                        set({
+                            searchItems: response.data.items,
+                            isSearchLoading: false
+                        });
+                    } else {
+                        set({ error: "Failed to fetch search results", isSearchLoading: false });
+                    }
+                } catch (err: any) {
+                    set({ error: err.message || "An error occurred", isSearchLoading: false });
                 }
             },
 

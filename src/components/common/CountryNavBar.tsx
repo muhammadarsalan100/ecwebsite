@@ -31,8 +31,8 @@ export function CountryNavBar({ countries, activeCountryId, onSelect }: CountryN
                       }
                     `}
                   >
-                    {country.flagUrl ? (
-                      <div className="relative w-5 h-5 rounded-full overflow-hidden shrink-0">
+                    <div className="relative w-5 h-5 rounded-full overflow-hidden shrink-0 bg-white flex items-center justify-center">
+                      {country.flagUrl ? (
                         <Image
                           src={country.flagUrl}
                           alt={country.name}
@@ -40,12 +40,12 @@ export function CountryNavBar({ countries, activeCountryId, onSelect }: CountryN
                           className="object-cover"
                           unoptimized
                         />
-                      </div>
-                    ) : (
-                      <div className="w-5 h-5 rounded-full bg-gray-200 shrink-0 flex items-center justify-center text-[8px] text-gray-400">
-                        {country.shortCode || '?'}
-                      </div>
-                    )}
+                      ) : (
+                        <span className="text-[10px] font-bold text-[#0092FF]">
+                          {country.shortCode || country.name.substring(0, 2).toUpperCase()}
+                        </span>
+                      )}
+                    </div>
                     <span>{country.name}</span>
                   </button>
                 );

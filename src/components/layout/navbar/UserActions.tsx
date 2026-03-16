@@ -71,8 +71,11 @@ export function UserActions({
             {isLoading ? (
                 <div className="w-28 h-8 bg-white/10 animate-pulse rounded-full" />
             ) : isAuthenticated ? (
-                <div className='group relative'>
-                    <Link href="/account/personal-data" className='flex items-center gap-3 cursor-pointer'>
+                <div className="group relative">
+                    <Link
+                        href="/account/personal-data"
+                        className='flex items-center gap-3 cursor-pointer transition-colors'
+                    >
                         <User className='w-6 h-6' />
                         <div className="flex flex-col text-left leading-none gap-1">
                             <span className="text-xs font-medium opacity-80">Hello,</span>
@@ -250,7 +253,7 @@ export function UserActions({
                                             <div key={`${item.id}-${item.color || 'none'}-${item.size || 'none'}`} className="flex items-start gap-3 group">
                                                 <div className="w-16 h-16 bg-white border border-gray-100 rounded-xl relative shrink-0 p-1 flex items-center justify-center">
                                                     <Image
-                                                        src={item.image}
+                                                        src={item.image || "/p-1.jpg"}
                                                         alt={item.title}
                                                         width={48}
                                                         height={48}

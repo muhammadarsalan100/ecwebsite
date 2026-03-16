@@ -97,7 +97,7 @@ export function CountrySelectModal({ isOpen, onClose, onSelect, selectedCountry:
                                         className="w-full flex items-center justify-between p-4 px-6 hover:bg-gray-50 rounded-2xl transition-colors group"
                                     >
                                         <div className="flex items-center gap-4">
-                                            <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-100 shadow-sm shrink-0 flex items-center justify-center bg-gray-50">
+                                            <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-100 shadow-sm shrink-0 flex items-center justify-center bg-white">
                                                 {getFlagUrl(country) ? (
                                                     <Image
                                                         src={getFlagUrl(country)}
@@ -107,9 +107,7 @@ export function CountrySelectModal({ isOpen, onClose, onSelect, selectedCountry:
                                                         unoptimized
                                                     />
                                                 ) : (
-                                                    <span className="text-[10px] font-bold text-gray-400">
-                                                        {country.shortCode || country.name.substring(0, 2).toUpperCase()}
-                                                    </span>
+                                                    <span className="text-xs font-bold text-[#0092FF]">{country.shortCode || country.name.substring(0, 2).toUpperCase()}</span>
                                                 )}
                                             </div>
                                             <span className={`text-[16px] font-bold ${propSelectedCountry === country.name ? 'text-blue-600' : 'text-gray-900'}`}>

@@ -29,7 +29,9 @@ export function RegionSelector({
                             {selectedCountry?.flagUrl ? (
                                 <Image src={selectedCountry.flagUrl} alt='Flag' fill className='object-cover' unoptimized />
                             ) : (
-                                <Globe className="w-3 h-3 text-gray-400" />
+                                <span className="text-[8px] font-bold text-[#0092FF]">
+                                    {selectedCountry?.shortCode || selectedCountry?.name?.substring(0, 2).toUpperCase() || "..."}
+                                </span>
                             )}
                         </div>
                         <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
@@ -56,11 +58,11 @@ export function RegionSelector({
                                         : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                                         }`}
                                 >
-                                    <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0 shadow-sm bg-gray-100 flex items-center justify-center'>
+                                    <div className='w-5 h-4 relative overflow-hidden rounded-sm shrink-0 shadow-sm flex items-center justify-center bg-gray-50'>
                                         {country.flagUrl ? (
                                             <Image src={country.flagUrl} alt={country.name} fill className='object-cover' unoptimized />
                                         ) : (
-                                            <span className="text-[8px] font-bold text-gray-400">{country.shortCode || '?'}</span>
+                                            <span className="text-[8px] font-bold text-[#0092FF]">{country.shortCode || country.name.substring(0, 2).toUpperCase()}</span>
                                         )}
                                     </div>
                                     <span>{country.name}</span>
@@ -83,7 +85,9 @@ export function RegionSelector({
                     {selectedCountry?.flagUrl ? (
                         <Image src={selectedCountry.flagUrl} alt='Flag' fill className='object-cover' unoptimized />
                     ) : (
-                        <Globe className="w-4 h-4 text-white/40" />
+                        <span className="text-[10px] font-bold text-white">
+                            {selectedCountry?.shortCode || selectedCountry?.name?.substring(0, 2).toUpperCase() || "..."}
+                        </span>
                     )}
                 </div>
                 <span className="font-medium text-base text-white">Region</span>
@@ -110,11 +114,11 @@ export function RegionSelector({
                                     }`}
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className='w-6 h-5 relative overflow-hidden rounded-sm shrink-0 bg-gray-100 flex items-center justify-center shadow-sm'>
+                                    <div className='w-6 h-5 relative overflow-hidden rounded-sm shrink-0 flex items-center justify-center bg-gray-50'>
                                         {country.flagUrl ? (
                                             <Image src={country.flagUrl} alt={country.name} fill className='object-cover' unoptimized />
                                         ) : (
-                                            <span className="text-[10px] font-bold text-gray-400">{country.shortCode || '?'}</span>
+                                            <span className="text-[10px] font-bold text-[#0092FF]">{country.shortCode || country.name.substring(0, 2).toUpperCase()}</span>
                                         )}
                                     </div>
                                     <span className='text-base text-foreground'>{country.name}</span>
