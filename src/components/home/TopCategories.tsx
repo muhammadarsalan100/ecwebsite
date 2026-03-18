@@ -32,6 +32,7 @@ const itemVariants = {
   },
 };
 
+import Link from "next/link";
 import { SectionHeader } from "@/components/common/SectionHeader";
 
 export function TopCategories({ categories }: TopCategoriesProps) {
@@ -54,32 +55,37 @@ export function TopCategories({ categories }: TopCategoriesProps) {
           viewport={{ once: false }}
         >
           {categories.map((category) => (
-            <motion.div
-              key={category.id}
-              className='flex flex-col items-center gap-5 cursor-pointer group shrink-0'
-              variants={itemVariants}
+            <Link 
+              key={category.id} 
+              href={`/category/${category.id}`}
+              className="group no-underline"
             >
-              {/* Circle Container */}
               <motion.div
-                className='relative w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 lg:w-48 lg:h-48 rounded-full bg-[#F8F8F8] border border-gray-100 flex items-center justify-center overflow-hidden group-hover:bg-[#f0f0f0] group-hover:border-primary/20 transition-all duration-300 shadow-sm group-hover:shadow-md'
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className='flex flex-col items-center gap-5 cursor-pointer shrink-0'
+                variants={itemVariants}
               >
-                <div className='relative w-[60%] h-[60%]'>
-                  <Image
-                    src={category.image || category.icon || "/Logo.png"}
-                    alt={category.name}
-                    fill
-                    className='object-contain group-hover:scale-110 transition-transform duration-500'
-                  />
-                </div>
-              </motion.div>
+                {/* Circle Container */}
+                <motion.div
+                  className='relative w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 lg:w-48 lg:h-48 rounded-full bg-[#F8F8F8] border border-gray-100 flex items-center justify-center overflow-hidden group-hover:bg-[#f0f0f0] group-hover:border-[#0092FF]/20 transition-all duration-300 shadow-sm group-hover:shadow-md'
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <div className='relative w-[60%] h-[60%]'>
+                    <Image
+                      src={category.image || category.icon || "/Logo.png"}
+                      alt={category.name}
+                      fill
+                      className='object-contain group-hover:scale-110 transition-transform duration-500'
+                    />
+                  </div>
+                </motion.div>
 
-              {/* Category Name */}
-              <p className='text-sm sm:text-base md:text-lg font-bold text-gray-800 text-center group-hover:text-primary transition-colors font-poppins px-2'>
-                {category.name}
-              </p>
-            </motion.div>
+                {/* Category Name */}
+                <p className='text-sm sm:text-base md:text-lg font-bold text-gray-800 text-center group-hover:text-[#0092FF] transition-colors font-poppins px-2'>
+                  {category.name}
+                </p>
+              </motion.div>
+            </Link>
           ))}
         </motion.div>
       </div>

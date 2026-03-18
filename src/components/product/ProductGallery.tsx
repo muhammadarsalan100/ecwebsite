@@ -72,7 +72,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
                             src={images[selectedIndex]}
                             alt={`Product image ${selectedIndex + 1}`}
                             fill
-                            className="object-cover"
+                            className="object-contain"
                             priority
                         />
                     </motion.div>

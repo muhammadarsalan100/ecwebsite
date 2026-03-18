@@ -48,7 +48,7 @@ export const productService = {
         withAuth(api.get)<ApiResponse<CatalogSearchResponse>>("/api/v1.0/catalog/item/search", {
             params: {
                 countryCode,
-                CategoryId: String(categoryId)
+                categoryId: String(categoryId)
             }
         }),
 

@@ -33,6 +33,14 @@ export function SearchBar({ isMobile, onClose }: SearchBarProps) {
         }
     }, [debouncedSearchKey, fetchSearchItems]);
 
+    const handleSearch = () => {
+        if (searchKey.trim().length >= 2) {
+            setIsOpen(false);
+            router.push(`/search?q=${encodeURIComponent(searchKey.trim())}`);
+            if (onClose) onClose();
+        }
+    };
+
     const handleSearchItemClick = (id: number | string) => {
         setIsOpen(false);
         setSearchKey("");
@@ -47,9 +55,8 @@ export function SearchBar({ isMobile, onClose }: SearchBarProps) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className={`absolute left-0 right-0 z-50 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden ${
-                        isMobile ? 'top-full' : 'top-full'
-                    }`}
+                    className={`absolute left-0 right-0 z-50 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden ${isMobile ? 'top-full' : 'top-full'
+                        }`}
                 >
                     <div className="max-h-[400px] overflow-y-auto">
                         {isSearchLoading ? (
@@ -59,9 +66,17 @@ export function SearchBar({ isMobile, onClose }: SearchBarProps) {
                             </div>
                         ) : searchItems.length > 0 ? (
                             <div className="py-2">
-                                <p className="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-50">
-                                    Search Results
-                                </p>
+                                <div className="px-4 py-2 flex items-center justify-between border-b border-gray-50">
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                        Search Results
+                                    </p>
+                                    <button
+                                        onClick={handleSearch}
+                                        className="text-[10px] font-bold text-[#0092FF] hover:underline uppercase tracking-widest"
+                                    >
+                                        See All
+                                    </button>
+                                </div>
                                 {searchItems.map((item) => (
                                     <button
                                         key={item.id}
@@ -93,6 +108,12 @@ export function SearchBar({ isMobile, onClose }: SearchBarProps) {
                                         </div>
                                     </button>
                                 ))}
+                                <button
+                                    onClick={handleSearch}
+                                    className="w-full py-4 text-center text-sm font-bold text-gray-500 hover:text-[#0092FF] bg-gray-50 hover:bg-blue-50/50 transition-all border-t border-gray-100"
+                                >
+                                    View all matching items
+                                </button>
                             </div>
                         ) : debouncedSearchKey.length >= 2 ? (
                             <div className="p-8 text-center text-gray-500">
@@ -116,6 +137,7 @@ export function SearchBar({ isMobile, onClose }: SearchBarProps) {
                         className="w-full py-3 pl-10 pr-10 bg-transparent border-none focus:outline-none focus:ring-0 text-sm text-gray-900 placeholder:text-gray-400 font-medium"
                         value={searchKey}
                         onChange={(e) => setSearchKey(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                         autoFocus
                     />
                     {searchKey ? (
@@ -140,7 +162,10 @@ export function SearchBar({ isMobile, onClose }: SearchBarProps) {
 
     return (
         <div className='hidden md:flex flex-1 max-w-2xl mx-6 relative' ref={dropdownRef}>
-            <div className='relative w-full flex items-center'>
+            <form
+                onSubmit={(e) => { e.preventDefault(); handleSearch(); }}
+                className='relative w-full flex items-center'
+            >
                 <Search className='absolute left-5 w-6 h-6 text-[#0092FF]' />
                 <input
                     type='text'
@@ -151,13 +176,14 @@ export function SearchBar({ isMobile, onClose }: SearchBarProps) {
                 />
                 {searchKey && (
                     <button
+                        type="button"
                         onClick={() => setSearchKey("")}
                         className="absolute right-4 p-2 text-gray-400 hover:text-gray-600"
                     >
                         <X className="w-5 h-5" />
                     </button>
                 )}
-            </div>
+            </form>
             {resultsDropdown}
         </div>
     );

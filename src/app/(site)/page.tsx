@@ -328,12 +328,15 @@ export default function Home() {
   const displayedProducts = items.map((item: any) => ({
     id: String(item.id),
     name: item.name,
-    brand: item.vendor?.fullName || "Store",
+    brand: item.vendor?.fullName || "ZRGOTH Shop",
     image: item.icon || (item.images?.length > 0 ? item.images[0].url : "/p-1.jpg"),
     price: item.price,
-    rating: item.rating || 5,
-    reviews: "120", // Static for now as not in search response
-    almostSoldOut: item.manageStock && item.minimumStockThreshhold > 0,
+    originalPrice: item.originalPrice,
+    currencyCode: item.currencyCode || "AED",
+    isPromotionApplied: item.isPromotionApplied,
+    rating: item.rating || 0,
+    reviews: "10+", // Mocked as not in main response
+    stockMessage: item.stockMessage
   }));
 
   // 5. Transform Categories for TopCategories view
@@ -384,6 +387,7 @@ export default function Home() {
           <AllProducts
             key={`prod-${selectedCountry?.id}-${activeCategoryId}`}
             products={displayedProducts}
+            categoryId={activeCategoryId}
           />
         )}
       </div>

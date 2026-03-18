@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { RegionSelector } from "../RegionSelector";
 import { useCartStore } from "@/lib/store/cartStore";
 
+import { useConfigStore } from "@/lib/store/configStore";
+
 interface MobileMenuProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
@@ -35,6 +37,7 @@ export function MobileMenu({
     countries
 }: MobileMenuProps) {
     const cartItems = useCartStore((state) => state.items);
+    const { activeCategoryId } = useConfigStore();
 
     return (
         <AnimatePresence>
@@ -79,7 +82,7 @@ export function MobileMenu({
                             </div>
                         ) : isAuthenticated ? (
                             <div className="space-y-4">
-                                <Link 
+                                <Link
                                     href="/account/personal-data"
                                     onClick={() => setIsOpen(false)}
                                     className='flex items-center gap-4 px-5 py-6 bg-white border border-blue-100 rounded-3xl shadow-sm hover:shadow-md transition-shadow block'
@@ -164,7 +167,7 @@ export function MobileMenu({
                                 Home
                             </Link>
                             <Link
-                                href="/shop"
+                                href={activeCategoryId ? `/category/${activeCategoryId}` : "/"}
                                 onClick={() => setIsOpen(false)}
                                 className='flex items-center gap-4 px-4 py-3.5 text-base font-bold text-gray-700 hover:text-[#0092FF] hover:bg-blue-50 rounded-xl transition-all group'
                             >

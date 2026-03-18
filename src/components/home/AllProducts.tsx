@@ -12,11 +12,12 @@ import { ProductCard } from "@/components/common/ProductCard";
 
 interface AllProductsProps {
   products: Product[];
+  categoryId?: string | null;
 }
 
 import { SectionHeader } from "@/components/common/SectionHeader";
 
-export function AllProducts({ products }: AllProductsProps) {
+export function AllProducts({ products, categoryId }: AllProductsProps) {
   return (
     <section id="all-products" className='w-full px-4 py-8 sm:py-12 md:px-8 lg:px-12'>
       <div className='mx-auto max-w-7xl'>
@@ -27,7 +28,7 @@ export function AllProducts({ products }: AllProductsProps) {
         />
 
         <motion.div
-          className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-[54px]'
+          className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-10'
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, margin: "-50px" }}
@@ -45,13 +46,25 @@ export function AllProducts({ products }: AllProductsProps) {
           viewport={{ once: false }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <motion.button
-            className='text-white font-medium hover:opacity-90 transition-opacity bg-[#0092FF] shadow-[0_18px_31px_0_rgba(0,146,255,0.15)] w-[160px] sm:w-[186px] h-[45px] sm:h-[50px] rounded-[9px] font-poppins text-[13px] sm:text-[14px]'
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            View More
-          </motion.button>
+          {categoryId ? (
+            <Link href={`/category/${categoryId}`}>
+              <motion.button
+                className='text-white font-medium hover:opacity-90 transition-opacity bg-[#0092FF] shadow-[0_18px_31px_0_rgba(0,146,255,0.15)] w-[160px] sm:w-[186px] h-[45px] sm:h-[50px] rounded-[9px] font-poppins text-[13px] sm:text-[14px]'
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                View More
+              </motion.button>
+            </Link>
+          ) : (
+            <motion.button
+              className='text-white font-medium hover:opacity-90 transition-opacity bg-[#0092FF] shadow-[0_18px_31px_0_rgba(0,146,255,0.15)] w-[160px] sm:w-[186px] h-[45px] sm:h-[50px] rounded-[9px] font-poppins text-[13px] sm:text-[14px]'
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              View More
+            </motion.button>
+          )}
         </motion.div>
       </div>
     </section>

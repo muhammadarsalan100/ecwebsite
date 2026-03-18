@@ -10,7 +10,10 @@ export interface Product {
     price: number;
     rating: number;
     reviews: string | number;
-    almostSoldOut?: boolean;
+    originalPrice?: number;
+    currencyCode?: string;
+    stockMessage?: string;
+    isPromotionApplied?: boolean;
     soldOut?: boolean;
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, MapPin, Loader2, Globe, Building, Landmark } from "lucide-react";
+import { X, MapPin, Loader2, Globe, Building, Landmark, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { authService } from "@/services/authService";
 import { useConfigStore } from "@/lib/store/configStore";
@@ -11,16 +11,24 @@ interface AddressModalProps {
     onClose: () => void;
     onSuccess: () => void;
     initialData?: any;
+    /** Optional override — inject a custom API call. Receives the form values, must return a Promise. */
+    onSave?: (data: {
+        addressLine1: string;
+        cityId: string | number;
+        stateId: string | number;
+        countryId: string | number;
+        zipCode: string;
+    }) => Promise<void>;
 }
 
-export const AddressModal = ({ isOpen, onClose, onSuccess, initialData }: AddressModalProps) => {
+export const AddressModal = ({ isOpen, onClose, onSuccess, initialData, onSave }: AddressModalProps) => {
     const [isSaving, setIsSaving] = useState(false);
     const [isLoadingLocations, setIsLoadingLocations] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     // Form State
     const [formData, setFormData] = useState({
-        city: "",
+        cityId: "" as string | number,
         addressLine1: "",
         zipCode: "",
         countryId: "" as string | number,
@@ -30,15 +38,19 @@ export const AddressModal = ({ isOpen, onClose, onSuccess, initialData }: Addres
     // Location Data from ConfigStore
     const countries = useConfigStore((state) => state.countries);
     const states = useConfigStore((state) => state.states);
+    const cities = useConfigStore((state) => state.cities);
+    const isCitiesLoading = useConfigStore((state) => state.isCitiesLoading);
+    const isStatesLoading = useConfigStore((state) => state.isStatesLoading);
     const fetchCountries = useConfigStore((state) => state.fetchCountries);
     const fetchStates = useConfigStore((state) => state.fetchStates);
+    const fetchCities = useConfigStore((state) => state.fetchCities);
 
     useEffect(() => {
         if (isOpen) {
             fetchCountries();
             if (initialData?.business) {
                 setFormData({
-                    city: initialData.business.city || "",
+                    cityId: initialData.business.cityId || "",
                     addressLine1: initialData.business.addressLine1 || "",
                     zipCode: initialData.business.zipCode || "",
                     countryId: initialData.preferredCountryId || "",
@@ -47,32 +59,43 @@ export const AddressModal = ({ isOpen, onClose, onSuccess, initialData }: Addres
                 if (initialData.preferredCountryId) {
                     fetchStates(initialData.preferredCountryId);
                 }
+                if (initialData.business.stateId) {
+                    fetchCities(initialData.business.stateId);
+                }
             }
         }
-    }, [isOpen, initialData, fetchCountries, fetchStates]);
+    }, [isOpen, initialData, fetchCountries, fetchStates, fetchCities]);
 
     const handleCountryChange = (id: string) => {
-        setFormData(prev => ({ ...prev, countryId: id, stateId: "" }));
+        setFormData(prev => ({ ...prev, countryId: id, stateId: "", cityId: "" }));
         fetchStates(id);
+    };
+
+    const handleStateChange = (id: string) => {
+        setFormData(prev => ({ ...prev, stateId: id, cityId: "" }));
+        if (id) fetchCities(id);
     };
 
     const handleSave = async () => {
         setIsSaving(true);
         setError(null);
         try {
-            // Mapping to the backend expected structure for business profile update
-            // Since we don't have a clear "Address" object standalone, we update the account/profile
-            const updateData = {
-                business: {
-                    addressLine1: formData.addressLine1,
-                    city: formData.city,
-                    zipCode: formData.zipCode,
-                    stateId: formData.stateId
-                },
-                preferredCountryId: formData.countryId
+            const payload = {
+                addressLine1: formData.addressLine1,
+                cityId: formData.cityId,
+                stateId: formData.stateId,
+                countryId: formData.countryId,
+                zipCode: formData.zipCode,
             };
 
-            await authService.updateBaseProfile(updateData);
+            if (onSave) {
+                // Caller-supplied API — e.g. updateAddress(id, payload)
+                await onSave(payload);
+            } else {
+                // Default: create a new address via the dedicated address endpoint
+                await authService.addAddress(payload);
+            }
+
             onSuccess();
             onClose();
         } catch (error: any) {
@@ -126,79 +149,97 @@ export const AddressModal = ({ isOpen, onClose, onSuccess, initialData }: Addres
                         <div className="px-8 py-6 space-y-5">
                             {/* Country Selection */}
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-gray-500 ml-1">Country</label>
+                                <label className="text-xs font-semibold text-gray-700 ml-1">Country</label>
                                 <div className="relative">
+                                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                                     <select
                                         value={formData.countryId}
                                         onChange={(e) => handleCountryChange(e.target.value)}
-                                        className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-11 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0092FF]/20 focus:border-[#0092FF] transition-all appearance-none"
+                                        className={`w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl pl-11 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0092FF]/20 focus:border-[#0092FF] transition-all appearance-none ${
+                                            formData.countryId ? 'text-gray-900' : 'text-gray-400'
+                                        }`}
                                     >
-                                        <option value="">Select Country</option>
+                                        <option value="" className="text-gray-400">Select Country</option>
                                         {countries.map((c) => (
-                                            <option key={c.id} value={c.id}>{c.name}</option>
+                                            <option key={c.id} value={c.id} className="text-gray-900">{c.name}</option>
                                         ))}
                                     </select>
-                                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                                 </div>
                             </div>
 
                             {/* State/City Selection */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-500 ml-1">State</label>
+                                    <label className="text-xs font-semibold text-gray-700 ml-1">State</label>
                                     <div className="relative">
+                                        <Landmark className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                                         <select
                                             disabled={!formData.countryId}
                                             value={formData.stateId}
-                                            onChange={(e) => setFormData(prev => ({ ...prev, stateId: e.target.value }))}
-                                            className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-11 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0092FF]/20 focus:border-[#0092FF] transition-all appearance-none disabled:opacity-50"
+                                            onChange={(e) => handleStateChange(e.target.value)}
+                                            className={`w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl pl-11 pr-8 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0092FF]/20 focus:border-[#0092FF] transition-all appearance-none disabled:opacity-50 ${
+                                                formData.stateId ? 'text-gray-900' : 'text-gray-400'
+                                            }`}
                                         >
-                                            <option value="">State</option>
+                                            <option value="" className="text-gray-400">State</option>
                                             {states.map((s) => (
-                                                <option key={s.id} value={s.id}>{s.name}</option>
+                                                <option key={s.id} value={s.id} className="text-gray-900">{s.name}</option>
                                             ))}
                                         </select>
-                                        <Landmark className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                                     </div>
                                 </div>
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-500 ml-1">City</label>
+                                    <label className="text-xs font-semibold text-gray-700 ml-1">City</label>
                                     <div className="relative">
-                                        <input
-                                            type="text"
-                                            value={formData.city}
-                                            onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                                            placeholder="City Name"
-                                            className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-11 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0092FF]/20 focus:border-[#0092FF] transition-all"
-                                        />
-                                        <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                        <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                                        <select
+                                            disabled={!formData.stateId || isCitiesLoading}
+                                            value={formData.cityId}
+                                            onChange={(e) => setFormData(prev => ({ ...prev, cityId: e.target.value }))}
+                                            className={`w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl pl-11 pr-8 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0092FF]/20 focus:border-[#0092FF] transition-all appearance-none disabled:opacity-50 ${
+                                                formData.cityId ? 'text-gray-900' : 'text-gray-400'
+                                            }`}
+                                        >
+                                            <option value="" className="text-gray-400">
+                                                {isCitiesLoading ? 'Loading...' : 'Select City'}
+                                            </option>
+                                            {cities.map((c) => (
+                                                <option key={c.id} value={c.id} className="text-gray-900">{c.name}</option>
+                                            ))}
+                                        </select>
+                                        {isCitiesLoading
+                                            ? <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 animate-spin pointer-events-none" />
+                                            : <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                                        }
                                     </div>
                                 </div>
                             </div>
 
                             {/* Address & Zip */}
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-gray-500 ml-1">Street Address</label>
+                                <label className="text-xs font-semibold text-gray-700 ml-1">Street Address</label>
                                 <div className="relative">
                                     <input
                                         type="text"
                                         value={formData.addressLine1}
                                         onChange={(e) => setFormData(prev => ({ ...prev, addressLine1: e.target.value }))}
                                         placeholder="Flat / House / Street"
-                                        className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0092FF]/20 focus:border-[#0092FF] transition-all"
+                                        className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0092FF]/20 focus:border-[#0092FF] transition-all"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-gray-500 ml-1">Zip Code</label>
+                                <label className="text-xs font-semibold text-gray-700 ml-1">Zip Code</label>
                                 <div className="relative">
                                     <input
                                         type="text"
                                         value={formData.zipCode}
                                         onChange={(e) => setFormData(prev => ({ ...prev, zipCode: e.target.value }))}
                                         placeholder="Postal Code"
-                                        className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0092FF]/20 focus:border-[#0092FF] transition-all"
+                                        className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0092FF]/20 focus:border-[#0092FF] transition-all"
                                     />
                                 </div>
                             </div>

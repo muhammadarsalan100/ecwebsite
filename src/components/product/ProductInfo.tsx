@@ -182,7 +182,7 @@ export function ProductInfo({
             </div>
 
             {/* Description */}
-            <div 
+            <div
                 className="text-base text-gray-600 dark:text-gray-300 leading-relaxed product-description"
                 dangerouslySetInnerHTML={{ __html: description }}
             />

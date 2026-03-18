@@ -17,9 +17,7 @@ import { authService } from "@/services/authService";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { SectionHeader } from "@/components/common/SectionHeader";
-
-// Card heights sequence based on Figma
-const cardHeights = [251, 370, 293, 251];
+import { ProductCard } from "@/components/common/ProductCard";
 
 interface TopSellingProductsProps {
   initialProducts?: any[];
@@ -42,12 +40,16 @@ export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsP
         // Flatten all topProducts from every vendor into one list
         const mappedProducts = vendors.flatMap((vendor: any) =>
           (vendor.topProducts || []).map((product: any) => ({
-            id: product.listingId || product.itemId,
-            name: product.itemName || "Product",
-            image: product.logo || "/p-1.jpg",
-            price: product.currentPrice || 0,
+            id: product.listingId || product.itemId || product.id,
+            name: product.itemName || product.name || "Product",
+            image: product.image || product.icon || product.logo || "/p-1.jpg",
+            price: product.currentPrice || product.price || 0,
+            originalPrice: product.originalPrice,
+            isPromotionApplied: product.isPromotionApplied,
+            currencyCode: product.currencyCode || "AED",
             reviews: product.unitsSold || 0,
-            rating: 5,
+            rating: product.rating || 5, // Top vendors usually have high ratings
+            stockMessage: product.stockMessage
           }))
         );
 
@@ -117,76 +119,15 @@ export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsP
             }}
             className='w-full'
           >
-            <CarouselContent className='-ml-6 items-end'>
-              {products.map((product, index) => {
-                const height = cardHeights[index % cardHeights.length];
-
-                return (
-                  <CarouselItem
-                    key={product.id}
-                    className='pl-6 basis-1/2 md:basis-1/4'
-                  >
-                    <motion.div
-                      className='group cursor-pointer'
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      whileHover={{ y: -5 }}
-                    >
-                      <Link href={`/product/${product.id}`} className="block h-full">
-                        {/* Product Image */}
-                        <div
-                          className='relative w-full mb-4 overflow-hidden bg-gray-100 rounded-[20px] flex items-center justify-center'
-                          style={{
-                            height: `${height}px`,
-                          }}
-                        >
-                          <Image
-                            src={product.image || "/p-1.jpg"}
-                            alt={product.name}
-                            fill
-                            className='object-cover group-hover:scale-105 transition-transform duration-500'
-                          />
-                        </div>
-
-                        {/* Product Info */}
-                        <div className='space-y-2'>
-                          <h3 className='text-lg font-semibold text-foreground'>
-                            {product.name}
-                          </h3>
-                          <p className='text-sm text-gray-500'>
-                            ({product.reviews}) Customer Reviews
-                          </p>
-
-                          {/* Price and Rating */}
-                          <div className='flex items-center justify-between pt-2'>
-                            <p className='text-base text-foreground'>
-                              <span className='text-gray-500'>Price: </span>
-                              <span className='font-semibold'>
-                                ${product.price.toFixed(2)}
-                              </span>
-                            </p>
-
-                            {/* Star Rating */}
-                            <div className='flex items-center gap-0.5'>
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`w-4 h-4 ${i < product.rating
-                                    ? "fill-[#F59E0B] text-[#F59E0B]"
-                                    : "fill-gray-200 text-gray-200"
-                                    }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  </CarouselItem>
-                );
-              })}
+            <CarouselContent className='-ml-4 items-stretch'>
+              {products.map((product, index) => (
+                <CarouselItem
+                  key={product.id}
+                  className='pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4'
+                >
+                  <ProductCard product={product} />
+                </CarouselItem>
+              ))}
             </CarouselContent>
           </Carousel>
         </motion.div>
