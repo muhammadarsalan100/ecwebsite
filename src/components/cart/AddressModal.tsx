@@ -91,10 +91,12 @@ export const AddressModal = ({ isOpen, onClose, onSuccess, initialData, onSave }
             if (onSave) {
                 // Caller-supplied API — e.g. updateAddress(id, payload)
                 await onSave(payload);
-            } else {
-                // Default: create a new address via the dedicated address endpoint
-                await authService.addAddress(payload);
             }
+            // TODO: Uncomment when addAddress API endpoint is ready
+            // else {
+            //     // Default: create a new address via the dedicated address endpoint
+            //     await authService.addAddress(payload);
+            // }
 
             onSuccess();
             onClose();
