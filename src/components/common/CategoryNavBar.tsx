@@ -8,21 +8,21 @@ import { useConfigStore } from "@/lib/store/configStore";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 export function CategoryNavBar() {
   const { categories, fetchCategories, isCategoriesLoading, activeCategoryId, setActiveCategoryId } = useConfigStore();
   const { isLoading: isAuthLoading } = useAuth();
   const params = useParams();
+  const pathname = usePathname();
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Sync active category with URL
+  // Sync active category with URL only if on category page
   useEffect(() => {
-    if (params.id) {
+    if (pathname.includes("/category/") && params.id) {
       setActiveCategoryId(String(params.id));
     }
-  }, [params.id, setActiveCategoryId]);
+  }, [params.id, pathname, setActiveCategoryId]);
 
   useEffect(() => {
     if (!isAuthLoading) {
@@ -30,12 +30,16 @@ export function CategoryNavBar() {
     }
   }, [fetchCategories, isAuthLoading]);
 
-  // Auto-select the first category if none is selected and no URL param
+  // Handle default selection on initial tab load
   useEffect(() => {
-    if (categories.length > 0 && !activeCategoryId && !params.id) {
-      setActiveCategoryId(String(categories[0].id));
+    if (categories.length > 0 && !activeCategoryId) {
+      const isCategoryPage = pathname.includes("/category/");
+      
+      if (!isCategoryPage && !params.id) {
+        setActiveCategoryId(String(categories[0].id));
+      }
     }
-  }, [categories, activeCategoryId, params.id, setActiveCategoryId]);
+  }, [categories, pathname, activeCategoryId, setActiveCategoryId, params.id]);
 
   const handleMouseEnter = (categoryId: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);

@@ -85,7 +85,6 @@ export default function LoginPage() {
                 }
               } catch (e) {
                 // Not JSON, probably just the OTP code from registration
-                console.log("Registration complete, auto-logging in with fallback info");
                 login({ email: authEmail, name: authFullName }, false);
                 setView("WELCOME");
                 return;

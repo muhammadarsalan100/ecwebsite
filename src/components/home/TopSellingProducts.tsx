@@ -88,7 +88,6 @@ export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsP
     );
   }
 
-  console.log("[DEBUG] Render State:", { productsCount: products.length, isLoading });
   if (products.length === 0 && !isLoading) return null;
 
   return (

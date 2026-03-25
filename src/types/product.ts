@@ -43,6 +43,8 @@ export interface ProductInfoProps {
     title: string;
     image: string;
     price: number;
+    originalPrice?: number;
+    currencyCode?: string;
     rating: number;
     reviewsCount: number;
     description: string;
@@ -71,9 +73,13 @@ export interface FAQ {
 }
 
 export interface ProductTabsProps {
-    description: string;
-    reviews?: Review[];
+    shortDescription: string;
+    longDescription?: string;
+    reviewsCount?: number;
     faqs?: FAQ[];
+    technicalAttributes?: any[];
+    videos?: any[];
+    images?: string[];
 }
 
 // ─── Category & Attribute API Types ──────────────────────────────────────────
@@ -178,6 +184,76 @@ export interface CatalogItem {
         createDate: string;
         modifiedDate: string | null;
     };
+    id: number;
+    code: string;
+    active: boolean;
+    createDate: string;
+    modifiedDate: string | null;
+}
+
+// ─── V2.0 Catalog Item Detail Types ───────────────────────────────────────────
+
+export interface PriceInfo {
+    currency: string;
+    mrp: number;
+    price: number;
+}
+
+export interface RatingInfo {
+    rating: number;
+    totalReviews: number;
+    breakdown: any;
+}
+
+export interface BrandInfo {
+    name: string;
+    description: string;
+    logoUrl: string | null;
+    id: number;
+    code: string;
+    active: boolean;
+    createDate: string;
+    modifiedDate: string | null;
+}
+
+export interface CatalogItemDetail {
+    sku: string;
+    name: string;
+    shortDescription: string;
+    longDescription: string;
+    condition: number;
+    tags: string[] | null;
+    keySellingPoints: any[];
+    minimumOrderQty: number;
+    maximumOrderQty: number;
+    simpleAttributes: any[];
+    technicalAttributes: any[];
+    hsCode: string | null;
+    isDangerousItem: boolean;
+    countryOfOrigin: string | null;
+    faqs: FAQ[];
+    brand: BrandInfo;
+    category: Category;
+    price: PriceInfo;
+    warranty: {
+        warrantyType: number;
+        warrantyDuration: string | null;
+    };
+    returnPolicy: {
+        isReturnable: boolean;
+        returnWindowDays: number;
+        returnTermAndConditions: string | null;
+    };
+    seo: {
+        metaTitle: string;
+        metaDescription: string;
+        tags: string[] | null;
+    };
+    seller: any;
+    logo: string;
+    images: string[];
+    videos: any[];
+    rating: RatingInfo;
     id: number;
     code: string;
     active: boolean;

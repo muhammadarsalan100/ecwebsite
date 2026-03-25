@@ -18,6 +18,8 @@ export function ProductInfo({
     title,
     image,
     price,
+    originalPrice,
+    currencyCode,
     rating,
     reviewsCount,
     description,
@@ -254,8 +256,23 @@ export function ProductInfo({
                         <ShoppingCart className="size-6 mr-3" />
                         <span>{isAddingToCart ? "Adding..." : "Add to cart"}</span>
                     </Button>
-                    <div className="h-12 px-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-900 font-bold bg-white dark:bg-gray-900 dark:border-gray-800 dark:text-gray-100 min-w-[120px]">
-                        ${price.toFixed(2)}
+                    <div className="flex flex-col items-end gap-1 px-4">
+                        {originalPrice && originalPrice > price && (
+                            <span className="text-sm text-gray-400 line-through font-medium">
+                                {currencyCode || "AED"} {originalPrice.toFixed(2)}
+                            </span>
+                        )}
+                        <div className="h-12 px-6 flex items-center justify-center rounded-lg border border-gray-200 text-gray-900 bg-white dark:bg-gray-900 dark:border-gray-800 dark:text-gray-100 min-w-[140px]">
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">{currencyCode || "AED"}</span>
+                                <span className="text-2xl font-bold tracking-tight">
+                                    {Math.floor(price)}
+                                </span>
+                                <span className="text-sm font-bold">
+                                    .{(price % 1).toFixed(2).split('.')[1]}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

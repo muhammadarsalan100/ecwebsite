@@ -36,6 +36,8 @@ function CartPage() {
     const shipmentCost = 0;
     const total = subtotal - discount + shipmentCost;
 
+    const { selectedCountry } = useConfigStore();
+
     const fetchProfile = async () => {
         setIsLoadingProfile(true);
         try {
@@ -52,27 +54,41 @@ function CartPage() {
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetchProfile();
             try {
-                // Fetch "Also Viewed" (Related) items
-                const categoriesRes = await productService.getCatalogCategories();
-                if (categoriesRes?.data?.length > 0) {
+                // 1. Fetch Profile
+                await fetchProfile();
+                
+                // 2. Fetch "Also Viewed" (Related) items
+                // Only proceed if we have basic requirements, or use safe defaults
+                const categoriesRes = await productService.getCatalogCategories().catch(err => {
+                    console.error("[CART] Categories fetch failed:", err);
+                    return null;
+                });
+
+                if (categoriesRes?.data && categoriesRes.data.length > 0) {
                     const firstCat = categoriesRes.data[0];
-                    const countryCode = profile?.preferredCountryId?.toString() || "US";
-                    const itemsRes = await productService.searchCatalogItems(countryCode, firstCat.id);
+                    // Defensive coding for parameters
+                    const countryCode = profile?.preferredCountryId?.toString() || selectedCountry?.shortCode || "US";
+                    const currencyCode = selectedCountry?.currency?.shortCode || "AED";
+                    
+                    const itemsRes = await productService.searchCatalogItems(countryCode, firstCat.id, currencyCode).catch(err => {
+                        console.error("[CART] Related items fetch failed:", err);
+                        return null;
+                    });
+
                     if (itemsRes?.data?.items) {
                         setRelatedProducts(itemsRes.data.items.slice(0, 4));
                     }
                 }
             } catch (error) {
-                console.error("Cart data fetch error:", error);
+                console.error("Cart data fetch overall error:", error);
             } finally {
                 setIsLoadingProducts(false);
             }
         };
 
         fetchData();
-    }, []);
+    }, [selectedCountry, profile?.preferredCountryId]);
 
     const handleAddressSuccess = () => {
         fetchProfile();

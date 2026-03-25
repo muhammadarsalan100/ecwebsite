@@ -72,7 +72,8 @@ export function AuthOTP({ email, fullName, requestCode, loginSessionId, onContin
 
     const [isOtpVerified, setIsOtpVerified] = useState(false);
 
-    const handleContinue = async () => {
+    const handleContinue = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
         const code = otp.join("");
         if (code.length < 4) {
             setError(true);
@@ -140,64 +141,69 @@ export function AuthOTP({ email, fullName, requestCode, loginSessionId, onContin
                 </p>
             </div>
 
-            {/* OTP Input Boxes */}
-            <div className="flex flex-col items-center space-y-6 pt-4">
-                <div className="flex justify-between w-full max-w-[320px] gap-3">
-                    {otp.map((digit, index) => (
-                        <input
-                            key={index}
-                            ref={inputRefs[index]}
-                            type="text"
-                            maxLength={1}
-                            value={digit}
-                            onChange={(e) => handleChange(index, e.target.value)}
-                            onKeyDown={(e) => handleKeyDown(index, e)}
-                            className={`w-[66px] h-[72px] text-center text-2xl font-bold bg-white border ${error ? "border-red-500 ring-1 ring-red-500" : "border-[#E6E6E6] focus:border-[#0092FF] focus:ring-1 focus:ring-[#0092FF]"} rounded-xl outline-none transition-all text-[#1A1A1A]`}
-                        />
-                    ))}
+            <form onSubmit={handleContinue}>
+                {/* OTP Input Boxes */}
+                <div className="flex flex-col items-center space-y-6 pt-4">
+                    <div className="flex justify-between w-full max-w-[320px] gap-3">
+                        {otp.map((digit, index) => (
+                            <input
+                                key={index}
+                                ref={inputRefs[index]}
+                                type="text"
+                                maxLength={1}
+                                value={digit}
+                                onChange={(e) => handleChange(index, e.target.value)}
+                                onKeyDown={(e) => handleKeyDown(index, e)}
+                                className={`w-[66px] h-[72px] text-center text-2xl font-bold bg-white border ${error ? "border-red-500 ring-1 ring-red-500" : "border-[#E6E6E6] focus:border-[#0092FF] focus:ring-1 focus:ring-[#0092FF]"} rounded-xl outline-none transition-all text-[#1A1A1A]`}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Resend/Timer Section */}
+                    <div className="h-6 flex items-center justify-center">
+                        {isResendActive ? (
+                            <button
+                                type="button"
+                                onClick={handleResend}
+                                className="text-sm font-bold text-[#0092FF] hover:text-[#0081E0] transition-colors"
+                            >
+                                Resend OTP
+                            </button>
+                        ) : (
+                            <span className="text-sm font-medium text-[#A6A6A6]">
+                                {formatTime(timer)}
+                            </span>
+                        )}
+                    </div>
                 </div>
 
-                {/* Resend/Timer Section */}
-                <div className="h-6 flex items-center justify-center">
-                    {isResendActive ? (
-                        <button
-                            onClick={handleResend}
-                            className="text-sm font-bold text-[#0092FF] hover:text-[#0081E0] transition-colors"
-                        >
-                            Resend OTP
-                        </button>
-                    ) : (
-                        <span className="text-sm font-medium text-[#A6A6A6]">
-                            {formatTime(timer)}
-                        </span>
+                {/* Action Button */}
+                <div className='pt-4'>
+                    {apiError && (
+                        <p className="text-sm font-medium text-red-500 text-center pb-2">
+                            {apiError}
+                        </p>
                     )}
+
+                    <Button
+                        type="submit"
+                        disabled={isLoading}
+                        className='w-full h-[58px] text-base font-bold bg-[#0092FF] hover:bg-[#0081E0] text-white rounded-xl shadow-lg shadow-blue-500/10'
+                        style={{ fontFamily: 'var(--font-poppins)' }}
+                    >
+                        {isLoading ? "Verifying..." : "Continue"}
+                    </Button>
+
+                    <button
+                        type="button"
+                        onClick={onBack}
+                        className="w-full text-center text-sm text-[#737373] hover:text-[#1A1A1A] transition-colors pt-6"
+                    >
+                        ← Back to previous screen
+                    </button>
                 </div>
-            </div>
-
-            {/* Action Button */}
-            <div className='pt-4'>
-                {apiError && (
-                    <p className="text-sm font-medium text-red-500 text-center pb-2">
-                        {apiError}
-                    </p>
-                )}
-
-                <Button
-                    onClick={handleContinue}
-                    disabled={isLoading}
-                    className='w-full h-[58px] text-base font-bold bg-[#0092FF] hover:bg-[#0081E0] text-white rounded-xl shadow-lg shadow-blue-500/10'
-                    style={{ fontFamily: 'var(--font-poppins)' }}
-                >
-                    {isLoading ? "Verifying..." : "Continue"}
-                </Button>
-
-                <button
-                    onClick={onBack}
-                    className="w-full text-center text-sm text-[#737373] hover:text-[#1A1A1A] transition-colors pt-6"
-                >
-                    ← Back to previous screen
-                </button>
-            </div>
+            </form>
         </div>
     );
+
 }

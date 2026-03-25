@@ -18,7 +18,7 @@ export function SearchBar({ isMobile, onClose }: SearchBarProps) {
     const [searchKey, setSearchKey] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const debouncedSearchKey = useDebounce(searchKey, 500);
-    const { searchItems, isSearchLoading, fetchSearchItems } = useConfigStore();
+    const { searchItems, isSearchLoading, fetchSearchItems, selectedCountry } = useConfigStore();
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
@@ -26,12 +26,13 @@ export function SearchBar({ isMobile, onClose }: SearchBarProps) {
 
     useEffect(() => {
         if (debouncedSearchKey.trim().length >= 2) {
-            fetchSearchItems(debouncedSearchKey);
+            const currencyCode = selectedCountry?.currency?.shortCode || "AED";
+            fetchSearchItems(debouncedSearchKey, currencyCode);
             setIsOpen(true);
         } else {
             setIsOpen(false);
         }
-    }, [debouncedSearchKey, fetchSearchItems]);
+    }, [debouncedSearchKey, fetchSearchItems, selectedCountry]);
 
     const handleSearch = () => {
         if (searchKey.trim().length >= 2) {

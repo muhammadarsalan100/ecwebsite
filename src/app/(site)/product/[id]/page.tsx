@@ -12,7 +12,8 @@ import { Loader } from "@/components/ui/loader";
 
 import { motion } from "framer-motion";
 import { productService } from "@/services/productService";
-import { CatalogItem } from "@/types/product";
+import { useConfigStore } from "@/lib/store/configStore";
+import { CatalogItemDetail } from "@/types/product";
 
 // ─── Skeleton ───────────────────────────────────────────────────────────────
 
@@ -63,10 +64,10 @@ function ProductDetailSkeleton() {
  * Extract image URLs from a CatalogItem.
  * Falls back to icon, then a placeholder.
  */
-function extractImages(item: CatalogItem): string[] {
-  const fromImages = item.images?.map((img) => img.url).filter(Boolean) ?? [];
-  if (fromImages.length > 0) return fromImages;
-  if (item.icon) return [item.icon];
+function extractImages(item: CatalogItemDetail): string[] {
+  // V2.0 images is a string[] of direct URLs
+  if (item.images && item.images.length > 0) return item.images;
+  if (item.logo) return [item.logo];
   return ["/p-1.jpg"];
 }
 
@@ -75,18 +76,20 @@ function extractImages(item: CatalogItem): string[] {
  * Colors and sizes are not in the API response for the basic item endpoint,
  * so we default to empty arrays and let the UI gracefully handle it.
  */
-function mapToProductInfoProps(item: CatalogItem) {
+function mapToProductInfoProps(item: CatalogItemDetail) {
   const images = extractImages(item);
   return {
     id: item.id,
     title: item.name,
     image: images[0] || "/p-1.jpg",
-    price: item.price,
-    rating: item.rating ?? 0,
-    reviewsCount: 0, // not in this endpoint
-    description: item.description ?? "",
-    colors: [],   // variant-level — not in the basic item endpoint
-    sizes: [],    // variant-level — not in the basic item endpoint
+    price: item.price.price,
+    originalPrice: item.price.mrp,
+    currencyCode: item.price.currency,
+    rating: item.rating?.rating ?? 0,
+    reviewsCount: item.rating?.totalReviews ?? 0,
+    description: item.shortDescription ?? "",
+    colors: [],
+    sizes: [],
     category: item.category?.name ?? "",
     subcategory: item.category?.subCategories?.[0]?.name ?? "",
   };
@@ -98,9 +101,11 @@ export default function ProductDetailPage() {
   const params = useParams();
   const id = params?.id as string;
 
-  const [item, setItem] = useState<CatalogItem | null>(null);
+  const [item, setItem] = useState<CatalogItemDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { selectedCurrency } = useConfigStore();
+  const currencyCode = selectedCurrency?.split(" - ")[0] || "USD";
 
   useEffect(() => {
     if (!id) return;
@@ -111,7 +116,7 @@ export default function ProductDetailPage() {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await productService.getCatalogItemById(id);
+        const response = await productService.getCatalogItemById(id, currencyCode);
         if (!cancelled && response?.data) {
           setItem(response.data);
         }
@@ -126,7 +131,7 @@ export default function ProductDetailPage() {
 
     fetchItem();
     return () => { cancelled = true; };
-  }, [id]);
+  }, [id, currencyCode]);
 
   // ── Derived data ──────────────────────────────────────────────────────────
   const images = item ? extractImages(item) : [];
@@ -165,9 +170,17 @@ export default function ProductDetailPage() {
           {/* Tabs Section */}
           <div className="mb-20">
             <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
-              Top Categories
+              Product Details
             </h2>
-            <ProductTabs description={productInfoProps.description} />
+            <ProductTabs 
+              shortDescription={item.shortDescription}
+              longDescription={item.longDescription}
+              reviewsCount={item.rating?.totalReviews ?? 0}
+              faqs={item.faqs}
+              technicalAttributes={item.technicalAttributes}
+              videos={item.videos}
+              images={images}
+            />
           </div>
 
           {/* Related Products — static for now, no related endpoint yet */}

@@ -23,7 +23,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
         <div className="flex flex-col-reverse md:flex-row gap-4 w-full">
             {/* Thumbnails (Desktop: Vertical Left, Mobile: Hidden/Bottom?) */}
             {/* Standard Layout: Thumbnails Left, Main Right */}
-            <div className="hidden md:flex flex-col gap-4 w-24 flex-shrink-0 h-fit items-center">
+            <div className="hidden md:flex flex-col gap-2 w-16 flex-shrink-0 items-center">
                 <button
                     onClick={handlePrevious}
                     className="p-1 rounded-full hover:bg-gray-100 text-gray-400"
@@ -35,9 +35,9 @@ export function ProductGallery({ images }: ProductGalleryProps) {
                         key={idx}
                         onClick={() => setSelectedIndex(idx)}
                         className={cn(
-                            "relative aspect-square w-full overflow-hidden rounded-lg border-2 transition-all",
+                            "relative w-14 h-14 flex-shrink-0 overflow-hidden rounded-md border-2 transition-all",
                             selectedIndex === idx
-                                ? "border-black dark:border-white ring-2 ring-offset-2 ring-black dark:ring-white"
+                                ? "border-black dark:border-white ring-1 ring-offset-1 ring-black dark:ring-white"
                                 : "border-transparent hover:border-gray-200"
                         )}
                     >
@@ -45,7 +45,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
                             src={img}
                             alt={`Product thumbnail ${idx + 1}`}
                             fill
-                            className="object-cover"
+                            className="object-contain"
                         />
                     </button>
                 ))}
@@ -58,7 +58,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
             </div>
 
             {/* Main Image Area */}
-            <div className="relative aspect-[3/4] md:aspect-auto md:h-[600px] w-full flex-grow overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-900 group">
+            <div className="relative aspect-[3/4] md:aspect-auto md:h-[480px] w-full flex-grow overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-900 group">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={selectedIndex}

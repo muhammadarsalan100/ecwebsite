@@ -320,7 +320,8 @@ export default function Home() {
   // 3. Fetch Items when Country or Category changes
   useEffect(() => {
     if (selectedCountry && activeCategoryId) {
-      fetchCatalogItems(selectedCountry.shortCode, activeCategoryId);
+      const currencyCode = selectedCountry.currency?.shortCode || "AED";
+      fetchCatalogItems(selectedCountry.shortCode, activeCategoryId, currencyCode);
     }
   }, [selectedCountry, activeCategoryId, fetchCatalogItems]);
 

@@ -38,8 +38,8 @@ interface ConfigState {
     fetchCategories: () => Promise<void>;
     fetchCategoryById: (id: number | string) => Promise<void>;
     fetchCategoryWithAttributes: (id: number | string) => Promise<void>;
-    fetchCatalogItems: (countryCode: string, categoryId: number | string) => Promise<void>;
-    fetchSearchItems: (searchKey: string) => Promise<void>;
+    fetchCatalogItems: (countryCode: string, categoryId: number | string, currencyCode: string) => Promise<void>;
+    fetchSearchItems: (searchKey: string, currencyCode: string) => Promise<void>;
     categories: Category[];
     items: any[];
     searchItems: any[];
@@ -184,10 +184,10 @@ export const useConfigStore = create<ConfigState>()(
                 }
             },
 
-            fetchCatalogItems: async (countryCode: string, categoryId: number | string) => {
+            fetchCatalogItems: async (countryCode: string, categoryId: number | string, currencyCode: string) => {
                 set({ isItemsLoading: true, error: null });
                 try {
-                    const response = await productService.searchCatalogItems(countryCode, categoryId);
+                    const response = await productService.searchCatalogItems(countryCode, categoryId, currencyCode);
                     if (response && response.data) {
                         set({
                             items: response.data.items,
@@ -202,11 +202,11 @@ export const useConfigStore = create<ConfigState>()(
                 }
             },
 
-            fetchSearchItems: async (searchKey: string) => {
+            fetchSearchItems: async (searchKey: string, currencyCode: string) => {
                 const countryCode = get().selectedCountry?.shortCode || "UAE";
                 set({ isSearchLoading: true, error: null });
                 try {
-                    const response = await productService.searchCatalogItemsByKey(countryCode, searchKey);
+                    const response = await productService.searchCatalogItemsByKey(countryCode, searchKey, currencyCode);
                     if (response && response.data) {
                         set({
                             searchItems: response.data.items,
@@ -272,6 +272,10 @@ export const useConfigStore = create<ConfigState>()(
         {
             name: "config-storage",
             storage: createJSONStorage(() => localStorage),
+            partialize: (state) => {
+                const { activeCategoryId, ...rest } = state;
+                return rest;
+            },
         }
     )
 );

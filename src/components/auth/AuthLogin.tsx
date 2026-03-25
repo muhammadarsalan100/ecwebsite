@@ -16,7 +16,8 @@ export function AuthLogin({ onRegister, onBack, onLogin }: AuthLoginProps) {
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
         try {
             authSchema.parse({ email });
             setError(null);
@@ -62,7 +63,7 @@ export function AuthLogin({ onRegister, onBack, onLogin }: AuthLoginProps) {
             </div>
 
             {/* Form */}
-            <div className='space-y-7'>
+            <form onSubmit={handleSubmit} className='space-y-7'>
                 <div className="space-y-3">
                     <Input
                         type='email'
@@ -80,10 +81,11 @@ export function AuthLogin({ onRegister, onBack, onLogin }: AuthLoginProps) {
                 </div>
 
                 <Button
-                    onClick={handleSubmit}
+                    type="submit"
+                    disabled={isLoading}
                     className='w-full h-12 text-base font-semibold bg-blue-500 hover:bg-blue-600'
                 >
-                    Sign In
+                    {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
 
                 {/* Divider */}
@@ -98,6 +100,7 @@ export function AuthLogin({ onRegister, onBack, onLogin }: AuthLoginProps) {
                 {/* Social */}
                 <div className='space-y-6'>
                     <Button
+                        type="button"
                         variant='outline'
                         className='w-full h-12 flex items-center justify-center gap-3 rounded-lg'
                     >
@@ -111,6 +114,7 @@ export function AuthLogin({ onRegister, onBack, onLogin }: AuthLoginProps) {
                     </Button>
 
                     <Button
+                        type="button"
                         variant='outline'
                         className='w-full h-12 flex items-center justify-center gap-3 rounded-lg'
                     >
@@ -125,12 +129,14 @@ export function AuthLogin({ onRegister, onBack, onLogin }: AuthLoginProps) {
                 </div>
 
                 <button
+                    type="button"
                     onClick={onBack}
                     className="w-full text-center text-sm text-gray-500 hover:text-gray-700 transition-colors pt-4"
                 >
                     ← Back to landing
                 </button>
-            </div>
+            </form>
         </div>
     );
+
 }

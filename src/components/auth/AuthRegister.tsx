@@ -20,7 +20,8 @@ export function AuthRegister({ onSignIn, onBack, onSuccess }: AuthRegisterProps)
     const [apiError, setApiError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleRegister = async () => {
+    const handleRegister = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
         try {
             registrationSchema.parse({ fullName, email, password });
             setRegErrors({});
@@ -70,7 +71,7 @@ export function AuthRegister({ onSignIn, onBack, onSuccess }: AuthRegisterProps)
                 </p>
             </div>
 
-            <div className='space-y-4'>
+            <form onSubmit={handleRegister} className='space-y-4'>
                 {/* Name Field */}
                 <div className='space-y-1.5'>
                     <label className='text-sm text-[#8A8A8A] font-medium'>First and last name</label>
@@ -136,9 +137,9 @@ export function AuthRegister({ onSignIn, onBack, onSuccess }: AuthRegisterProps)
                         </p>
                     )}
                     <Button
+                        type="submit"
                         className='w-full h-[54px] bg-[#0092FF] hover:bg-[#0081E0] text-white font-bold rounded-xl shadow-lg shadow-blue-500/10'
                         style={{ fontFamily: 'var(--font-poppins)' }}
-                        onClick={handleRegister}
                         disabled={isLoading}
                     >
                         {isLoading ? "Requesting OTP..." : "Continue"}
@@ -146,6 +147,7 @@ export function AuthRegister({ onSignIn, onBack, onSuccess }: AuthRegisterProps)
                 </div>
 
                 <button
+                    type="button"
                     onClick={onSignIn}
                     className="w-full text-center text-sm text-[#737373] hover:text-[#1A1A1A] transition-colors pt-2"
                 >
@@ -153,12 +155,14 @@ export function AuthRegister({ onSignIn, onBack, onSuccess }: AuthRegisterProps)
                 </button>
 
                 <button
+                    type="button"
                     onClick={onBack}
                     className="w-full text-center text-sm text-gray-400 hover:text-gray-600 transition-colors"
                 >
                     ← Back to options
                 </button>
-            </div>
+            </form>
         </div>
     );
+
 }

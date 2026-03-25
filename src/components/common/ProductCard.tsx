@@ -146,106 +146,109 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
     return (
         <motion.div
             className={cn(
-                "group cursor-pointer bg-white rounded-xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition-all duration-300 flex flex-col h-full w-full font-poppins",
+                "group cursor-pointer bg-card rounded-2xl overflow-hidden border border-border/40 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 flex flex-col h-full w-full relative",
                 className
             )}
             variants={itemVariants}
-            whileHover={{ y: -5 }}
+            whileHover={{ y: -8 }}
         >
             <Link href={`/product/${product.id}`} className="block flex-1">
                 {/* Image Container */}
-                <div className="relative aspect-[1/1.2] bg-[#F7F8FA] overflow-hidden">
+                <div className="relative aspect-[1/1.1] bg-muted/30 overflow-hidden rounded-t-2xl">
                     <Image
                         src={product.image || "/p-1.jpg"}
                         alt={product.name}
                         fill
-                        className="object-contain group-hover:scale-105 transition-transform duration-700 ease-out"
+                        className="object-contain p-4 group-hover:scale-110 transition-transform duration-700 ease-out"
                         sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     />
 
-                    {/* Floating Wishlist Button */}
-                    <button
-                        onClick={handleWishlist}
-                        disabled={isAdding}
-                        className={cn(
-                            "absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 z-10",
-                            isWishlisted
-                                ? "bg-red-50 text-red-500 shadow-sm"
-                                : "bg-white/90 text-gray-400 hover:text-red-500 hover:bg-white shadow-md active:scale-90"
+                    {/* Badge Overlays */}
+                    <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+                        {discountPercentage && (
+                            <div className="bg-primary text-white px-2.5 py-1 rounded-full shadow-lg backdrop-blur-md bg-opacity-90">
+                                <span className="text-[10px] font-bold">-{discountPercentage}% Off</span>
+                            </div>
                         )}
-                    >
-                        <Heart
+                        {product.stockMessage && (
+                            <div className="bg-white/80 dark:bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20 shadow-sm">
+                                <span className="text-[10px] font-bold text-destructive uppercase tracking-wider">
+                                    {product.stockMessage}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Actions Overlay */}
+                    <div className="absolute top-3 right-3 flex flex-col gap-2 z-10 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-300">
+                        <button
+                            onClick={handleWishlist}
+                            disabled={isAdding}
                             className={cn(
-                                "w-4 h-4 transition-transform duration-300",
-                                isWishlisted && "fill-current scale-110",
-                                isAdding && "animate-pulse"
+                                "w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-md backdrop-blur-md",
+                                isWishlisted
+                                    ? "bg-destructive text-white"
+                                    : "bg-white/90 text-gray-500 hover:text-destructive hover:bg-white"
                             )}
-                        />
-                    </button>
-
-                    {/* Discount Badge Overlay */}
-                    {discountPercentage && (
-                        <div className="absolute top-3 left-3 bg-[#FF4646] px-2 py-0.5 rounded-sm shadow-sm z-10">
-                            <span className="text-[10px] font-bold text-white">-{discountPercentage}%</span>
-                        </div>
-                    )}
-
-                    {/* Stock Status Badge */}
-                    {product.stockMessage && (
-                        <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded-sm border border-black/5 shadow-sm">
-                            <span className="text-[10px] font-bold text-[#FF4646] uppercase tracking-tight">
-                                {product.stockMessage}
-                            </span>
-                        </div>
-                    )}
+                        >
+                            <Heart
+                                className={cn(
+                                    "w-4.5 h-4.5 transition-all duration-300",
+                                    isWishlisted && "fill-current scale-110",
+                                    isAdding && "animate-pulse"
+                                )}
+                            />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Content Section */}
-                <div className="p-3 flex flex-col">
-                    {/* Brand/Subtitle */}
-                    <div className="flex items-center gap-1.5 mb-1 opacity-60">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">
-                            {product.brand || "ZRGOTH Essentials"}
+                <div className="p-4 flex flex-col flex-1">
+                    {/* Brand */}
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/70">
+                            {product.brand || "ZRGOTH Shop"}
                         </span>
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-[13px] leading-[1.4] font-normal text-gray-700 line-clamp-2 min-h-[36px] mb-2 group-hover:text-[#0092FF] transition-colors">
+                    <h3 className="text-[14px] leading-tight font-medium text-foreground mb-3 group-hover:text-primary transition-colors">
                         {product.name}
                     </h3>
 
                     {/* Rating */}
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-4">
                         <div className="flex items-center gap-0.5">
                             {[...Array(5)].map((_, i) => (
                                 <Star
                                     key={i}
                                     className={cn(
-                                        "w-2.5 h-2.5",
-                                        i < Math.floor(product.rating) ? "fill-[#FF9900] text-[#FF9900]" : "fill-gray-200 text-gray-200"
+                                        "w-3 h-3",
+                                        i < Math.floor(product.rating)
+                                            ? "fill-amber-400 text-amber-400"
+                                            : "fill-muted text-muted"
                                     )}
                                 />
                             ))}
                         </div>
-                        <span className="text-[11px] text-gray-400 font-medium">({product.reviews})</span>
+                        <span className="text-[12px] text-muted-foreground font-medium">({product.reviews})</span>
                     </div>
 
-                    {/* Price & Cart Row */}
-                    <div className="flex items-center justify-between mt-auto">
+                    {/* Price & Action Row */}
+                    <div className="flex items-end justify-between mt-auto">
                         <div className="flex flex-col">
-                            {/* Original Price (Strike-through) */}
                             {product.isPromotionApplied && product.originalPrice && (
-                                <span className="text-[11px] text-gray-400 line-through leading-none mb-0.5">
-                                    {product.currencyCode || "$"} {product.originalPrice.toFixed(2)}
+                                <span className="text-[12px] text-muted-foreground/60 line-through leading-none mb-1">
+                                    {product.currencyCode || "AED"} {product.originalPrice.toFixed(2)}
                                 </span>
                             )}
 
-                            <div className="flex items-baseline gap-1">
-                                <span className="text-xs font-bold text-[#FF4646]">{product.currencyCode || "$"}</span>
-                                <span className="text-lg font-bold text-[#FF4646] tracking-tight -ml-0.5">
+                            <div className="flex items-baseline gap-1 animate-in fade-in slide-in-from-bottom-1 duration-500">
+                                <span className="text-sm font-bold text-foreground">{product.currencyCode || "AED"}</span>
+                                <span className="text-xl font-bold text-foreground tracking-tight">
                                     {Math.floor(product.price)}
                                 </span>
-                                <span className="text-xs font-bold text-[#FF4646]">
+                                <span className="text-sm font-bold text-foreground">
                                     .{(product.price % 1).toFixed(2).split('.')[1]}
                                 </span>
                             </div>
@@ -255,11 +258,11 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
                             onClick={handleAddToCart}
                             disabled={isAddingToCart}
                             className={cn(
-                                "w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 border border-gray-100 group-hover:bg-[#0092FF] group-hover:border-[#0092FF] group-hover:text-white shadow-sm active:scale-90",
-                                isAddingToCart ? "bg-[#0092FF] text-white opacity-70" : "bg-white text-gray-600"
+                                "group/btn w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 shadow-sm border border-border group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground active:scale-95",
+                                isAddingToCart ? "bg-primary text-primary-foreground" : "bg-card text-foreground"
                             )}
                         >
-                            <ShoppingCart className={cn("w-4 h-4", isAddingToCart && "animate-bounce")} />
+                            <ShoppingCart className={cn("w-5 h-5 transition-transform group-hover/btn:scale-110", isAddingToCart && "animate-bounce")} />
                         </button>
                     </div>
                 </div>
@@ -278,4 +281,5 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
             />
         </motion.div>
     );
+
 };

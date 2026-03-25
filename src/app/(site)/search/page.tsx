@@ -11,13 +11,14 @@ import { motion } from "framer-motion";
 function SearchContent() {
     const searchParams = useSearchParams();
     const query = searchParams.get("q") || "";
-    const { searchItems, isSearchLoading, fetchSearchItems } = useConfigStore();
+    const { searchItems, isSearchLoading, fetchSearchItems, selectedCountry } = useConfigStore();
 
     useEffect(() => {
         if (query) {
-            fetchSearchItems(query);
+            const currencyCode = selectedCountry?.currency?.shortCode || "AED";
+            fetchSearchItems(query, currencyCode);
         }
-    }, [query, fetchSearchItems]);
+    }, [query, fetchSearchItems, selectedCountry]);
 
     return (
         <main className="w-full px-4 pt-10 pb-20 md:px-8 lg:px-12">

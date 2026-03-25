@@ -25,6 +25,10 @@ const nextConfig: NextConfig = {
         source: '/api/v1.0/:path*',
         destination: 'http://44.201.187.225:8001/api/v1.0/:path*',
       },
+      {
+        source: '/api/v2.0/:path*',
+        destination: 'http://44.201.187.225:8001/api/v2.0/:path*',
+      },
     ];
   },
 };

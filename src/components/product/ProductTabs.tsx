@@ -7,24 +7,34 @@ import { Play } from "lucide-react";
 import Image from "next/image";
 
 import { ProductTabsProps } from "@/types";
+import { ProductGalleryModal } from "./ProductGalleryModal";
 
-const tabs = [
-    { id: "description", label: "Description", count: null },
-    { id: "comments", label: "User comments", count: 21 },
-    { id: "qna", label: "Question & Answer", count: 4 },
-];
-
-const productDetails = [
-    { label: "Fabric", value: "Bio-washed Cotton" },
-    { label: "Pattern", value: "Printed" },
-    { label: "Fit", value: "Regular-fit" },
-    { label: "Neck", value: "Round Neck" },
-    { label: "Sleeve", value: "Half-sleeves" },
-    { label: "Style", value: "Casual Wear" },
-];
-
-export function ProductTabs({ description }: ProductTabsProps) {
+export function ProductTabs({ 
+    shortDescription, 
+    longDescription, 
+    reviewsCount = 0, 
+    faqs = [], 
+    technicalAttributes = [],
+    videos = [],
+    images = []
+}: ProductTabsProps) {
     const [activeTab, setActiveTab] = useState("description");
+    const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+    const [galleryInitialIndex, setGalleryInitialIndex] = useState(0);
+
+    const tabs = [
+        { id: "description", label: "Description", count: null },
+        { id: "comments", label: "User comments", count: reviewsCount },
+        { id: "qna", label: "Question & Answer", count: faqs.length },
+    ];
+
+    // Combine videos and images for the gallery modal
+    const galleryItems = [
+        ...videos.map(v => ({ type: "video" as const, url: v.thumbnailUrl || images[0] || "/p-4.jpg", title: v.title, duration: v.duration, thumbnailUrl: v.thumbnailUrl })),
+        ...images.map(img => ({ type: "image" as const, url: img }))
+    ];
+
+    const firstItem = galleryItems[0];
 
     return (
         <div className="w-full">
@@ -78,56 +88,77 @@ export function ProductTabs({ description }: ProductTabsProps) {
                                 <div className="lg:col-span-2">
                                     <div 
                                         className="text-gray-600 dark:text-gray-400 leading-relaxed mb-8 product-description"
-                                        dangerouslySetInnerHTML={{ __html: description }}
+                                        dangerouslySetInnerHTML={{ __html: longDescription || shortDescription }}
                                     />
 
-                                    <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6">
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-4">
-                                            {productDetails.map((detail, idx) => (
-                                                <div key={idx} className={cn(
-                                                    "flex flex-col gap-1",
-                                                    // Add border right for all except every 3rd item (last in row on desktop)
-                                                    (idx + 1) % 3 !== 0 && "md:border-r border-gray-200 dark:border-gray-800",
-                                                    // Add border right for md screens? The grid logic for borders is tricky, simpler is just spacing.
-                                                    // Let's stick to simple spacing or use specific borders.
-                                                    // The image shows clean grid with dividers.
-                                                )}>
-                                                    <div className="px-4">
-                                                        <span className="text-sm text-gray-500 dark:text-gray-400 block mb-1">
-                                                            {detail.label}
-                                                        </span>
-                                                        <span className="text-base font-semibold text-gray-900 dark:text-gray-100">
-                                                            {detail.value}
-                                                        </span>
+                                    {technicalAttributes && technicalAttributes.length > 0 && (
+                                        <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6">
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-4">
+                                                {technicalAttributes.map((detail, idx) => (
+                                                    <div key={idx} className={cn(
+                                                        "flex flex-col gap-1",
+                                                        (idx + 1) % 3 !== 0 && "md:border-r border-gray-200 dark:border-gray-800",
+                                                    )}>
+                                                        <div className="px-4">
+                                                            <span className="text-sm text-gray-500 dark:text-gray-400 block mb-1">
+                                                                {detail.name}
+                                                            </span>
+                                                            <span className="text-base font-semibold text-gray-900 dark:text-gray-100">
+                                                                {detail.value}
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
 
-                                {/* Right Content - Video Card */}
-                                <div className="lg:col-span-1">
-                                    <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-200 dark:bg-gray-800 group cursor-pointer">
-                                        <Image
-                                            src="/p-4.jpg" // Using one of the product images as placeholder
-                                            alt="Video thumbnail"
-                                            fill
-                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                        />
-                                        <div className="absolute inset-0 bg-black/20 flex flex-col items-center justify-center">
-                                            <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
-                                                <Play className="h-6 w-6 text-gray-900 fill-gray-900 ml-1" />
-                                            </div>
-                                            <div className="absolute bottom-4 left-4 right-4 text-white">
-                                                <p className="text-sm font-medium text-center">Raven Hoodie with black colored design</p>
-                                            </div>
-                                            <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-md px-2 py-1 rounded text-xs text-white font-medium">
-                                                1:00 M
+                                {/* Right Content - Video & Image Preview */}
+                                {firstItem && (
+                                    <div className="lg:col-span-1 flex justify-center lg:justify-end">
+                                        <div 
+                                            onClick={() => {
+                                                setGalleryInitialIndex(0);
+                                                setIsGalleryOpen(true);
+                                            }}
+                                            className="relative w-full max-w-[469px] aspect-[469/289] overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800/50 group cursor-pointer shadow-sm hover:shadow-lg transition-all duration-500 border border-gray-100 dark:border-gray-800"
+                                        >
+                                            <Image
+                                                src={firstItem.url}
+                                                alt="Product preview"
+                                                fill
+                                                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                            />
+                                            
+                                            {/* Overlay for first item */}
+                                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex flex-col items-center justify-center">
+                                                {firstItem.type === "video" ? (
+                                                    <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-lg transition-transform group-hover:scale-110">
+                                                        <Play className="h-6 w-6 text-gray-900 fill-gray-900 ml-1" />
+                                                    </div>
+                                                ) : (
+                                                    <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] text-white font-bold opacity-0 group-hover:opacity-100 transition-all uppercase tracking-widest border border-white/20">
+                                                        Expand Gallery
+                                                    </div>
+                                                )}
+                                                
+                                                {galleryItems.length > 1 && (
+                                                    <div className="absolute bottom-4 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2">
+                                                        <div className="flex -space-x-2">
+                                                            {galleryItems.slice(0, 3).map((item, idx) => (
+                                                                <div key={idx} className="w-6 h-6 rounded-full border border-white bg-gray-200 overflow-hidden shrink-0">
+                                                                    <Image src={item.url} alt="Gallery" width={24} height={24} className="object-cover h-full" />
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                        <span className="text-xs font-bold text-white">+{galleryItems.length - 1} More</span>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         )}
                         {activeTab === "comments" && (
@@ -136,13 +167,32 @@ export function ProductTabs({ description }: ProductTabsProps) {
                             </div>
                         )}
                         {activeTab === "qna" && (
-                            <div className="text-gray-600 dark:text-gray-400">
-                                <p>Questions & Answers will appear here.</p>
+                            <div className="space-y-6">
+                                {faqs && faqs.length > 0 ? (
+                                    faqs.map((faq) => (
+                                        <div key={faq.id} className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6">
+                                            <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">{faq.question}</h4>
+                                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{faq.answer}</p>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-gray-600 dark:text-gray-400">
+                                        <p>No questions and answers yet.</p>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </motion.div>
                 </AnimatePresence>
             </div>
+
+            {/* Gallery Modal */}
+            <ProductGalleryModal
+                isOpen={isGalleryOpen}
+                onClose={() => setIsGalleryOpen(false)}
+                items={galleryItems}
+                initialIndex={galleryInitialIndex}
+            />
         </div>
     );
 }
