@@ -135,16 +135,10 @@ export default function WishlistPage() {
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 px-2 lg:px-0">
                     {wishlist.map((item) => {
-                        // Log items briefly if images are missing to help debug (optional but good for now)
-                        if (process.env.NODE_ENV === 'development') {
-                            console.log('Wishlist item mapping check:', item);
-                        }
-
-                        // Robust mapping to handle various API structures (flat or nested)
+                        // Robust mapping to handle various API structures
                         const name = item.name || item.productName || item.item?.itemName || item.catalogItem?.name || "Product Name";
-                        const brand = item.brand || item.brandName || item.vendor?.fullName || item.item?.itemBrand || item.catalogItem?.vendor?.fullName || "Brand Name";
-
-                        // Image hierarchy: image -> imageUrl -> images array -> item.icon -> item.item.icon
+                        const brand = item.brand || item.brandName || item.vendor?.fullName || item.item?.itemBrand || item.catalogItem?.vendor?.fullName || "MegaMart Elite";
+                        
                         const image = item.image ||
                             item.imageUrl ||
                             (item.images && Array.isArray(item.images) && item.images[0]?.url) ||
@@ -152,51 +146,66 @@ export default function WishlistPage() {
                             item.item?.icon ||
                             item.catalogItem?.icon;
 
+                        const price = Number(item.price || item.unitPrice || 0);
+
                         return (
-                            <div key={item.id} className="group flex flex-col">
+                            <div key={item.id} className="group flex flex-col bg-white rounded-[2.5rem] overflow-hidden border border-[#0092FF]/5 shadow-sm hover:shadow-[0_20px_50px_rgba(0,146,255,0.12)] transition-all duration-500">
                                 {/* Product Image Container */}
-                                <div className="relative aspect-square w-full bg-[#F5F5F5] rounded-[24px] overflow-hidden flex items-center justify-center mb-5 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
+                                <div className="relative aspect-square m-3 overflow-hidden rounded-[2rem] bg-gray-50/50 flex items-center justify-center group-hover/img">
                                     {image ? (
                                         <Image
                                             src={image}
                                             alt={name}
-                                            width={200}
-                                            height={200}
-                                            className="object-contain p-8 mix-blend-multiply"
+                                            width={240}
+                                            height={240}
+                                            className="object-contain p-8 group-hover:scale-105 transition-transform duration-700 ease-out"
                                         />
                                     ) : (
-                                        <div className="flex flex-col items-center justify-center text-gray-300">
+                                        <div className="flex flex-col items-center justify-center text-gray-200">
                                             <Package className="w-16 h-16 stroke-[1.5]" />
-                                            <span className="text-[10px] mt-2 font-medium tracking-wider uppercase">No Image</span>
+                                            <span className="text-[10px] mt-2 font-bold tracking-[0.2em] uppercase">No Image</span>
                                         </div>
                                     )}
+                                    
+                                    {/* Action Glass Badge (Remove) */}
+                                    <button 
+                                        onClick={() => handleRemove(item.id)}
+                                        className="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-xl rounded-2xl border border-white/50 shadow-sm flex items-center justify-center text-red-400 hover:text-red-500 hover:scale-110 transition-all duration-300 z-10"
+                                        title="Remove from wishlist"
+                                    >
+                                        <Trash2 className="w-4.5 h-4.5" />
+                                    </button>
                                 </div>
 
                                 {/* Product Info */}
-                                <div className="px-1 flex flex-col flex-1">
-                                    <h3 className="font-bold text-gray-800 text-[15px] mb-0.5" title={name}>
+                                <div className="px-6 pb-6 pt-2 flex flex-col flex-1">
+                                    {/* Brand Badge */}
+                                    <div className="mb-3">
+                                        <span className="inline-block text-[10px] font-bold uppercase tracking-[0.2em] text-[#0092FF]/60 bg-[#0092FF]/5 px-2.5 py-1 rounded-lg">
+                                            {brand}
+                                        </span>
+                                    </div>
+
+                                    <h3 className="text-[15px] leading-[1.4] font-bold text-gray-900 mb-4 group-hover:text-[#0092FF] transition-colors line-clamp-2 min-h-[42px]" title={name}>
                                         {name}
                                     </h3>
-                                    <p className="text-[11px] text-gray-400 font-medium mb-5 uppercase tracking-wide">
-                                        {brand}
-                                    </p>
 
-                                    {/* Actions */}
-                                    <div className="mt-auto flex items-center gap-3">
-                                        <Button
-                                            variant="outline"
-                                            className="flex-1 h-10 rounded-xl border-[#0092FF] text-[#0092FF] hover:bg-blue-50 text-[12px] font-bold gap-2 px-3"
+                                    {/* Actions & Price Row */}
+                                    <div className="mt-auto flex items-center justify-between gap-4">
+                                        <div className="flex flex-col">
+                                            <span className="text-[12px] font-extrabold text-[#0092FF]">AED</span>
+                                            <span className="text-xl font-black text-gray-900 tracking-tighter">
+                                                {price.toFixed(2)}
+                                            </span>
+                                        </div>
+
+                                        <button
+                                            className="flex-1 h-12 bg-gray-950 hover:bg-[#0092FF] text-white rounded-2xl text-[12px] font-bold flex items-center justify-center gap-2 transition-all duration-500 shadow-lg shadow-black/10 hover:shadow-blue-500/30 group/btn overflow-hidden relative"
                                         >
-                                            <ShoppingCart className="w-4 h-4" />
-                                            Add to cart
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            onClick={() => handleRemove(item.id)}
-                                            className="w-10 h-10 p-0 rounded-xl border-red-100 text-red-500 hover:bg-red-50 hover:border-red-200 transition-colors"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </Button>
+                                             <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+                                            <ShoppingCart className="w-4 h-4 group-hover/btn:scale-110 group-hover/btn:-rotate-12 transition-transform" />
+                                            <span>Add to cart</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

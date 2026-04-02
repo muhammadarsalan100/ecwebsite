@@ -1,4 +1,4 @@
-import { api, withAuth } from "./apiClient";
+import { api } from "./apiClient";
 import { BillingSchema } from "@/schemas/billing.schema";
 
 /**
@@ -9,17 +9,17 @@ export const billingService = {
      * Process order (Requires Auth)
      */
     createOrder: (data: BillingSchema) =>
-        withAuth(api.post)("/api/v1.0/orders", data),
+        api.post("/api/v1.0/orders", data),
 
     /**
      * Get order history (Requires Auth)
      */
     getOrderHistory: () =>
-        withAuth(api.get)("/api/v1.0/orders/history"),
+        api.get("/api/v1.0/orders/history"),
 
     /**
      * Get specific order details (Requires Auth)
      */
     getOrderDetails: (orderId: string) =>
-        withAuth(api.get)(`/api/v1.0/orders/${orderId}`),
+        api.get(`/api/v1.0/orders/${orderId}`),
 };

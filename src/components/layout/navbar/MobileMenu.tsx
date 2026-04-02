@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { RegionSelector } from "../RegionSelector";
 import { useCartStore } from "@/lib/store/cartStore";
 
+import { User } from "@/lib/auth-context";
+import { Country } from "@/types/config";
 import { useConfigStore } from "@/lib/store/configStore";
 
 interface MobileMenuProps {
@@ -14,13 +16,13 @@ interface MobileMenuProps {
     setIsOpen: (isOpen: boolean) => void;
     isLoading: boolean;
     isAuthenticated: boolean;
-    user: any;
+    user: User | null;
     logout: () => void;
     isMobileRegionOpen: boolean;
     setIsMobileRegionOpen: (isOpen: boolean) => void;
-    selectedCountry: any;
-    setSelectedCountry: (country: any) => void;
-    countries: any[];
+    selectedCountry: Country | null;
+    setSelectedCountry: (country: Country) => void;
+    countries: Country[];
 }
 
 export function MobileMenu({
@@ -50,7 +52,7 @@ export function MobileMenu({
                     className='fixed inset-0 z-[60] bg-white md:hidden overflow-y-auto flex flex-col'
                 >
                     {/* Header */}
-                    <div className='flex items-center justify-between px-6 py-5 bg-[#0092FF] text-white shadow-md shrink-0 sticky top-0 z-50'>
+                    <div className='flex items-center justify-between px-6 h-16 bg-[#0092FF] text-white shadow-md shrink-0 sticky top-0 z-50'>
                         <Link href='/' onClick={() => setIsOpen(false)} className="flex items-center gap-2">
                             <Image
                                 src="/Logo1.png"
@@ -88,11 +90,11 @@ export function MobileMenu({
                                     className='flex items-center gap-4 px-5 py-6 bg-white border border-blue-100 rounded-3xl shadow-sm hover:shadow-md transition-shadow block'
                                 >
                                     <div className='w-14 h-14 bg-[#0092FF] text-white rounded-full shadow-lg shadow-blue-200 flex items-center justify-center shrink-0 text-xl font-bold'>
-                                        {(user?.name || user?.email)?.charAt(0).toUpperCase()}
+                                        {(user?.firstName || user?.fullName || user?.email)?.charAt(0).toUpperCase()}
                                     </div>
                                     <div className="min-w-0 flex-1">
                                         <p className='text-[10px] font-bold text-[#0092FF] mb-1 uppercase tracking-widest'>Welcome Back</p>
-                                        <p className='font-bold text-gray-900 truncate text-lg leading-tight'>{user?.name || user?.email?.split('@')[0]}</p>
+                                        <p className='font-bold text-gray-900 truncate text-lg leading-tight'>{user?.firstName || user?.fullName || user?.email?.split('@')[0]}</p>
                                         <p className='text-xs text-gray-400 truncate mt-0.5'>{user?.email}</p>
                                     </div>
                                 </Link>
@@ -173,6 +175,17 @@ export function MobileMenu({
                             >
                                 <Store className="w-5 h-5 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
                                 Shop
+                            </Link>
+
+                            <Link
+                                href="/become-a-seller"
+                                onClick={() => setIsOpen(false)}
+                                className='flex items-center gap-4 px-5 py-4 text-base font-bold text-[#0092FF] bg-[#0092FF]/5 border border-[#0092FF]/20 rounded-2xl transition-all shadow-sm shadow-blue-500/5'
+                            >
+                                <div className="w-8 h-8 rounded-full bg-[#0092FF] flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/20">
+                                    <Store className="w-4 h-4 text-white" />
+                                </div>
+                                Become a Seller
                             </Link>
                             <Link
                                 href="/about"

@@ -8,12 +8,15 @@ import {
   ShoppingCart,
   Search,
   Menu,
+  Plus,
+  ChevronDown,
+  Store,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { useAuth } from "@/lib/auth-context";
 import { useClickOutside } from "@/hooks/useClickOutside";
-import { NavTopBar } from "./navbar/NavTopBar";
+
 import { LocationSelector } from "./navbar/LocationSelector";
 import { SearchBar } from "./navbar/SearchBar";
 import { UserActions } from "./navbar/UserActions";
@@ -28,7 +31,7 @@ export default function Navbar() {
   const { isAuthenticated, user, logout, isLoading } = useAuth();
   const router = useRouter();
   const { countries, fetchCountries, selectedCountry, setSelectedCountry } = useConfigStore();
-
+  console.log('user', user)
   // State Hooks
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
@@ -114,40 +117,48 @@ export default function Navbar() {
 
   return (
     <div className='flex flex-col w-full z-50 relative font-poppins text-foreground'>
-      <NavTopBar
-        isLangOpen={isLangOpen}
-        setIsLangOpen={setIsLangOpen}
-        selectedLang={selectedLang}
-        setSelectedLang={setSelectedLang}
-        langRef={langRef}
-      />
-
-      <nav className='bg-[#0092FF] text-white sticky top-0 z-40 shadow-sm'>
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-          <div className='flex items-center justify-between h-24 gap-6'>
+      <nav className='bg-[#0092FF] text-white sticky top-0 p-1 z-[60] shadow-sm'>
+        <div className='max-w-[1440px] mx-auto px-4 md:px-10 lg:px-16'>
+          <div className='relative flex items-center h-16 justify-between gap-2'>
             {/* Logo & Location */}
-            <div className='shrink-0 flex items-center gap-8'>
-              <Link href='/' className='flex items-center gap-2 text-2xl font-bold tracking-tight'>
+            <div className='flex items-center gap-2 sm:gap-6 shrink-0'>
+              <Link href='/' className='flex items-center'>
                 <Image
                   src="/Logo1.png"
                   alt="Logo"
-                  width={160}
-                  height={48}
-                  className="h-10 w-auto object-contain"
+                  width={140}
+                  height={36}
+                  className="h-7 sm:h-9 w-auto object-contain"
                   priority
-                  style={{ height: '40px', width: 'auto' }}
+                  style={{ width: 'auto' }}
                 />
               </Link>
-              <LocationSelector
-                isLocationOpen={isLocationOpen}
-                setIsLocationOpen={setIsLocationOpen}
-                locationRef={locationRef}
-                selectedCountry={selectedCountry}
-              />
+              <div className="hidden lg:block">
+                <LocationSelector
+                  isLocationOpen={isLocationOpen}
+                  setIsLocationOpen={setIsLocationOpen}
+                  locationRef={locationRef}
+                  selectedCountry={selectedCountry}
+                />
+              </div>
             </div>
 
             {/* Desktop Search */}
             <SearchBar />
+
+            {/* Become a Seller (Desktop/Tablet) */}
+            <Link
+              href="/become-a-seller"
+              className="hidden md:flex items-center gap-3 px-4 py-2 hover:bg-white/10 rounded-2xl transition-all group shrink-0"
+            >
+              <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-black/5">
+                <Store className="w-4 h-4 text-white" />
+              </div>
+              <div className="hidden xl:block">
+                <p className="text-[10px] text-white/80 font-medium mb-0.5">Partner with us</p>
+                <p className="text-[13px] text-white font-bold whitespace-nowrap leading-none tracking-tight">Become a Seller</p>
+              </div>
+            </Link>
 
             {/* Desktop Actions */}
             <UserActions
@@ -161,58 +172,57 @@ export default function Navbar() {
               setIsWalletOpen={setIsWalletOpen}
               isCartOpen={isCartOpen}
               setIsCartOpen={setIsCartOpen}
-              isRegionOpen={isRegionOpen}
-              setIsRegionOpen={setIsRegionOpen}
-              selectedCountry={selectedCountry}
-              setSelectedCountry={setSelectedCountry}
-              countries={countries}
+              isLangOpen={isLangOpen}
+              setIsLangOpen={setIsLangOpen}
+              selectedLang={selectedLang}
+              setSelectedLang={setSelectedLang}
+              langRef={langRef}
               authRef={authRef}
               walletRef={walletRef}
               cartRef={cartRef}
-              regionRef={regionRef}
             />
 
             {/* Mobile Menu Buttons */}
-            <div className='md:hidden flex items-center gap-5'>
+            <div className='md:hidden flex items-center gap-3 xs:gap-5 shrink-0'>
               <button
                 onClick={() => { setIsMobileSearchOpen(!isMobileSearchOpen); setIsMenuOpen(false); }}
-                className='flex flex-col items-center gap-1 hover:opacity-80 transition-opacity'
+                className='flex flex-col items-center gap-0.5 hover:opacity-80 transition-opacity'
               >
-                <Search className='w-6 h-6' />
-                <span className="text-[10px] font-bold">Search</span>
+                <Search className='w-5 h-5' />
+                <span className="text-[9px] font-bold">Search</span>
               </button>
 
               <Link
                 href='/wallet'
                 onClick={(e) => handleProtectedNavigation(e, '/wallet')}
-                className='flex flex-col items-center gap-1 hover:opacity-80 transition-opacity'
+                className='flex flex-col items-center gap-0.5 hover:opacity-80 transition-opacity'
               >
-                <Image src="/Wallet.png" alt="Wallet" width={24} height={24} className="w-6 h-6 object-contain" />
-                <span className="text-[10px] font-bold">$0.00</span>
+                <Image src="/Wallet.png" alt="Wallet" width={20} height={20} className="w-5 h-5 object-contain" />
+                <span className="text-[9px] font-bold">$0</span>
               </Link>
 
               <Link
                 href='/cart'
                 onClick={(e) => handleProtectedNavigation(e, '/cart')}
-                className='flex flex-col items-center gap-1 hover:opacity-80 transition-opacity'
+                className='flex flex-col items-center gap-0.5 hover:opacity-80 transition-opacity'
               >
                 <div className="relative">
-                  <ShoppingCart className='w-6 h-6' />
+                  <ShoppingCart className='w-5 h-5' />
                   {cartItems.length > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                    <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[8px] font-bold w-3.5 h-3.5 flex items-center justify-center rounded-full">
                       {cartItems.length}
                     </span>
                   )}
                 </div>
-                <span className="text-[10px] font-bold">${subtotal.toFixed(2)}</span>
+                <span className="text-[9px] font-bold">${Math.round(subtotal)}</span>
               </Link>
 
               <button
                 onClick={() => { setIsMenuOpen(true); setIsMobileSearchOpen(false); }}
-                className='flex flex-col items-center gap-1 hover:opacity-80 transition-opacity'
+                className='flex flex-col items-center gap-0.5 hover:opacity-80 transition-opacity'
               >
-                <Menu className='w-7 h-7' />
-                <span className="text-[10px] font-bold">Menu</span>
+                <Menu className='w-6 h-6' />
+                <span className="text-[9px] font-bold">Menu</span>
               </button>
             </div>
           </div>

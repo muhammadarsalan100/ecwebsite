@@ -34,11 +34,11 @@ export function LocationSelector({
             <div className="relative" ref={locationRef}>
                 <div
                     onClick={() => setIsLocationOpen(!isLocationOpen)}
-                    className="hidden lg:flex items-center gap-3 bg-[#0080E3] rounded-2xl px-4 py-2 w-[260px] transition-all hover:bg-[#0070C6] cursor-pointer group select-none"
+                    className="hidden lg:flex items-center gap-3 bg-[#0080E3] rounded-2xl px-4 h-11 w-[240px] transition-all hover:bg-[#0070C6] cursor-pointer group select-none"
                 >
-                    <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
+                    <div className="relative w-8 h-8 flex items-center justify-center shrink-0">
                         <Image src="/Ellipse.png" alt="Icon bg" fill className="object-contain" />
-                        <Image src="/Saleperson.png" alt="Salesperson" width={16} height={16} className="relative z-10 object-contain" unoptimized />
+                        <Image src="/Saleperson.png" alt="Salesperson" width={14} height={14} className="relative z-10 object-contain" unoptimized />
                     </div>
                     <div className="flex flex-col leading-tight">
                         <span className="text-xs opacity-80">Pickup or delivery?</span>
@@ -58,7 +58,7 @@ export function LocationSelector({
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute top-full left-0 mt-2 w-full bg-white rounded-3xl shadow-2xl border border-gray-100 p-5 z-50 overflow-hidden"
+                            className="absolute top-full left-0 mt-2 w-full bg-white rounded-3xl shadow-2xl border border-gray-100 p-5 z-[100] overflow-hidden"
                         >
                             <div className="grid grid-cols-3 gap-2 mb-6">
                                 <button className="flex flex-col items-center gap-1 group/btn">

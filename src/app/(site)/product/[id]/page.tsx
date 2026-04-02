@@ -78,8 +78,10 @@ function extractImages(item: CatalogItemDetail): string[] {
  */
 function mapToProductInfoProps(item: CatalogItemDetail) {
   const images = extractImages(item);
-  return {
+    return {
     id: item.id,
+    listingId: item.id, // In detail view, we typically use the main ID for both if specifics aren't there
+    itemId: item.id,
     title: item.name,
     image: images[0] || "/p-1.jpg",
     price: item.price.price,

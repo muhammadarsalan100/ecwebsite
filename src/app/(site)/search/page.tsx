@@ -64,7 +64,9 @@ function SearchContent() {
                             >
                                 <ProductCard
                                     product={{
-                                        id: product.id,
+                                        id: String(product.id),
+                                        listingId: product.listingId,
+                                        itemId: product.id,
                                         name: product.name,
                                         image: product.icon || "/p-1.jpg",
                                         price: product.price,

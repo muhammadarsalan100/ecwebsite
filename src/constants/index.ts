@@ -28,6 +28,8 @@ export const API_ROUTES = {
     REFRESH_TOKEN: "/api/v1.0/account/refresh-token",
     ACCOUNT: "/api/v1.0/account",
     UPDATE_BASE_PROFILE: "/api/v1.0/user/update-base-profile",
+    CART: "/api/v1.0/cart",
+    CART_ITEMS: "/api/v1.0/cart/items",
 
     // Config
     COUNTRIES: "/api/v1.0/country",
@@ -54,9 +56,8 @@ export const API_ROUTES = {
 
 export const APP_CONFIG = {
     DEFAULT_COUNTRY: "UAE",
-    DEFAULT_CURRENCY: "USD - US Dollar",
+    DEFAULT_CURRENCY: "AED",
     DEFAULT_LANGUAGE: "English",
-    CART_HEIGHTS: [251, 370, 293, 251], // Card heights sequence for product carousels
 } as const;
 
 // ─── User Roles ───────────────────────────────────────────────────────────────

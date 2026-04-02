@@ -22,7 +22,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Outfit - Premium Fashion & Lifestyle",
+  title: "MegaMart - Premium Fashion & Lifestyle",
   description: "Discover quality fashion that reflects your style. Shop the latest summer arrivals, electronics, and accessories with Outfit.",
 };
 

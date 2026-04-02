@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Trash2, Plus, Minus, CheckCircle2, Truck } from "lucide-react";
 import { CartItem } from "@/types/cart";
+import { cn } from "@/lib/utils";
 
 interface CartItemCardProps {
     item: CartItem;
@@ -13,7 +14,10 @@ interface CartItemCardProps {
 
 export const CartItemCard = ({ item, onUpdateQuantity, onRemove, currencySymbol }: CartItemCardProps) => {
     return (
-        <div className="bg-white rounded-[24px] p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center border border-gray-50 shadow-sm relative group">
+        <div className={cn(
+            "bg-white rounded-[24px] p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center border border-gray-50 shadow-sm relative group transition-opacity",
+            item.isUpdating && "opacity-60 pointer-events-none"
+        )}>
             {/* Product Image */}
             <div className="w-full sm:w-40 h-48 sm:h-40 bg-[#F8F9FA] rounded-2xl flex items-center justify-center p-4 shrink-0 relative overflow-hidden">
                 <Image
@@ -64,7 +68,8 @@ export const CartItemCard = ({ item, onUpdateQuantity, onRemove, currencySymbol 
                         <div className="flex items-center bg-[#F8F9FA] rounded-full p-0.5 sm:p-1 border border-gray-100">
                             <button
                                 onClick={() => onUpdateQuantity(item.id, item.quantity - 1, item.color, item.size)}
-                                className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors"
+                                disabled={item.isUpdating}
+                                className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors disabled:opacity-30"
                             >
                                 <Minus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </button>
@@ -73,7 +78,8 @@ export const CartItemCard = ({ item, onUpdateQuantity, onRemove, currencySymbol 
                             </span>
                             <button
                                 onClick={() => onUpdateQuantity(item.id, item.quantity + 1, item.color, item.size)}
-                                className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors"
+                                disabled={item.isUpdating}
+                                className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors disabled:opacity-30"
                             >
                                 <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </button>
@@ -82,13 +88,19 @@ export const CartItemCard = ({ item, onUpdateQuantity, onRemove, currencySymbol 
                         {/* Remove Button */}
                         <button
                             onClick={() => onRemove(item.id, item.color, item.size)}
-                            className="p-1.5 sm:p-2 text-gray-300 hover:text-red-500 transition-colors"
+                            disabled={item.isUpdating}
+                            className="p-1.5 sm:p-2 text-gray-300 hover:text-red-500 transition-colors disabled:opacity-30"
                         >
                             <Trash2 className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
                         </button>
                     </div>
                 </div>
             </div>
+            {item.isUpdating && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/10 rounded-[24px]">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0092FF]"></div>
+                </div>
+            )}
         </div>
     );
 };

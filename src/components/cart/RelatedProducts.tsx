@@ -50,6 +50,8 @@ export const RelatedProducts = ({ isLoading, products }: RelatedProductsProps) =
                                 <ProductCard
                                     product={{
                                         id: String(product.id),
+                                        listingId: product.listingId || 0,
+                                        itemId: product.id || 0,
                                         name: product.name,
                                         price: product.price,
                                         image: (product.images && product.images[0]?.url) || product.icon || "",

@@ -150,6 +150,8 @@ export default function CategoryPage() {
                                     <ProductCard
                                         product={{
                                             id: String(item.id),
+                                            listingId: item.listingId,
+                                            itemId: item.id,
                                             name: item.name,
                                             image: item.icon || (item.images?.length > 0 ? item.images[0].url : "/p-1.jpg"),
                                             price: item.price,

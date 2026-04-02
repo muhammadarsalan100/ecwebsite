@@ -1,3 +1,5 @@
+import { STORAGE_KEYS, API_ROUTES } from "@/constants";
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 let isRefreshing = false;
@@ -18,28 +20,11 @@ export interface RequestOptions extends RequestInit {
 }
 
 /**
- * Checks if a JWT token is expired or about to expire.
- */
-function isTokenExpired(token: string): boolean {
-    if (!token || token === "") return true;
-    try {
-        const parts = token.split('.');
-        if (parts.length !== 3) return true;
-        const payload = JSON.parse(atob(parts[1]));
-        const now = Math.floor(Date.now() / 1000);
-        // Expiration check with 30s buffer
-        return payload.exp < now + 10;
-    } catch (e) {
-        return true;
-    }
-}
-
-/**
  * Extracts a human-readable error message from API response data.
  */
 function extractErrorMessage(data: any, status: number): string {
     // Priority: Message (exact match), message, detail, title, then other common keys
-    let message = data.Message || data.message || data.detail || data.title || data.Error || data.error;
+    let message = data.Message || data.message || data.detail || data.title || data.Error || data.error || data.reason || data.description || data.error_description;
 
     if (!message && data.errors) {
         // Handle ASP.NET Core style validation errors or other structured errors
@@ -63,8 +48,38 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 
     const authHeaders: Record<string, string> = {};
 
-    if (token) {
-        authHeaders["Authorization"] = `Bearer ${token}`;
+    let authToken = token;
+    let isGuest = true;
+    let staticGuestToken = "";
+
+    // Automatically resolve authentication state
+    if (typeof window !== "undefined") {
+        if (!authToken) {
+            authToken = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) || undefined;
+        }
+
+        const userEmail = localStorage.getItem(STORAGE_KEYS.USER_EMAIL);
+        const userDataStr = localStorage.getItem(STORAGE_KEYS.USER_DATA);
+
+        let hasUserEmail = !!userEmail;
+        if (!hasUserEmail && userDataStr) {
+            try {
+                const ud = JSON.parse(userDataStr);
+                if (ud.email || ud.user?.email) hasUserEmail = true;
+            } catch { }
+        }
+
+        isGuest = !hasUserEmail;
+        staticGuestToken = process.env.NEXT_PUBLIC_GUEST_TOKEN || "";
+    }
+
+    if (authToken) {
+        authHeaders["Authorization"] = `Bearer ${authToken}`;
+    }
+
+    // Always send the static guest token key for guest requests
+    if (isGuest && staticGuestToken) {
+        authHeaders["x-guest-token"] = staticGuestToken;
     }
 
     const config: RequestInit = {
@@ -79,16 +94,27 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     try {
         let response = await fetch(url, config);
 
-        // Handle 401 Unauthorized - Attempt Refresh (User) or Re-auth (Guest)
-        if (response.status === 401 && typeof window !== 'undefined') {
-            const userEmail = localStorage.getItem("user_email");
-            const refreshToken = localStorage.getItem("refresh_token");
+        // Handle 401 Unauthorized or transient server errors (500, 502, 503, 504)
+        // Some servers return 500 when a token is malformed/stale instead of 401.
+        const isAuthError = response.status === 401;
+        const isServerError = [500, 502, 503, 504].includes(response.status);
+
+        if ((isAuthError || isServerError) && typeof window !== 'undefined') {
+            // Bug fix: fall back to reading email from user_data if user_email key is absent
+            const userEmail = localStorage.getItem(STORAGE_KEYS.USER_EMAIL) || (function () {
+                try {
+                    const ud = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER_DATA) || "");
+                    return ud?.email || ud?.user?.email || null;
+                } catch { return null; }
+            })();
+
+            const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
 
             if (userEmail && refreshToken) {
                 if (!isRefreshing) {
                     isRefreshing = true;
                     try {
-                        const refreshResponse = await fetch(`${BASE_URL}/api/v1.0/account/refresh-token`, {
+                        const refreshResponse = await fetch(`${BASE_URL}${API_ROUTES.REFRESH_TOKEN}`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -106,18 +132,20 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                             const newIdToken = refreshData.data?.idToken;
 
                             if (newToken) {
-                                localStorage.setItem("auth_token", newToken);
-                                if (newRefreshToken) localStorage.setItem("refresh_token", newRefreshToken);
-                                if (newIdToken) localStorage.setItem("id_token", newIdToken);
+                                localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, newToken);
+                                if (newRefreshToken) localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
+                                if (newIdToken) localStorage.setItem(STORAGE_KEYS.ID_TOKEN, newIdToken);
 
                                 // Update user_data in localStorage if it exists
-                                const userDataStr = localStorage.getItem("user_data");
+                                const userDataStr = localStorage.getItem(STORAGE_KEYS.USER_DATA);
                                 if (userDataStr) {
-                                    const userData = JSON.parse(userDataStr);
-                                    userData.accessToken = newToken;
-                                    if (newRefreshToken) userData.refreshToken = newRefreshToken;
-                                    if (newIdToken) userData.idToken = newIdToken;
-                                    localStorage.setItem("user_data", JSON.stringify(userData));
+                                    try {
+                                        const userData = JSON.parse(userDataStr);
+                                        userData.accessToken = newToken;
+                                        if (newRefreshToken) userData.refreshToken = newRefreshToken;
+                                        if (newIdToken) userData.idToken = newIdToken;
+                                        localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
+                                    } catch (e) { }
                                 }
 
                                 onRefreshed(newToken);
@@ -126,6 +154,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                                 // Retry original request with new token
                                 const newConfig = { ...config };
                                 (newConfig.headers as any)["Authorization"] = `Bearer ${newToken}`;
+                                if (newConfig.headers) delete (newConfig.headers as any)["x-guest-token"];
                                 response = await fetch(url, newConfig);
                             } else {
                                 throw new Error("No token in refresh response");
@@ -136,14 +165,18 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                     } catch (error) {
                         console.error("[AUTH] Global refresh failure:", error);
                         isRefreshing = false;
-                        // Hard logout
-                        localStorage.removeItem("user_data");
-                        localStorage.removeItem("auth_token");
-                        localStorage.removeItem("refresh_token");
-                        localStorage.removeItem("user_email");
-                        localStorage.removeItem("id_token");
-                        window.location.href = "/auth";
-                        throw new Error("Session expired. Please log in again.");
+                        // Hard logout and forcefully become guest
+                        localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+                        localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+                        localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+                        localStorage.removeItem(STORAGE_KEYS.USER_EMAIL);
+                        localStorage.removeItem(STORAGE_KEYS.ID_TOKEN);
+
+                        // Send user to homepage where guest session will be acquired
+                        window.location.href = "/";
+
+                        // Return hanging promise so we don't throw React errors while navigating
+                        return new Promise(() => { });
                     }
                 } else {
                     // Already refreshing, wait for it to finish then retry
@@ -152,6 +185,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                             try {
                                 const newConfig = { ...config };
                                 (newConfig.headers as any)["Authorization"] = `Bearer ${newToken}`;
+                                if (newConfig.headers) delete (newConfig.headers as any)["x-guest-token"];
                                 const retryResponse = await fetch(url, newConfig);
                                 if (retryResponse.status === 401) {
                                     window.location.href = "/auth";
@@ -162,7 +196,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                                 if (retryResponse.ok) {
                                     resolve(data as T);
                                 } else {
-                                    reject(new Error(extractErrorMessage(data, retryResponse.status)));
+                                    reject(new Error(`${extractErrorMessage(data, retryResponse.status)} (${endpoint})`));
                                 }
                             } catch (e) {
                                 reject(e);
@@ -190,17 +224,17 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                             const newIdToken = guestData.data?.idToken;
 
                             if (newToken) {
-                                localStorage.setItem("auth_token", newToken);
-                                if (newIdToken) localStorage.setItem("id_token", newIdToken);
+                                localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, newToken);
+                                if (newIdToken) localStorage.setItem(STORAGE_KEYS.ID_TOKEN, newIdToken);
 
                                 // Update user_data for hydration consistency
-                                const userDataStr = localStorage.getItem("user_data");
+                                const userDataStr = localStorage.getItem(STORAGE_KEYS.USER_DATA);
                                 if (userDataStr) {
                                     try {
                                         const userData = JSON.parse(userDataStr);
                                         userData.accessToken = newToken;
                                         if (newIdToken) userData.idToken = newIdToken;
-                                        localStorage.setItem("user_data", JSON.stringify(userData));
+                                        localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
                                     } catch (e) { }
                                 }
 
@@ -210,6 +244,8 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                                 // Retry original request
                                 const newConfig = { ...config };
                                 (newConfig.headers as any)["Authorization"] = `Bearer ${newToken}`;
+                                // FIX: Don't delete x-guest-token for guests as it might be required!
+                                // if (newConfig.headers) delete (newConfig.headers as any)["x-guest-token"];
                                 response = await fetch(url, newConfig);
                             } else {
                                 throw new Error("Invalid guest session response");
@@ -230,6 +266,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                             try {
                                 const newConfig = { ...config };
                                 (newConfig.headers as any)["Authorization"] = `Bearer ${newToken}`;
+                                if (newConfig.headers) delete (newConfig.headers as any)["x-guest-token"];
                                 const retryResponse = await fetch(url, newConfig);
                                 if (retryResponse.status === 401) {
                                     reject(new Error("Unauthorized after guest session reset"));
@@ -239,7 +276,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                                 if (retryResponse.ok) {
                                     resolve(data as T);
                                 } else {
-                                    reject(new Error(extractErrorMessage(data, retryResponse.status)));
+                                    reject(new Error(`${extractErrorMessage(data, retryResponse.status)} (${endpoint})`));
                                 }
                             } catch (e) {
                                 reject(e);
@@ -256,7 +293,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
             response.headers.get("x-secure-token");
 
         if (!response.ok) {
-            throw new Error(extractErrorMessage(data, response.status));
+            throw new Error(`${extractErrorMessage(data, response.status)} (${endpoint})`);
         }
 
         // Return data. Only attach _authToken if data is a non-array object.
@@ -320,58 +357,3 @@ export const api = {
         return request<T>(url, config);
     },
 };
-
-export function withAuth<T extends (...args: any[]) => Promise<any>>(apiMethod: T): T {
-    return (async (...args: any[]): Promise<any> => {
-        let token = typeof window !== "undefined"
-            ? localStorage.getItem("auth_token") || ""
-            : "";
-
-        // Proactive Check: If token is expired, we let it proceed to trigger the standard 
-        // 401 handling in 'request' which will execute the appropriate refresh/re-auth logic.
-        if (token && typeof window !== "undefined") {
-            if (isTokenExpired(token)) {
-                // Let the request proceed to trigger the 401 logic in 'request',
-                // which will execute the appropriate refresh/re-auth logic.
-            }
-        }
-
-        const hasBodyAsSecondArg = args.length >= 2 &&
-            (typeof args[1] === 'string' || (typeof args[1] === 'object' && args[1] !== null && 'data' in args[1]));
-
-        const userEmail = typeof window !== "undefined" ? localStorage.getItem("user_email") : null;
-        const userDataStr = typeof window !== "undefined" ? localStorage.getItem("user_data") : null;
-
-        // A session is only a "guest" if there is NO email stored anywhere.
-        let hasUserEmail = !!userEmail;
-        if (!hasUserEmail && userDataStr) {
-            try {
-                const ud = JSON.parse(userDataStr);
-                if (ud.email || ud.user?.email) hasUserEmail = true;
-            } catch { }
-        }
-
-        const isGuest = !hasUserEmail;
-        const staticGuestToken = process.env.NEXT_PUBLIC_GUEST_TOKEN || "";
-
-        const targetOptionsIndex = hasBodyAsSecondArg ? 2 : 1;
-
-        while (args.length <= targetOptionsIndex) {
-            args.push(undefined);
-        }
-
-        const existingOptions = args[targetOptionsIndex] || {};
-        args[targetOptionsIndex] = {
-            ...existingOptions,
-            // Only send Bearer token if we have a real one in localStorage
-            token: token || undefined,
-            headers: {
-                ...existingOptions.headers,
-                // Always send the static guest token key for guest requests
-                ...(isGuest ? { "x-guest-token": staticGuestToken } : {})
-            }
-        };
-
-        return apiMethod(...args);
-    }) as T;
-}

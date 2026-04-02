@@ -2,16 +2,19 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { User, ShoppingCart, History, Store, Award, Globe, ArrowRight, X, Minus, Plus, LogOut } from "lucide-react";
+import { User as UserIcon, ShoppingCart, History, Store, Award, Globe, ArrowRight, X, Minus, Plus, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { RegionSelector } from "../RegionSelector";
+import { LanguageSelector, Language } from "../LanguageSelector";
+import { User } from "@/lib/auth-context";
 import { useCartStore, useCartSubtotal } from "@/lib/store/cartStore";
 import { useConfigStore } from "@/lib/store/configStore";
+import { useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 interface UserActionsProps {
     isLoading: boolean;
     isAuthenticated: boolean;
-    user: any;
+    user: User | null;
     logout: () => void;
     isAuthOpen: boolean;
     setIsAuthOpen: (isOpen: boolean) => void;
@@ -19,16 +22,16 @@ interface UserActionsProps {
     setIsWalletOpen: (isOpen: boolean) => void;
     isCartOpen: boolean;
     setIsCartOpen: (isOpen: boolean) => void;
-    isRegionOpen: boolean;
-    setIsRegionOpen: (isOpen: boolean) => void;
-    selectedCountry: any;
-    setSelectedCountry: (country: any) => void;
-    countries: any[];
+    isLangOpen: boolean;
+    setIsLangOpen: (isOpen: boolean) => void;
+    selectedLang: Language;
+    setSelectedLang: (lang: Language) => void;
+    langRef: React.RefObject<HTMLDivElement | null>;
     authRef: React.RefObject<HTMLDivElement | null>;
     walletRef: React.RefObject<HTMLDivElement | null>;
     cartRef: React.RefObject<HTMLDivElement | null>;
-    regionRef: React.RefObject<HTMLDivElement | null>;
 }
+
 export function UserActions({
     isLoading,
     isAuthenticated,
@@ -40,32 +43,37 @@ export function UserActions({
     setIsWalletOpen,
     isCartOpen,
     setIsCartOpen,
-    isRegionOpen,
-    setIsRegionOpen,
-    selectedCountry,
-    setSelectedCountry,
-    countries,
+    isLangOpen,
+    setIsLangOpen,
+    selectedLang,
+    setSelectedLang,
+    langRef,
     authRef,
     walletRef,
     cartRef,
-    regionRef
 }: UserActionsProps) {
     const cartItems = useCartStore((state) => state.items);
+    const fetchCart = useCartStore((state) => state.fetchCart);
     const removeItem = useCartStore((state) => state.removeItem);
     const updateQuantity = useCartStore((state) => state.updateQuantity);
     const subtotal = useCartSubtotal();
     const { activeCategoryId } = useConfigStore();
 
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchCart();
+        }
+    }, [fetchCart, isAuthenticated]);
+
     return (
-        <div className='hidden md:flex items-center gap-8'>
-            {/* Region Selector */}
-            <div ref={regionRef}>
-                <RegionSelector
-                    isOpen={isRegionOpen}
-                    setIsOpen={setIsRegionOpen}
-                    selectedCountry={selectedCountry}
-                    setSelectedCountry={setSelectedCountry}
-                    countries={countries}
+        <div className='hidden md:flex items-center gap-6'>
+            {/* Language Selector */}
+            <div ref={langRef}>
+                <LanguageSelector
+                    isOpen={isLangOpen}
+                    setIsOpen={setIsLangOpen}
+                    selectedLang={selectedLang}
+                    onSelect={setSelectedLang}
                 />
             </div>
 
@@ -78,10 +86,10 @@ export function UserActions({
                         onClick={() => setIsAuthOpen(!isAuthOpen)}
                         className='flex items-center gap-3 hover:scale-105 transition-transform outline-none'
                     >
-                        <User className='w-6 h-6' />
+                        <UserIcon className='w-6 h-6' />
                         <div className="flex flex-col text-left leading-none gap-1">
                             <span className="text-xs font-medium opacity-80">Hello,</span>
-                            <span className="text-sm font-bold truncate max-w-[100px]">{user?.name || user?.email?.split('@')[0]}</span>
+                            <span className="text-sm font-bold truncate max-w-[100px]">{user?.firstName || user?.email?.split('@')[0]}</span>
                         </div>
                     </button>
 
@@ -92,51 +100,51 @@ export function UserActions({
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute top-full right-0 mt-4 w-[280px] bg-white rounded-3xl shadow-2xl border border-gray-100 p-5 z-50 overflow-hidden"
+                                className="absolute top-full right-0 mt-4 w-[250px] bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 z-[100] overflow-hidden"
                             >
-                                <div className="flex flex-col gap-3">
+                                <div className="flex flex-col gap-2">
                                     {/* User info header */}
                                     <Link
                                         href="/account/personal-data"
                                         onClick={() => setIsAuthOpen(false)}
-                                        className="flex items-center gap-3 p-2.5 hover:bg-gray-50 rounded-xl transition-colors group"
+                                        className="flex items-center gap-2.5 p-2 hover:bg-gray-50 rounded-xl transition-colors group"
                                     >
-                                        <div className="w-9 h-9 rounded-full bg-[#0092FF] text-white flex items-center justify-center font-bold text-sm shrink-0">
-                                            {(user?.name || user?.email)?.charAt(0).toUpperCase()}
+                                        <div className="w-8 h-8 rounded-full bg-[#0092FF] text-white flex items-center justify-center font-bold text-xs shrink-0">
+                                            {(user?.firstName || user?.fullName || user?.email)?.charAt(0).toUpperCase()}
                                         </div>
                                         <div className="min-w-0">
-                                            <p className="text-sm font-bold text-gray-900 truncate">{user?.name || user?.email?.split('@')[0]}</p>
+                                            <p className="text-sm font-bold text-gray-900 truncate">{user?.firstName || user?.fullName || user?.email?.split('@')[0]}</p>
                                             <p className="text-[11px] text-gray-400 truncate">{user?.email}</p>
                                         </div>
                                     </Link>
 
                                     <div className="w-full h-px bg-gray-100" />
 
-                                    <div className="space-y-1">
+                                    <div className="space-y-0.5">
                                         <Link
                                             href="/account/orders"
-                                            className="flex items-center gap-3 p-2.5 hover:bg-gray-50 rounded-xl transition-colors group"
+                                            className="flex items-center gap-2.5 p-2 hover:bg-gray-50 rounded-xl transition-colors group"
                                             onClick={() => setIsAuthOpen(false)}
                                         >
-                                            <History className="w-4 h-4 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
+                                            <History className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
                                             <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">Purchase History</span>
                                         </Link>
 
                                         <Link
                                             href={activeCategoryId ? `/category/${activeCategoryId}` : "/"}
-                                            className="flex items-center gap-3 p-2.5 hover:bg-gray-50 rounded-xl transition-colors group"
+                                            className="flex items-center gap-2.5 p-2 hover:bg-gray-50 rounded-xl transition-colors group"
                                             onClick={() => setIsAuthOpen(false)}
                                         >
-                                            <Store className="w-4 h-4 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
+                                            <Store className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
                                             <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">Mart</span>
                                         </Link>
 
                                         <Link
                                             href="/account/subscription"
-                                            className="flex items-center gap-3 p-2.5 hover:bg-gray-50 rounded-xl transition-colors group"
+                                            className="flex items-center gap-2.5 p-2 hover:bg-gray-50 rounded-xl transition-colors group"
                                             onClick={() => setIsAuthOpen(false)}
                                         >
-                                            <Award className="w-4 h-4 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
+                                            <Award className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
                                             <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">Subscription</span>
                                         </Link>
                                     </div>
@@ -145,9 +153,9 @@ export function UserActions({
 
                                     <button
                                         onClick={() => { logout(); setIsAuthOpen(false); }}
-                                        className="w-full flex items-center gap-3 p-2.5 hover:bg-red-50 rounded-xl transition-colors group text-left"
+                                        className="w-full flex items-center gap-2.5 p-2 hover:bg-red-50 rounded-xl transition-colors group text-left"
                                     >
-                                        <LogOut className="w-4 h-4 text-red-400 group-hover:text-red-500 transition-colors" />
+                                        <LogOut className="w-3.5 h-3.5 text-red-400 group-hover:text-red-500 transition-colors" />
                                         <span className="text-sm font-medium text-red-500 group-hover:text-red-600 transition-colors">Sign Out</span>
                                     </button>
                                 </div>
@@ -161,7 +169,7 @@ export function UserActions({
                         onClick={() => setIsAuthOpen(!isAuthOpen)}
                         className='flex items-center gap-3 hover:scale-105 transition-transform outline-none'
                     >
-                        <User className='w-6 h-6' />
+                        <UserIcon className='w-6 h-6' />
                         <div className="flex flex-col text-left leading-none gap-1">
                             <span className="text-sm font-medium">Sign in</span>
                             <span className="text-sm font-bold">Account</span>
@@ -175,12 +183,12 @@ export function UserActions({
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute top-full right-0 mt-4 w-[280px] bg-white rounded-3xl shadow-2xl border border-gray-100 p-5 z-50 overflow-hidden"
+                                className="absolute top-full right-0 mt-4 w-[250px] bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 z-50 overflow-hidden"
                             >
-                                <div className="flex flex-col gap-3">
+                                <div className="flex flex-col gap-2">
                                     <Link
                                         href="/auth"
-                                        className="w-full bg-[#0092FF] hover:bg-[#0070C6] text-white text-sm font-bold py-2.5 px-4 rounded-xl text-center transition-colors shadow-lg shadow-blue-500/20"
+                                        className="w-full bg-[#0092FF] hover:bg-[#0070C6] text-white text-sm font-bold py-2 px-4 rounded-xl text-center transition-colors shadow-lg shadow-blue-500/20"
                                         onClick={() => setIsAuthOpen(false)}
                                     >
                                         Sign in or create account
@@ -188,31 +196,31 @@ export function UserActions({
 
                                     <div className="w-full h-px bg-gray-100 my-1" />
 
-                                    <div className="space-y-1">
+                                    <div className="space-y-0.5">
                                         <Link
                                             href={isAuthenticated ? "/account/orders" : "/auth"}
-                                            className="flex items-center gap-3 p-2.5 hover:bg-gray-50 rounded-xl transition-colors group"
+                                            className="flex items-center gap-2.5 p-2 hover:bg-gray-50 rounded-xl transition-colors group"
                                             onClick={() => setIsAuthOpen(false)}
                                         >
-                                            <History className="w-4 h-4 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
+                                            <History className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
                                             <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">Purchase History</span>
                                         </Link>
 
                                         <Link
                                             href={activeCategoryId ? `/category/${activeCategoryId}` : "/"}
-                                            className="flex items-center gap-3 p-2.5 hover:bg-gray-50 rounded-xl transition-colors group"
+                                            className="flex items-center gap-2.5 p-2 hover:bg-gray-50 rounded-xl transition-colors group"
                                             onClick={() => setIsAuthOpen(false)}
                                         >
-                                            <Store className="w-4 h-4 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
+                                            <Store className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
                                             <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">Mart</span>
                                         </Link>
 
                                         <Link
                                             href={isAuthenticated ? "/account/subscription" : "/auth"}
-                                            className="flex items-center gap-3 p-2.5 hover:bg-gray-50 rounded-xl transition-colors group"
+                                            className="flex items-center gap-2.5 p-2 hover:bg-gray-50 rounded-xl transition-colors group"
                                             onClick={() => setIsAuthOpen(false)}
                                         >
-                                            <Award className="w-4 h-4 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
+                                            <Award className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#0092FF] transition-colors" />
                                             <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">Subscription</span>
                                         </Link>
                                     </div>
@@ -242,10 +250,10 @@ export function UserActions({
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute top-full right-0 mt-4 w-[340px] bg-white rounded-3xl shadow-2xl border border-gray-100 p-5 z-50 overflow-hidden"
+                            className="absolute top-full right-0 mt-4 w-[300px] bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 z-[100] overflow-hidden"
                         >
-                            <div className={`bg-[#0092FF] rounded-2xl p-6 text-white relative overflow-hidden shadow-lg shadow-blue-500/30 ${isAuthenticated ? 'mb-6' : ''}`}>
-                                <ShoppingCart className="absolute -right-4 top-1/2 -translate-y-1/2 w-32 h-32 text-white/10 rotate-[-15deg]" />
+                            <div className={`bg-[#0092FF] rounded-2xl p-5 text-white relative overflow-hidden shadow-lg shadow-blue-500/30 ${isAuthenticated ? 'mb-5' : ''}`}>
+                                <ShoppingCart className="absolute -right-4 top-1/2 -translate-y-1/2 w-28 h-28 text-white/10 rotate-[-15deg]" />
                                 <div className="relative z-10 space-y-6">
                                     <div>
                                         <h3 className="font-bold text-base">Watchlist</h3>
@@ -257,7 +265,7 @@ export function UserActions({
                                             Wallet Balance
                                         </p>
                                         <div className="flex flex-col gap-2">
-                                            <h2 className="text-3xl font-bold tracking-tight">
+                                            <h2 className="text-2xl font-bold tracking-tight">
                                                 {isAuthenticated ? "$ 201,0231" : (
                                                     <span className="opacity-30 tracking-tighter">$ 0.00</span>
                                                 )}
@@ -278,7 +286,7 @@ export function UserActions({
                             {isAuthenticated && (
                                 <Link
                                     href="/wallet"
-                                    className="w-full block bg-[#0092FF] hover:bg-[#0070C6] text-white text-center font-bold py-3.5 rounded-xl transition-colors shadow-lg shadow-blue-500/20"
+                                    className="w-full block bg-[#0092FF] hover:bg-[#0070C6] text-white text-center font-bold py-3 rounded-xl transition-colors shadow-lg shadow-blue-500/20"
                                     onClick={() => setIsWalletOpen(false)}
                                 >
                                     Go to Wallet
@@ -313,7 +321,7 @@ export function UserActions({
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute top-full right-0 mt-4 w-[360px] bg-white rounded-3xl shadow-2xl border border-gray-100 p-6 z-50 overflow-hidden"
+                            className="absolute top-full right-0 mt-4 w-[360px] bg-white rounded-3xl shadow-2xl border border-gray-100 p-6 z-[100] overflow-hidden"
                         >
                             {cartItems.length === 0 ? (
                                 <div className="py-4 flex flex-col items-center justify-center text-center">
@@ -334,13 +342,18 @@ export function UserActions({
                                 <>
                                     <div className="space-y-4 max-h-[300px] overflow-y-auto mb-4 pr-1 scrollbar-thin scrollbar-thumb-gray-200">
                                         {cartItems.map((item) => (
-                                            <div key={`${item.id}-${item.color || 'none'}-${item.size || 'none'}`} className="flex items-start gap-3 group">
-                                                <div className="w-16 h-16 bg-white border border-gray-100 rounded-xl relative shrink-0 p-1 flex items-center justify-center">
+                                            <div key={`${item.id}-${item.color || 'none'}-${item.size || 'none'}`} 
+                                                className={cn(
+                                                    "flex items-start gap-3 group relative p-1 transition-opacity",
+                                                    item.isUpdating && "opacity-60 pointer-events-none"
+                                                )}
+                                            >
+                                                <div className="w-14 h-14 bg-white border border-gray-100 rounded-lg relative shrink-0 p-1 flex items-center justify-center">
                                                     <Image
-                                                        src={item.image || "/p-1.jpg"}
+                                                        src={typeof item.image === 'string' ? item.image : '/images/placeholder.png'}
                                                         alt={item.title}
-                                                        width={48}
-                                                        height={48}
+                                                        width={40}
+                                                        height={40}
                                                         className="object-contain"
                                                     />
                                                 </div>
@@ -356,7 +369,8 @@ export function UserActions({
                                                             <div className="flex items-center bg-gray-50 rounded-lg border border-gray-100 px-1 py-0.5">
                                                                 <button
                                                                     onClick={() => updateQuantity(item.id, item.quantity - 1, item.color, item.size)}
-                                                                    className="p-1 hover:text-[#0092FF] transition-colors"
+                                                                    disabled={item.isUpdating}
+                                                                    className="p-1 hover:text-[#0092FF] transition-colors disabled:opacity-30"
                                                                     aria-label="Decrease quantity"
                                                                 >
                                                                     <Minus className="w-2.5 h-2.5" />
@@ -364,7 +378,8 @@ export function UserActions({
                                                                 <span className="text-[10px] font-bold text-gray-900 min-w-[20px] text-center">{item.quantity}</span>
                                                                 <button
                                                                     onClick={() => updateQuantity(item.id, item.quantity + 1, item.color, item.size)}
-                                                                    className="p-1 hover:text-[#0092FF] transition-colors"
+                                                                    disabled={item.isUpdating}
+                                                                    className="p-1 hover:text-[#0092FF] transition-colors disabled:opacity-30"
                                                                     aria-label="Increase quantity"
                                                                 >
                                                                     <Plus className="w-2.5 h-2.5" />
@@ -376,11 +391,18 @@ export function UserActions({
                                                 </div>
                                                 <button
                                                     onClick={() => removeItem(item.id, item.color, item.size)}
-                                                    className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                                                    disabled={item.isUpdating}
+                                                    className="text-gray-400 hover:text-red-500 transition-colors p-1 disabled:opacity-30"
                                                     title="Remove item"
                                                 >
                                                     <X className="w-4 h-4" />
                                                 </button>
+
+                                                {item.isUpdating && (
+                                                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/20 rounded-lg">
+                                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#0092FF]"></div>
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                     </div>

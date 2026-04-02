@@ -290,6 +290,7 @@ export default function Home() {
     selectedCountry,
     setSelectedCountry,
     activeCategoryId,
+    setActiveCategoryId,
     fetchCatalogItems,
     isItemsLoading,
     items
@@ -317,17 +318,28 @@ export default function Home() {
     }
   }, [countries, selectedCountry, setSelectedCountry]);
 
-  // 3. Fetch Items when Country or Category changes
+  // 3. Set Default activeCategoryId if null
   useEffect(() => {
-    if (selectedCountry && activeCategoryId) {
-      const currencyCode = selectedCountry.currency?.shortCode || "AED";
-      fetchCatalogItems(selectedCountry.shortCode, activeCategoryId, currencyCode);
+    if (categories.length > 0 && !activeCategoryId) {
+      setActiveCategoryId(String(categories[0].id));
+    }
+  }, [categories, activeCategoryId, setActiveCategoryId]);
+
+  // 4. Fetch Items when Country or Category changes
+  useEffect(() => {
+    const countryCode = selectedCountry?.shortCode || "UAE";
+    const currencyCode = selectedCountry?.currency?.shortCode || "AED";
+    
+    if (activeCategoryId) {
+      fetchCatalogItems(countryCode, activeCategoryId, currencyCode);
     }
   }, [selectedCountry, activeCategoryId, fetchCatalogItems]);
 
   // 4. Transform Backend Items to Frontend Product list
   const displayedProducts = items.map((item: any) => ({
     id: String(item.id),
+    listingId: item.listingId,
+    itemId: item.id,
     name: item.name,
     brand: item.vendor?.fullName || "ZRGOTH Shop",
     image: item.icon || (item.images?.length > 0 ? item.images[0].url : "/p-1.jpg"),
@@ -348,14 +360,6 @@ export default function Home() {
 
   return (
     <>
-      <CountryNavBar
-        countries={countries}
-        activeCountryId={String(selectedCountry?.id || "")}
-        onSelect={(id) => {
-          const c = countries.find(country => String(country.id) === String(id));
-          if (c) setSelectedCountry(c);
-        }}
-      />
       <CategoryNavBar />
       <SummerHero />
       <FeaturedProducts products={featuredProducts} />

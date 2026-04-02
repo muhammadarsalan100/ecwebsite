@@ -27,6 +27,8 @@ export function ProductInfo({
     sizes,
     category,
     subcategory,
+    listingId,
+    itemId,
 }: ProductInfoProps) {
     const { isAuthenticated } = useAuth();
     const router = useRouter();
@@ -56,6 +58,8 @@ export function ProductInfo({
             setIsAddingToCart(true);
             addItem({
                 id,
+                listingId: Number(listingId ?? 0),
+                itemId: Number(itemId ?? 0),
                 title,
                 price,
                 image,

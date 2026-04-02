@@ -41,6 +41,8 @@ export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsP
         const mappedProducts = vendors.flatMap((vendor: any) =>
           (vendor.topProducts || []).map((product: any) => ({
             id: product.listingId || product.itemId || product.id,
+            listingId: product.listingId,
+            itemId: product.itemId,
             name: product.itemName || product.name || "Product",
             image: product.image || product.icon || product.logo || "/p-1.jpg",
             price: product.currentPrice || product.price || 0,

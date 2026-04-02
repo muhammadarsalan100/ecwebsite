@@ -17,7 +17,7 @@ import { RelatedProducts } from "@/components/cart/RelatedProducts";
 import { AddressModal } from "@/components/cart/AddressModal";
 
 function CartPage() {
-    const { items, removeItem, updateQuantity } = useCartStore();
+    const { items, removeItem, updateQuantity, isLoading: isCartLoading } = useCartStore();
     const subtotal = useCartSubtotal();
 
     const selectedCurrency = useConfigStore((state) => state.selectedCurrency) || "USD";
@@ -68,7 +68,7 @@ function CartPage() {
                 if (categoriesRes?.data && categoriesRes.data.length > 0) {
                     const firstCat = categoriesRes.data[0];
                     // Defensive coding for parameters
-                    const countryCode = profile?.preferredCountryId?.toString() || selectedCountry?.shortCode || "US";
+                    const countryCode = selectedCountry?.shortCode || "UAE";
                     const currencyCode = selectedCountry?.currency?.shortCode || "AED";
                     
                     const itemsRes = await productService.searchCatalogItems(countryCode, firstCat.id, currencyCode).catch(err => {
@@ -105,6 +105,16 @@ function CartPage() {
     ] : [];
 
     if (items.length === 0) {
+        if (isCartLoading) {
+            return (
+                <div className="bg-[#FBFCFD] min-h-screen flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0092FF]"></div>
+                        <p className="text-gray-500 font-medium animate-pulse">Loading your cart...</p>
+                    </div>
+                </div>
+            )
+        }
         return <EmptyCart />;
     }
 

@@ -1,181 +1,167 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronDown, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useConfigStore } from "@/lib/store/configStore";
-import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useParams, usePathname } from "next/navigation";
+import { CountryNavBar } from "./CountryNavBar";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 export function CategoryNavBar() {
-  const { categories, fetchCategories, isCategoriesLoading, activeCategoryId, setActiveCategoryId } = useConfigStore();
-  const { isLoading: isAuthLoading } = useAuth();
-  const params = useParams();
-  const pathname = usePathname();
-  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  // Sync active category with URL only if on category page
-  useEffect(() => {
-    if (pathname.includes("/category/") && params.id) {
-      setActiveCategoryId(String(params.id));
-    }
-  }, [params.id, pathname, setActiveCategoryId]);
+  const {
+    categories,
+    fetchCategories,
+    isCategoriesLoading,
+    countries,
+    selectedCountry,
+    setSelectedCountry,
+    fetchCountries
+  } = useConfigStore();
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside(menuRef, () => {
+    setIsOpen(false);
+    setActiveCategory(null);
+  });
 
   useEffect(() => {
-    if (!isAuthLoading) {
-      fetchCategories();
-    }
-  }, [fetchCategories, isAuthLoading]);
+    setMounted(true);
+    fetchCategories();
+    fetchCountries();
+  }, [fetchCategories, fetchCountries]);
 
-  // Handle default selection on initial tab load
+  // Set first category as active by default when opening
   useEffect(() => {
-    if (categories.length > 0 && !activeCategoryId) {
-      const isCategoryPage = pathname.includes("/category/");
-      
-      if (!isCategoryPage && !params.id) {
-        setActiveCategoryId(String(categories[0].id));
-      }
+    if (isOpen && categories.length > 0 && !activeCategory) {
+      setActiveCategory(String(categories[0].id));
     }
-  }, [categories, pathname, activeCategoryId, setActiveCategoryId, params.id]);
+  }, [isOpen, categories, activeCategory]);
 
-  const handleMouseEnter = (categoryId: string) => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setHoveredCategory(categoryId);
-  };
+  if (!mounted) {
+    return (
+      <div className='w-full bg-[#EAF6FF] h-16'>
+        <div className='max-w-[1440px] mx-auto px-4 md:px-10 lg:px-16' />
+      </div>
+    );
+  }
 
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => {
-      setHoveredCategory(null);
-    }, 200);
-  };
-
-  const currentHoveredCategory = categories.find(c => String(c.id) === hoveredCategory);
+  const currentCategoryData = categories.find(c => String(c.id) === activeCategory);
 
   return (
-    <div className='w-full bg-white border-b border-gray-100 sticky top-0 z-40' onMouseLeave={handleMouseLeave}>
-      <div className='max-w-7xl mx-auto'>
-        <div className='relative flex items-center h-14 px-4 sm:px-6 lg:px-8'>
-          {/* Main Categories Scroll */}
-          <div className='flex items-center gap-1 overflow-x-auto scrollbar-hide flex-1'>
-            {isCategoriesLoading ? (
-              <div className="flex gap-4">
-                {[1, 2, 3, 4, 5].map(i => (
-                  <div key={i} className="h-8 w-24 animate-pulse bg-gray-50 rounded-full" />
-                ))}
-              </div>
-            ) : (
-              categories.map((category) => (
-                <div
-                  key={category.id}
-                  className="relative group"
-                  onMouseEnter={() => handleMouseEnter(String(category.id))}
-                >
-                  <Link
-                    href={`/category/${category.id}`}
-                    onClick={() => setActiveCategoryId(String(category.id))}
-                    className={cn(
-                      "flex items-center gap-1.5 px-4 py-2 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all duration-300",
-                      activeCategoryId === String(category.id) || hoveredCategory === String(category.id)
-                        ? "bg-[#0092FF] text-white"
-                        : "text-gray-600 hover:bg-gray-50"
-                    )}
-                  >
-                    <span>{category.name}</span>
-                    {category.subCategories && category.subCategories.length > 0 && (
-                      <ChevronDown
-                        className={cn(
-                          "w-3.5 h-3.5 transition-transform duration-300",
-                          hoveredCategory === String(category.id) ? "rotate-180" : "opacity-40"
-                        )}
-                      />
-                    )}
-                  </Link>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+    <div className='w-full bg-[#EAF6FF] sticky top-0 z-30'>
+      <div className='max-w-[1440px] mx-auto px-4 md:px-10 lg:px-16'>
+        <div className='flex items-center justify-between h-16 relative'>
 
-        {/* Mega Menu Dropdown */}
-        <AnimatePresence>
-          {hoveredCategory && currentHoveredCategory && currentHoveredCategory.subCategories?.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.98 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="absolute left-0 right-0 top-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-t border-gray-100 z-50 overflow-hidden"
-              onMouseEnter={() => handleMouseEnter(hoveredCategory)}
+          {/* Left: All Categories Trigger */}
+          <div ref={menuRef} className="relative">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="flex items-center gap-3 py-2 text-gray-800 hover:text-[#0092FF] transition-colors"
             >
-              <div className="max-w-7xl mx-auto p-10 flex gap-12">
-                {/* Left: Subcategories Grid */}
-                <div className="flex-1 min-w-0">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 max-h-[60vh] lg:max-h-none overflow-y-auto lg:overflow-visible pr-1">
-                    {currentHoveredCategory.subCategories.map((sub) => (
-                      <Link
-                        key={sub.id}
-                        href={`/category/${currentHoveredCategory.id}?sub=${sub.id}`}
-                        className="group flex flex-col gap-1"
-                      >
-                        <span className="text-[14px] font-bold text-gray-800 group-hover:text-[#0092FF] transition-colors flex items-center gap-2">
-                          {sub.name}
-                          <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                        </span>
-                        <span className="text-[12px] text-gray-400 font-medium">Explore latest items</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Right: Featured Collections (Banners) - Desktop only */}
-                <div className="hidden lg:flex w-[450px] gap-4 shrink-0">
-                  {/* Main Banner */}
-                  <div className="relative flex-1 rounded-2xl overflow-hidden bg-[#D1E9F5] group/banner">
-                    <div className="absolute inset-0 p-6 flex flex-col justify-start z-10">
-                      <h4 className="text-2xl font-bold text-gray-900 leading-tight mb-2">The NEW<br />Standard</h4>
-                      <p className="text-sm text-gray-600 mb-6 font-medium">Best {currentHoveredCategory.name} products starts from</p>
-                      <div className="mt-auto">
-                        <p className="text-lg font-bold text-gray-900 mb-4">FROM AED 200</p>
-                        <button className="bg-[#FFCC00] text-gray-900 px-6 py-2 rounded-full text-xs font-bold hover:bg-black hover:text-white transition-all">
-                          Buy Now
-                        </button>
-                      </div>
-                    </div>
-                    <div className="absolute right-[-20px] bottom-[-20px] w-48 h-48 opacity-40 group-hover/banner:scale-110 transition-transform duration-700">
-                      <Image
-                        src="/p-1.jpg"
-                        alt="featured"
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Side Banners Stack */}
-                  <div className="w-[180px] flex flex-col gap-4">
-                    <div className="h-1/2 bg-[#A855F7] rounded-2xl p-4 relative overflow-hidden group/s">
-                      <h5 className="text-white text-xs font-bold mb-1">New Arrivals</h5>
-                      <p className="text-white/80 text-[10px]">Start from AED 50</p>
-                      <div className="absolute right-2 bottom-2 w-12 h-12">
-                        <Image src="/p-3.jpg" alt="s" fill className="object-contain group-hover/s:scale-110 transition-all" />
-                      </div>
-                    </div>
-                    <div className="h-1/2 bg-[#FF9900] rounded-2xl p-4 relative overflow-hidden group/s">
-                      <h5 className="text-white text-xs font-bold mb-1">Limited Offer</h5>
-                      <p className="text-white/80 text-[10px]">SAVE UP TO 40%</p>
-                      <div className="absolute right-2 bottom-2 w-12 h-12">
-                        <Image src="/p-4.jpg" alt="s" fill className="object-contain group-hover/s:scale-110 transition-all" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div className="w-5 h-5 relative">
+                <Image src="/categories.png" alt="Categories" fill className="object-contain" />
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <span className="text-[14px] font-bold">All Categories</span>
+              <ChevronDown className={cn("w-4 h-4 transition-transform", isOpen && "rotate-180")} />
+            </button>
+
+            {/* Dropdown Menu */}
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute top-full left-0 mt-4 w-[800px] bg-white rounded-2xl shadow-2xl border border-gray-100 flex overflow-hidden z-[100] min-h-[400px]"
+                >
+                  {/* Category List (Left Sidebar) */}
+                  <div className="w-[300px] bg-gray-50/50 border-r border-gray-100 py-4 overflow-y-auto">
+                    {isCategoriesLoading ? (
+                      <div className="px-4 space-y-4">
+                        {[1, 2, 3, 4, 5].map(i => <div key={i} className="h-10 bg-gray-100 animate-pulse rounded-xl" />)}
+                      </div>
+                    ) : (
+                      categories.map((cat) => (
+                        <button
+                          key={cat.id}
+                          onMouseEnter={() => setActiveCategory(String(cat.id))}
+                          className={cn(
+                            "w-full flex items-center justify-between px-6 py-3.5 text-left transition-all",
+                            activeCategory === String(cat.id)
+                              ? "bg-white text-[#0092FF] font-bold shadow-sm"
+                              : "text-gray-600 hover:bg-gray-100/50 font-medium"
+                          )}
+                        >
+                          <span className="text-sm">{cat.name}</span>
+                          <ArrowRight className={cn("w-3.5 h-3.5 transition-opacity", activeCategory === String(cat.id) ? "opacity-100" : "opacity-0")} />
+                        </button>
+                      ))
+                    )}
+                  </div>
+
+                  {/* Subcategories (Right Content) */}
+                  <div className="flex-1 p-8 bg-white overflow-y-auto">
+                    {currentCategoryData ? (
+                      <div>
+                        <div className="flex items-center justify-between mb-8">
+                          <h3 className="text-xl font-bold text-gray-900">{currentCategoryData.name}</h3>
+                          <Link
+                            href={`/category/${currentCategoryData.id}`}
+                            className="text-sm font-bold text-[#0092FF] hover:underline"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            View All Products
+                          </Link>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+                          {currentCategoryData.subCategories && currentCategoryData.subCategories.length > 0 ? (
+                            currentCategoryData.subCategories.map((sub) => (
+                              <Link
+                                key={sub.id}
+                                href={`/category/${currentCategoryData.id}?sub=${sub.id}`}
+                                className="group flex flex-col gap-1.5"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                <span className="text-[15px] font-bold text-gray-800 group-hover:text-[#0092FF] transition-colors">
+                                  {sub.name}
+                                </span>
+                                <span className="text-[12px] text-gray-400 font-medium">Explore latest items</span>
+                              </Link>
+                            ))
+                          ) : (
+                            <p className="text-gray-400 text-sm">No subcategories available</p>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="h-full flex items-center justify-center text-gray-300">
+                        Select a category to view details
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Right: Country Navigation */}
+          <CountryNavBar
+            countries={countries}
+            activeCountryId={String(selectedCountry?.id || "")}
+            onSelect={(id) => {
+              const c = countries.find(country => String(country.id) === String(id));
+              if (c) setSelectedCountry(c);
+            }}
+          />
+
+        </div>
       </div>
     </div>
   );

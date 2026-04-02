@@ -1,4 +1,4 @@
-import { api, withAuth } from "./apiClient";
+import { api } from "./apiClient";
 import {
     Category,
     TopSoldItem,
@@ -16,31 +16,31 @@ export const productService = {
      * Get all categories with subcategories
      */
     getCatalogCategories: () =>
-        withAuth(api.get)<ApiResponse<Category[]>>("/api/v1.0/catalog/category"),
+        api.get<ApiResponse<Category[]>>("/api/v1.0/catalog/category"),
 
     /**
      * Get single category by ID
      */
     getCategoryById: (id: number | string) =>
-        withAuth(api.get)<ApiResponse<Category>>(`/api/v1.0/catalog/category/${id}`),
+        api.get<ApiResponse<Category>>(`/api/v1.0/catalog/category/${id}`),
 
     /**
      * Get category with its attributes
      */
     getCategoryWithAttributes: (id: number | string) =>
-        withAuth(api.get)<ApiResponse<Category>>(`/api/v1.0/catalog/category/getWithAttributes/${id}`),
+        api.get<ApiResponse<Category>>(`/api/v1.0/catalog/category/getWithAttributes/${id}`),
 
     /**
      * Get top-selling products
      */
     getTopSoldProducts: () =>
-        withAuth(api.get)<ApiResponse<TopSoldItem[]>>("/api/v1.0/catalog/item/getTopSold"),
+        api.get<ApiResponse<TopSoldItem[]>>("/api/v1.0/catalog/item/getTopSold"),
 
     /**
      * Get a single catalog item by ID
      */
     getCatalogItemById: (id: number | string, currencyCode?: string) =>
-        withAuth(api.get)<ApiResponse<CatalogItemDetail>>(`/api/v2.0/catalog/item/${id}`, {
+        api.get<ApiResponse<CatalogItemDetail>>(`/api/v2.0/catalog/item/${id}`, {
             params: currencyCode ? { currencyCode } : undefined,
         }),
 
@@ -48,7 +48,7 @@ export const productService = {
      * Search catalog items by country and category
      */
     searchCatalogItems: (countryCode: string, categoryId: number | string, currencyCode: string) =>
-        withAuth(api.get)<ApiResponse<CatalogSearchResponse>>("/api/v1.0/catalog/item/search", {
+        api.get<ApiResponse<CatalogSearchResponse>>("/api/v1.0/catalog/item/search", {
             params: {
                 countryCode,
                 categoryId: String(categoryId),
@@ -60,7 +60,7 @@ export const productService = {
      * Search catalog items by country and search key
      */
     searchCatalogItemsByKey: (countryCode: string, searchKey: string, currencyCode: string) =>
-        withAuth(api.get)<ApiResponse<CatalogSearchResponse>>("/api/v1.0/catalog/item/search", {
+        api.get<ApiResponse<CatalogSearchResponse>>("/api/v1.0/catalog/item/search", {
             params: {
                 countryCode,
                 searchKey,

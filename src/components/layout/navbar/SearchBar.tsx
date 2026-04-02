@@ -129,8 +129,8 @@ export function SearchBar({ isMobile, onClose }: SearchBarProps) {
 
     if (isMobile) {
         return (
-            <div className="p-4" ref={dropdownRef}>
-                <div className="relative flex items-center bg-white rounded-xl shadow-sm border border-gray-100">
+            <div className="px-4 h-16 flex items-center" ref={dropdownRef}>
+                <div className="relative flex-1 flex items-center bg-white rounded-xl shadow-sm border border-gray-100">
                     <Search className="absolute left-3 w-5 h-5 text-gray-400" />
                     <input
                         type="text"
@@ -167,11 +167,11 @@ export function SearchBar({ isMobile, onClose }: SearchBarProps) {
                 onSubmit={(e) => { e.preventDefault(); handleSearch(); }}
                 className='relative w-full flex items-center'
             >
-                <Search className='absolute left-5 w-6 h-6 text-[#0092FF]' />
+                <Search className='absolute left-4 w-5 h-5 text-[#0092FF]' />
                 <input
                     type='text'
                     placeholder='Search essentials, groceries and more...'
-                    className='w-full bg-card border-border border py-4 pl-14 pr-12 text-base focus:outline-none focus:ring-2 focus:ring-primary/20 text-foreground shadow-lg shadow-black/5 rounded-[12px] placeholder:text-muted-foreground font-medium'
+                    className='w-full bg-card border-border border h-11 pl-12 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 text-foreground shadow-lg shadow-black/5 rounded-[12px] placeholder:text-muted-foreground font-medium'
                     value={searchKey}
                     onChange={(e) => setSearchKey(e.target.value)}
                 />

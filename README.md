@@ -1,84 +1,308 @@
-# Outfit - Premium Fashion & Lifestyle E-commerce
+# MegaMart — Premium Fashion & Lifestyle E-commerce
 
 A high-end e-commerce platform built with **Next.js 16**, **TypeScript**, **Tailwind CSS v4**, and **Framer Motion**.
 
-## 🚀 Technical Stack
-- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (using OKLCH color space)
-- **Animations**: [Framer Motion 12](https://www.framer.com/motion/)
-- **UI Components**: [Radix UI](https://www.radix-ui.com/) (customized via Shadcn patterns)
-- **Validation**: [Zod](https://zod.dev/)
-- **Icons**: [Lucide React](https://lucide.dev/)
+---
+
+## 🚀 Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | [Next.js 16](https://nextjs.org/) — App Router |
+| Language | TypeScript (strict) |
+| Styling | [Tailwind CSS v4](https://tailwindcss.com/) — OKLCH color space |
+| Animations | [Framer Motion 12](https://www.framer.com/motion/) |
+| UI Primitives | [Radix UI](https://www.radix-ui.com/) via Shadcn patterns |
+| Validation | [Zod](https://zod.dev/) |
+| Icons | [Lucide React](https://lucide.dev/) |
+| State | [Zustand](https://zustand-demo.pmnd.rs/) (cart + config stores) |
+
+---
+
+## 🗂️ Project Structure
+
+```
+src/
+├── app/                  # Next.js App Router pages & layouts
+├── assets/               # Static assets (images, fonts)
+├── components/
+│   ├── ui/               # Atomic primitives (Button, Input, Checkbox)
+│   ├── common/           # Cross-feature UI (ProductCard, SectionHeader)
+│   ├── layout/           # Global structures (Navbar, Footer)
+│   ├── auth/             # Auth flows + ProtectedRoute
+│   ├── home/             # Homepage-specific components
+│   └── ...               # Feature-specific folders
+├── constants/            # ⭐ Single source of truth for all magic strings
+│   └── index.ts          # STORAGE_KEYS, API_ROUTES, APP_CONFIG, USER_ROLES
+├── hooks/                # Custom React hooks
+├── lib/
+│   ├── auth-context.tsx  # Global auth state provider
+│   ├── store/
+│   │   ├── cartStore.ts  # Zustand cart store (persisted)
+│   │   └── configStore.ts# Zustand config store (countries, categories)
+│   └── utils.ts
+├── schemas/              # Zod validation schemas
+├── services/             # API service modules
+│   ├── apiClient.ts      # Core HTTP client with auto auth & token refresh
+│   ├── authService.ts    # Auth & user API calls
+│   ├── productService.ts # Catalog & product API calls
+│   ├── billingService.ts # Billing API calls
+│   └── vendorService.ts  # Vendor API calls
+└── types/                # TypeScript type definitions
+```
+
+---
+
+## 🔑 Constants System (`src/constants/index.ts`)
+
+All magic strings and configuration values are **centralised here**. Never use raw strings for localStorage keys, API routes, roles, or config defaults anywhere else in the codebase.
+
+```typescript
+import { STORAGE_KEYS, API_ROUTES, APP_CONFIG, USER_ROLES } from "@/constants";
+```
+
+### `STORAGE_KEYS` — localStorage keys
+| Constant | Value | Purpose |
+|---|---|---|
+| `STORAGE_KEYS.USER_DATA` | `"user_data"` | Full user object snapshot |
+| `STORAGE_KEYS.AUTH_TOKEN` | `"auth_token"` | Active Bearer token |
+| `STORAGE_KEYS.ID_TOKEN` | `"id_token"` | Identity token |
+| `STORAGE_KEYS.REFRESH_TOKEN` | `"refresh_token"` | Long-lived token for renewal |
+| `STORAGE_KEYS.USER_EMAIL` | `"user_email"` | Identifies user vs guest session |
+| `STORAGE_KEYS.CART` | `"cart-storage"` | Zustand cart persistence key |
+| `STORAGE_KEYS.CONFIG` | `"config-storage"` | Zustand config persistence key |
+
+### `API_ROUTES` — backend endpoint paths
+All `authService` methods, `apiClient` internals, and any direct `fetch` calls must reference `API_ROUTES.*` instead of inline strings. Changing a URL only requires editing this file.
+
+### `APP_CONFIG` — application defaults
+| Constant | Value |
+|---|---|
+| `APP_CONFIG.DEFAULT_COUNTRY` | `"UAE"` |
+| `APP_CONFIG.DEFAULT_CURRENCY` | `"AED"` |
+| `APP_CONFIG.DEFAULT_LANGUAGE` | `"English"` |
+
+### `USER_ROLES` — role identifiers
+| Constant | Value |
+|---|---|
+| `USER_ROLES.GUEST` | `"PlatformGuests"` |
+| `USER_ROLES.CUSTOMER` | `"PlatformCustomers"` |
+| `USER_ROLES.VENDOR` | `"PlatformVendors"` |
+| `USER_ROLES.ADMIN` | `"PlatformAdmins"` |
+
+---
+
+## 🌐 API Service Layer (`src/services/`)
+
+All services call `api.get / api.post / api.put / api.patch / api.delete` from `apiClient.ts`. **You never need to manually inject tokens or headers.**
+
+### Adding a new API call
+
+```typescript
+// src/services/someService.ts
+import { api } from "./apiClient";
+import { API_ROUTES } from "@/constants";
+
+export const someService = {
+    getData: () =>
+        api.get<ApiResponse<DataType>>(API_ROUTES.SOME_ENDPOINT),
+
+    postData: (data: SomeType) =>
+        api.post<ApiResponse<DataType>>(API_ROUTES.SOME_ENDPOINT, { data }),
+};
+```
+
+> **Rule:** Add the endpoint path to `API_ROUTES` in `src/constants/index.ts` first, then reference it from the service. Never hard-code URLs inline.
+
+---
+
+## 🔐 Authentication Architecture
+
+### Session Types
+
+| Session | Role | How obtained |
+|---|---|---|
+| **Guest** | `PlatformGuests` | Auto-created on first visit |
+| **Customer** | `PlatformCustomers` | OTP login flow |
+| **Vendor** | `PlatformVendors` | Vendor registration |
+
+### Auth Flow (OTP-based)
+
+```
+1. initiateLogin(email)  → backend sends OTP to email
+2. confirmLogin(email, sessionId, otp)
+   → returns { accessToken, idToken, refreshToken, user }
+3. login(userData) in auth-context
+   → stores tokens in localStorage
+   → calls refreshUser() in background to fetch full profile
+   → router.push("/")
+```
+
+### Protecting a Page
+
+Wrap any page that requires authentication with `<ProtectedRoute>`:
+
+```tsx
+// src/app/(site)/account/page.tsx
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+
+export default function AccountPage() {
+    return (
+        <ProtectedRoute>
+            <AccountContent />
+        </ProtectedRoute>
+    );
+}
+```
+
+`ProtectedRoute` watches `isAuthenticated` and `isLoading`. When `!isLoading && !isAuthenticated`, it redirects to `/auth` automatically.
+
+---
+
+## 🛡️ Token Management & `apiClient.ts`
+
+### Automatic Token Injection
+
+On every request, `apiClient` automatically:
+1. Reads `STORAGE_KEYS.AUTH_TOKEN` from localStorage → attaches as `Authorization: Bearer <token>`
+2. Checks for `STORAGE_KEYS.USER_EMAIL` (or falls back to `user_data.email`) to distinguish user vs guest
+3. For **guest requests**, injects the static `x-guest-token` header
+
+### 401 Recovery — Automatic Silent Handling
+
+| Scenario | Recovery |
+|---|---|
+| Logged-in user, access token expired | Silently calls `/refresh-token` with `user_email` + `refresh_token` → stores new tokens → retries original request — **user never notices** |
+| Logged-in user, refresh token also expired | Clears all auth from localStorage → `window.location.href = "/"` → app re-initialises as guest |
+| Guest session expired | Silently calls `/guest-session` → stores new guest token → retries original request |
+
+### Concurrent Request Queueing
+
+When multiple requests fire simultaneously and all receive a `401`, only **one** token refresh is performed. All other requests are queued via `subscribeTokenRefresh()` and retried automatically once the new token is ready. This prevents thundering-herd token refresh races.
+
+### Email Fallback in 401 Handler
+
+The `user_email` localStorage key determines whether a session belongs to a real user (triggering token refresh) or a guest (triggering guest re-auth). If `user_email` is absent but `user_data` contains an email, `apiClient` falls back to reading it from there — ensuring the refresh always works even if the login response didn't include an email field directly.
+
+---
+
+## ⚡ `useLocalStorage` Hook — Cross-Tab Sync
+
+`src/hooks/useLocalStorage.ts` is used by `auth-context.tsx` to persist the user object. It has been extended with a native `window "storage"` event listener.
+
+**What this means:**
+- The browser fires `"storage"` events in **all other tabs** whenever a tab writes to localStorage
+- When **Tab A logs out**, Tab B's React state (`user`, `isAuthenticated`) updates **instantly** — no page reload needed
+- When **Tab A's token refreshes**, Tab B's next API call automatically picks up the new token from localStorage
+
+### Cross-Tab Logout Behaviour
+
+```
+Tab A: logout()
+  → clears localStorage (user_data, auth_token, refresh_token, user_email)
+  → establishes fresh guest session
+  → router.push("/auth")
+
+Tab B (automatic, via storage event):
+  → user = null, isAuthenticated = false
+  
+  If Tab B is on a PROTECTED page:
+    → ProtectedRoute detects !isAuthenticated → router.push("/auth") ✓
+  
+  If Tab B is on a PUBLIC page:
+    → Cross-tab recovery useEffect fires → guestLogin() called
+    → Tab B continues browsing as a guest ✓
+```
+
+---
+
+## 🔁 Auth Lifecycle — All Scenarios
+
+| Scenario | What happens |
+|---|---|
+| **First visit (no data)** | `initializeAuth` → `guestLogin()` → guest session stored |
+| **First visit, multiple tabs** | Each tab independently gets a guest session (harmless) |
+| **Returning user (tokens valid)** | `initializeAuth` → `refreshUser()` → `getAccount()` succeeds → profile updated |
+| **Returning user after 10–12h (access token expired)** | `getAccount()` → 401 → silent token refresh → retry → user stays logged in |
+| **Returning user (both tokens expired)** | Refresh fails → hard logout → redirect to `/` → guest session |
+| **Logged in, multiple tabs, one logs out** | All tabs reflect logged-out state via `storage` event; protected pages redirect |
+| **Network offline on open** | `guestLogin()` throws → caught gracefully → `isLoading = false` → app renders |
+| **User clears browser storage manually** | `user = null` → treated as fresh visit → guest session |
 
 ---
 
 ## 🏗️ Architecture & Coding Standards
 
 ### 1. Component Folders (`src/components/`)
-We use a hierarchical component structure to ensure maintainability:
-- **`ui/`**: Low-level atomic primitives (Button, Input, Checkbox). These should be purely presentational.
-- **`common/`**: Cross-feature UI elements like `SectionHeader` or `CategoryNavBar`.
-- **`layout/`**: Global structures like `Navbar`, `Footer`, and `AccountSidebar`.
-- **`sharedcomponent/`**: Reusable business components like `Newsletter`.
-- **Feature-Specific (`home/`, `auth/`, `billing/`, `wallet/`)**: Components that are only relevant to specific routes.
+- **`ui/`** — Low-level atomic primitives (Button, Input). Purely presentational.
+- **`common/`** — Cross-feature UI (`ProductCard`, `SectionHeader`, `CategoryNavBar`).
+- **`layout/`** — Global structures (`Navbar`, `Footer`, `AccountSidebar`).
+- **`auth/`** — Auth flows and `ProtectedRoute`.
+- **Feature folders** (`home/`, `billing/`, `wallet/`) — Only relevant to a specific route.
 
 ### 2. Custom Hooks (`src/hooks/`)
-All complex state or logic shared across components must reside here.
-- **Naming Rule**: Always use `camelCase` (e.g., `useCarousel.ts`).
-- **Separation**: Components only handle JSX/Styling; Hooks handle state/logic.
-- **Current Hooks**: `useCarousel`, `useClickOutside`, `useCountryFilter`, `useLocalStorage`, `useMediaQuery`, `useCyclicIndex`.
+
+| Hook | Purpose |
+|---|---|
+| `useLocalStorage` | localStorage ↔ React state sync with cross-tab support |
+| `useCarousel` | Carousel index and scroll state |
+| `useClickOutside` | Detects clicks outside a ref |
+| `useCountryFilter` | Country list filtering logic |
+| `useCyclicIndex` | Cyclic counter for carousels |
+| `useDebounce` | Debounced value for search inputs |
+| `useMediaQuery` | Responsive breakpoint detection |
 
 ### 3. Validation Schemas (`src/schemas/`)
-All user-facing forms must be validated using Zod.
-- **`auth.schema.ts`**: Handles email format and password strength.
-- **`billing.schema.ts`**: Ensures address and contact data integrity.
-- **`misc.schema.ts`**: Newsletter and secondary forms.
+All user-facing forms must be validated with Zod before submission.
+- **`auth.schema.ts`** — Email format, OTP format
+- **`billing.schema.ts`** — Address and contact data
+- **`misc.schema.ts`** — Newsletter and secondary forms
 
-### 4. API Service Layer (`src/services/`)
-- **`apiClient.ts`**: Primary requester.
-- **`withAuth` Wrapper**: **Critical.** When making protected API calls, wrap the method: `withAuth(api.get)("/endpoint")`. This automatically injects the Bearer token from `localStorage`.
+### 4. Zustand Stores (`src/lib/store/`)
+- **`cartStore.ts`** — Cart items, persisted under `STORAGE_KEYS.CART`
+- **`configStore.ts`** — Countries, states, cities, categories, currencies, persisted under `STORAGE_KEYS.CONFIG`
+
+Both stores use `zustand/middleware`'s `persist` with `createJSONStorage(() => localStorage)`.
+
+---
+
+## 🎨 Styling & Design System
+
+- **Colors**: Use CSS variables from `src/app/globals.css` (e.g. `bg-primary`, `text-muted-foreground`). Never hard-code hex values.
+- **Typography**: **Outfit**, **Readex Pro**, **Poppins**. Maintain consistent heading hierarchy.
+- **Dark Mode**: Handled via the `.dark` class with OKLCH variable overrides in `globals.css`.
+- **Animations**: All transitions use Framer Motion. Use `layout` and `AnimatePresence` for mounting/unmounting.
 
 ---
 
-## 🔮 Handling Future Updates (Crucial for AI & Developers)
+## ⚙️ Environment Variables
 
-### ⚙️ Adding New Features
-1. **Define Data**: Add your types to `src/types/index.ts`.
-2. **Define Validation**: Create a schema in `src/schemas`.
-3. **Logic First**: If the feature has complexity, create a hook in `src/hooks`.
-4. **Service**: Add a method in `src/services` to handle the backend interaction.
-5. **UI**: Build the component in the appropriate feature folder using Tailwind v4 variables.
-
-### 🎨 Styling & Design System
-- **Colors**: Never use hardcoded hex values in complex components. Use the CSS variables defined in `src/app/globals.css` (e.g., `bg-primary`, `text-muted-foreground`).
-- **Typography**: The project uses **Outfit**, **Readex Pro**, and **Poppins**. Ensure heading hierarchy is consistent.
-- **Theming**: Dark mode is handled via the `.dark` class in `globals.css` and OKLCH variable overrides.
-
-### 🔐 Authentication Flow
-- **OTP-Based Login**:
-  - `initiateLogin`: Requests an OTP for a given email.
-  - `confirmLogin`: Validates OTP and returns a session payload (`accessToken`, `idToken`, `refreshToken`).
-- **Session Management**:
-  - Global state is managed in `src/lib/auth-context.tsx`.
-  - To protect a page, wrap the component content with the `<ProtectedRoute>` component.
-- **Token Infrastructure**:
-  - `accessToken`: Short-lived token for API authorization.
-  - `refreshToken`: Long-lived token used to obtain new access tokens via the `/refresh-token` endpoint.
-
-### 🛡️ Token Management & Security
-- **Storage**: Currently, tokens are stored in `localStorage`. 
-  - *Note*: While convenient, this is susceptible to XSS. For production, consider transitioning to `HttpOnly` cookies.
-- **Token Rotation**: The `refreshToken` API implements rotation—each refresh request generates a *new* refresh token. Always update the stored token with the latest one from the response.
-- **Automatic Refresh**: The `apiClient.ts` handles the background refresh logic using the `refreshToken` service when an `accessToken` expires.
-- **Security Best Practices**:
-  - **HTTPS Only**: Tokens must never be transmitted over unencrypted connections.
-  - **Cleanup**: On logout or session expiration (401/403 errors), all tokens and user data must be cleared from storage.
-  - **Sanitization**: Maintain a strict Content Security Policy (CSP) to mitigate XSS risks associated with `localStorage`.
-
-### 📡 API Transitions
-- Currently, most data is mocked or static.
-- When connecting a real backend, update the `NEXT_PUBLIC_API_URL` in `.env`.
-- Ensure all services in `src/services` use the `api` object (raw) or `withAuth(api)` (protected) appropriately.
+| Variable | Required | Description |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | ✅ | Base URL of the backend API |
+| `NEXT_PUBLIC_GUEST_TOKEN` | ✅ | Static token for guest session requests |
+| `NEXT_PUBLIC_SECURE_TOKEN` | ✅ | Token for account registration endpoints |
 
 ---
-*This documentation is the source of truth for the codebase architecture. All new code must align with these patterns to maintain a premium and modern UI flow.*
+
+## 🔒 Security Notes
+
+- **localStorage**: Tokens are stored in `localStorage`. For production hardening, consider transitioning to `HttpOnly` cookies to mitigate XSS risk.
+- **Token Rotation**: Every refresh generates a new `refresh_token`. `apiClient` always stores the latest token from the refresh response.
+- **HTTPS Only**: Tokens must never be transmitted over unencrypted connections.
+
+---
+
+## 🛠️ Adding New Features — Checklist
+
+1. **Types** → Add to `src/types/`
+2. **Constants** → Add API routes to `API_ROUTES` in `src/constants/index.ts`
+3. **Schema** → Add Zod schema to `src/schemas/` if user input is involved
+4. **Service** → Add a method to the relevant service in `src/services/`
+5. **Hook** → Create a hook in `src/hooks/` if the logic is reusable
+6. **Component** → Build in the appropriate feature folder, using CSS variables for styling
+7. **Protection** → Wrap with `<ProtectedRoute>` if the page requires authentication
+
+---
+
+*This README is the source of truth for the codebase architecture. All new code must align with these patterns.*

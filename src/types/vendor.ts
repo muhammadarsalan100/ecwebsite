@@ -73,3 +73,89 @@ export interface VendorRegistrationResponse {
     title?: string;
     status?: number;
 }
+
+export interface VendorTopItem {
+    itemId: number;
+    itemName: string;
+    logo: string | null;
+    unitsSold: number;
+    totalSale: number;
+    listingId: number;
+    currentPrice: number;
+    categoryId: number;
+    categoryName: string;
+    currency: string;
+}
+
+export interface VendorStore {
+    storeId: number;
+    storeName: string;
+    storeDescription: string | null;
+    logo: string | null;
+    contactEmail: string | null;
+    contactPhone: string | null;
+    followersCount: number;
+    vendorId: number;
+    vendorName: string;
+    vendorEmail: string;
+    hasActiveSubscription: boolean;
+    subscriptionPackagePrice: number;
+    isFollowed: boolean;
+    topItems: VendorTopItem[];
+}
+
+export interface VendorListResponse {
+    items: VendorStore[];
+    page: number;
+    pageSize: number;
+    totalCount: number;
+    totalPages: number;
+    hasPrevious: boolean;
+    hasNext: boolean;
+}
+
+export interface StoreDetail {
+    id: number;
+    code: string;
+    name: string;
+    description: string | null;
+    logo: string | null;
+    contactEmail: string | null;
+    contactPhone: string | null;
+    address: string | null;
+    geolocation: string | null;
+    status: string;
+    followersCount: number;
+    totalSold: number;
+    active: boolean;
+    vendor: {
+        id: number;
+        code: string;
+        allName: string;
+        fullName: string;
+        firstName: string;
+        lastName: string;
+        role: string;
+        status: string;
+        gender: string;
+        active: boolean;
+    };
+    city: {
+        id: number;
+        code: string;
+        name: string;
+        shortCode: string;
+        state: {
+            id: number;
+            code: string;
+            name: string;
+            shortCode: string;
+            country: {
+                id: number;
+                code: string;
+                name: string;
+                shortCode: string;
+            };
+        };
+    };
+}

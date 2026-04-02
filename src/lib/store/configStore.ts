@@ -6,6 +6,7 @@ import { authService } from "@/services/authService";
 import { productService } from "@/services/productService";
 import { Category } from "@/types/product";
 import { Country, State, City, Currency } from "@/types/config";
+import { STORAGE_KEYS, APP_CONFIG } from "@/constants";
 
 export type { Country, State, City, Currency };
 
@@ -203,7 +204,7 @@ export const useConfigStore = create<ConfigState>()(
             },
 
             fetchSearchItems: async (searchKey: string, currencyCode: string) => {
-                const countryCode = get().selectedCountry?.shortCode || "UAE";
+                const countryCode = get().selectedCountry?.shortCode || APP_CONFIG.DEFAULT_COUNTRY;
                 set({ isSearchLoading: true, error: null });
                 try {
                     const response = await productService.searchCatalogItemsByKey(countryCode, searchKey, currencyCode);
@@ -231,7 +232,7 @@ export const useConfigStore = create<ConfigState>()(
                     selectedLanguage: country?.language === 'en' ? 'English' : (country?.language || 'English'),
                     selectedCurrency: country?.currency
                         ? `${country.currency.shortCode} - ${country.currency.name}`
-                        : "USD - US Dollar",
+                        : APP_CONFIG.DEFAULT_CURRENCY,
                 });
             },
 
@@ -265,12 +266,12 @@ export const useConfigStore = create<ConfigState>()(
                     error: null
                 });
                 if (typeof window !== 'undefined') {
-                    localStorage.removeItem("config-storage");
+                    localStorage.removeItem(STORAGE_KEYS.CONFIG);
                 }
             },
         }),
         {
-            name: "config-storage",
+            name: STORAGE_KEYS.CONFIG,
             storage: createJSONStorage(() => localStorage),
             partialize: (state) => {
                 const { activeCategoryId, ...rest } = state;

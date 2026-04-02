@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export function SummerHero() {
   return (
-    <section className='w-full px-4 py-6 md:px-8 lg:px-12'>
+    <section className='w-full px-4 py-6 md:px-10 lg:px-12'>
       <div className='mx-auto max-w-7xl'>
         <motion.div
           className='relative overflow-hidden w-full'
