@@ -19,7 +19,7 @@ export function SummerHero() {
           transition={{ duration: 0.8, ease: "easeOut" as const }}
         >
           {/* Container Height: Responsive */}
-          <div className="h-[400px] md:h-[350px] lg:h-[307px] relative w-full">
+          <div className="h-[280px] sm:h-[350px] lg:h-[307px] relative w-full">
             {/* Background Image */}
             <motion.div
               className='absolute inset-0'

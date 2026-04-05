@@ -54,10 +54,10 @@ export function CategoriesView({
         />
 
         {/* Categories Grid */}
-        <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
+        <div className='grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6'>
           {visibleCategories.map((category, index) => (
             <div key={index} className='group cursor-pointer'>
-              <div className='aspect-square bg-gray-100 rounded-xl overflow-hidden mb-4 flex items-center justify-center p-4'>
+              <div className='aspect-square bg-gray-100 rounded-xl overflow-hidden mb-3 md:mb-4 flex items-center justify-center p-3 md:p-4'>
                 <div className='relative w-full h-full'>
                   <Image
                     src={category.image || "/placeholder.svg"}

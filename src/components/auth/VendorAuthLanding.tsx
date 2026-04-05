@@ -5,7 +5,9 @@ import Image from "next/image";
 import { ArrowLeft, Store, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { vendorService } from "@/services/vendorService";
+import { z } from "zod";
 import logo from "../../../public/logo.png";
+import { authSchema } from "@/schemas/auth.schema";
 
 interface VendorAuthLandingProps {
     onContinue: (email: string, initCode: string) => void;
@@ -19,8 +21,14 @@ export function VendorAuthLanding({ onContinue, onBack }: VendorAuthLandingProps
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!email.trim()) {
-            setError("Please enter your email address.");
+        try {
+            authSchema.parse({ email: email.trim() });
+        } catch (err: any) {
+            if (err instanceof z.ZodError) {
+                setError(err.issues[0].message);
+            } else {
+                setError("Please enter a valid email address.");
+            }
             return;
         }
 
@@ -74,7 +82,7 @@ export function VendorAuthLanding({ onContinue, onBack }: VendorAuthLandingProps
                 </div>
 
                 <h1
-                    className="text-[28px] font-bold tracking-tight text-[#1A1A1A]"
+                    className="text-2xl sm:text-[28px] font-bold tracking-tight text-[#1A1A1A]"
                     style={{ fontFamily: "var(--font-poppins)" }}
                 >
                     Become a Seller
@@ -112,7 +120,7 @@ export function VendorAuthLanding({ onContinue, onBack }: VendorAuthLandingProps
                     </label>
                     <input
                         id="vendor-email"
-                        type="email"
+                        type="text"
                         autoComplete="email"
                         value={email}
                         onChange={(e) => {

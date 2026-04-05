@@ -20,7 +20,7 @@ export default function Footer() {
           {/* Column 1: Brand & Contact */}
           <div className='space-y-8'>
             <h2
-              className='text-white font-readex text-4xl lg:text-[50px] font-medium leading-normal'
+              className='text-white font-readex text-3xl sm:text-4xl lg:text-[50px] font-medium leading-normal'
             >
               Mega Mart
             </h2>
@@ -92,33 +92,32 @@ export default function Footer() {
                   className='w-[150px] lg:w-[219px] h-[3px] bg-white mt-2'
                 />
               </div>
-              <div className='flex gap-4'>
+              <div className='flex flex-wrap gap-4'>
                 {/* App Store */}
                 <Link
                   href='#'
-                  className='bg-black rounded-lg flex items-center hover:opacity-80 transition-opacity min-w-[160px]'
+                  className='bg-black rounded-lg flex items-center hover:opacity-80 transition-opacity min-w-[140px] sm:min-w-[160px]'
                 >
                   <Image
                     src={AppleStoreIcon}
                     alt='Download on the App Store'
                     width={160}
                     height={50}
-                    className='object-contain'
+                    className='object-contain w-full h-auto'
                     priority
                   />
                 </Link>
-
                 {/* Google Play */}
                 <Link
                   href='#'
-                  className='bg-black rounded-lg flex items-center hover:opacity-80 transition-opacity min-w-[160px]'
+                  className='bg-black rounded-lg flex items-center hover:opacity-80 transition-opacity min-w-[140px] sm:min-w-[160px]'
                 >
                   <Image
                     src={GooglePlayStoreIcon}
                     alt='Get it on Google Play'
                     width={160}
                     height={50}
-                    className='object-contain'
+                    className='object-contain w-full h-auto'
                     priority
                   />
                 </Link>
@@ -282,33 +281,32 @@ export default function Footer() {
                 className='w-[150px] lg:w-[219px] h-[3px] bg-white mt-2'
               />
             </div>
-            <div className='flex flex-wrap gap-4'>
+            <div className='flex flex-wrap gap-3 sm:gap-4'>
               {/* App Store */}
               <Link
                 href='#'
-                className='bg-black rounded-lg flex items-center hover:opacity-80 transition-opacity min-w-[160px]'
+                className='bg-black rounded-lg flex items-center hover:opacity-80 transition-opacity min-w-[120px] xs:min-w-[140px] sm:min-w-[160px] flex-1 sm:flex-initial'
               >
                 <Image
                   src={AppleStoreIcon}
                   alt='Download on the App Store'
                   width={160}
                   height={50}
-                  className='object-contain'
+                  className='object-contain w-full h-auto'
                   priority
                 />
               </Link>
-
               {/* Google Play */}
               <Link
                 href='#'
-                className='bg-black rounded-lg flex items-center hover:opacity-80 transition-opacity min-w-[160px]'
+                className='bg-black rounded-lg flex items-center hover:opacity-80 transition-opacity min-w-[120px] xs:min-w-[140px] sm:min-w-[160px] flex-1 sm:flex-initial'
               >
                 <Image
                   src={GooglePlayStoreIcon}
                   alt='Get it on Google Play'
                   width={160}
                   height={50}
-                  className='object-contain'
+                  className='object-contain w-full h-auto'
                   priority
                 />
               </Link>

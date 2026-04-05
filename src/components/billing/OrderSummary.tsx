@@ -126,12 +126,12 @@ export function OrderSummary() {
                 </div>
 
                 {/* Coupon */}
-                <div className="flex gap-4 mb-6">
+                <div className="flex flex-col sm:flex-row gap-4 mb-6">
                     <Input
                         placeholder="Coupon Code"
-                        className="h-12 bg-transparent border-gray-400 rounded-[4px] placeholder:text-gray-400"
+                        className="h-12 bg-transparent border-gray-400 rounded-[4px] placeholder:text-gray-400 flex-1"
                     />
-                    <Button className="h-12 px-8 bg-[#0092FF] hover:bg-[#0092FF]/90 text-white rounded-[4px] font-medium transition-all active:scale-95">
+                    <Button className="h-12 px-8 bg-[#0092FF] hover:bg-[#0092FF]/90 text-white rounded-[4px] font-medium transition-all active:scale-95 whitespace-nowrap">
                         Apply Coupon
                     </Button>
                 </div>

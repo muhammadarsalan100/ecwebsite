@@ -3,10 +3,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authService } from "@/services/authService";
-import { ProfileData } from "@/types/auth";
+import { ProfileData, WalletData } from "@/types/auth";
+export type { WalletData };
 import { useConfigStore } from "@/lib/store/configStore";
 import { useCartStore } from "@/lib/store/cartStore";
 import { STORAGE_KEYS, USER_ROLES } from "@/constants";
+import { Address, CreateAddressPayload } from "@/types/address";
 
 // Types
 export interface User extends Partial<ProfileData> {
@@ -22,8 +24,15 @@ interface AuthContextType {
     login: (userData: User, redirectPath?: string | false) => void;
     logout: () => void;
     refreshUser: () => Promise<void>;
+    addresses: Address[];
+    fetchAddresses: () => Promise<void>;
+    addAddress: (payload: CreateAddressPayload) => Promise<void>;
+    updateAddress: (address: Address) => Promise<void>;
     isAuthenticated: boolean;
     isLoading: boolean;
+    wallet: WalletData | null;
+    fetchWallet: () => Promise<void>;
+    fetchWalletHistory: () => Promise<void>;
 }
 
 // Context
@@ -35,6 +44,8 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     // State Hooks
     const [user, setUser] = useLocalStorage<User | null>(STORAGE_KEYS.USER_DATA, null);
+    const [addresses, setAddresses] = useState<Address[]>([]);
+    const [wallet, setWallet] = useState<WalletData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     // Custom Hooks
@@ -57,6 +68,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                             console.warn("[Auth] initializeAuth: refreshUser failed:", err);
                         })
                         .finally(() => {
+                            fetchAddresses();
+                            fetchWallet();
+                            fetchWalletHistory();
                             setIsLoading(false);
                         });
                 } else {
@@ -130,6 +144,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, [user, isLoading]);
     // ─────────────────────────────────────────────────────────────────────────
 
+    // ─── Post-Login Data Sync ───────────────────────────────────────────────
+    //
+    // Watch for user changes (login/logout/switch) and sync wallet/addresses.
+    // Guaranteed to run for both initial load (after initializeAuth) and subsequent logins.
+    useEffect(() => {
+        if (user && user.role !== USER_ROLES.GUEST) {
+            // New user session: Clear old data immediately to prevent flicker/leak
+            setAddresses([]);
+            setWallet(null);
+
+            // Fetch fresh data for the actual logged-in user
+            fetchAddresses();
+            fetchWallet();
+            fetchWalletHistory();
+        } else if (user?.role === USER_ROLES.GUEST) {
+            // Explicitly clear when guest
+            setAddresses([]);
+            setWallet(null);
+        }
+    }, [user?.id, user?.role]);
+    // ─────────────────────────────────────────────────────────────────────────
+
     // Handlers
     const refreshUser = async () => {
         try {
@@ -157,6 +193,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 if (profileEmail) {
                     localStorage.setItem(STORAGE_KEYS.USER_EMAIL, profileEmail);
                 }
+
+                // Fetch addresses for the user
+                fetchAddresses();
             }
         } catch (error) {
             // Re-throw so callers (.catch / .finally chains) can react correctly.
@@ -185,6 +224,85 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    const fetchWallet = async () => {
+        if (!user || user.role === USER_ROLES.GUEST) return;
+        try {
+            const response = await authService.getWallet();
+            if (response && response.data) {
+                // Safely handle cases where data might be an array or an object
+                const walletData = Array.isArray(response.data) ? response.data[0] : response.data;
+                if (walletData) {
+                    setWallet((prev) => ({
+                        ...(prev ?? {}),
+                        ...walletData,
+                        currentBalance: walletData.currentBalance ?? walletData.CurrentBalance ?? (prev?.currentBalance || 0),
+                        history: walletData.history ?? prev?.history ?? null
+                    }) as WalletData);
+                }
+            }
+        } catch (error) {
+            console.error("Failed to fetch wallet:", error);
+        }
+    };
+
+    const fetchWalletHistory = async () => {
+        if (!user || user.role === USER_ROLES.GUEST) return;
+        try {
+            const response = await authService.getWalletHistory();
+            if (response && response.data) {
+                // Safely handle cases where data might be an array or an object
+                const walletData = Array.isArray(response.data) ? response.data[0] : response.data;
+                if (walletData) {
+                    setWallet((prev) => ({
+                        ...(prev ?? {}),
+                        ...walletData,
+                        currentBalance: walletData.currentBalance ?? walletData.CurrentBalance ?? (prev?.currentBalance || 0),
+                        history: walletData.history ?? prev?.history ?? null
+                    }) as WalletData);
+                }
+            }
+        } catch (error) {
+            console.error("Failed to fetch wallet history:", error);
+        }
+    };
+
+    const fetchAddresses = async () => {
+        if (!user || user.role === USER_ROLES.GUEST) return;
+        try {
+            const response = await authService.getAddresses();
+            if (response && response.data) {
+                setAddresses(response.data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch addresses:", error);
+        }
+    };
+
+    const addAddress = async (payload: CreateAddressPayload) => {
+        try {
+            const response = await authService.createAddress(payload);
+            if (response && response.data) {
+                // Fetch addresses again to get the updated list from server
+                await fetchAddresses();
+            }
+        } catch (error) {
+            console.error("Failed to add address:", error);
+            throw error;
+        }
+    };
+
+    const updateAddress = async (address: Address) => {
+        try {
+            const response = await authService.updateAddress({ data: address });
+            if (response && response.data) {
+                await fetchAddresses();
+            }
+        } catch (error) {
+            console.error("Failed to update address:", error);
+            throw error;
+        }
+    };
+
     const logout = async () => {
         // Clear auth data
         setUser(null);
@@ -193,6 +311,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem(STORAGE_KEYS.ID_TOKEN);
         localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
         localStorage.removeItem(STORAGE_KEYS.USER_EMAIL);
+        setAddresses([]);
+        setWallet(null);
 
         // Clear cart data
         try {
@@ -243,11 +363,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return (
         <AuthContext.Provider value={{
             user,
+            addresses,
+            fetchAddresses,
+            addAddress,
+            updateAddress,
             login,
             logout,
             refreshUser,
             isAuthenticated: !!user && user?.role !== USER_ROLES.GUEST,
-            isLoading
+            isLoading,
+            wallet,
+            fetchWallet,
+            fetchWalletHistory
         }}>
             {children}
         </AuthContext.Provider>

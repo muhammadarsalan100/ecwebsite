@@ -8,11 +8,11 @@ export function HeroSection() {
       <div className='mx-auto max-w-7xl'>
         <div className='grid grid-cols-1 gap-4 lg:grid-cols-3'>
           {/* Left Card - Main Promotional Content */}
-          <div className='relative col-span-1 overflow-hidden rounded-[2rem] bg-[#c5dde4] p-8 lg:col-span-2 lg:p-12'>
+          <div className='relative col-span-1 overflow-hidden rounded-[2rem] bg-[#c5dde4] p-6 sm:p-8 lg:col-span-2 lg:p-12'>
             <div className='flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between'>
               {/* Text Content */}
               <div className='z-10 max-w-sm'>
-                <h1 className='text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl text-balance'>
+                <h1 className='text-3xl sm:text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl text-balance'>
                   Discover New Collection
                 </h1>
                 <div className='mt-4 flex items-start gap-3'>

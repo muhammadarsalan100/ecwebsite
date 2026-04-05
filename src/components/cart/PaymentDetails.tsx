@@ -14,7 +14,7 @@ export const PaymentDetails = ({ subtotal, discount, shipmentCost, total, curren
     const router = useRouter();
 
     return (
-        <div className="bg-white rounded-[32px] p-8 border border-gray-50 shadow-sm">
+        <div className="bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-8 border border-gray-50 shadow-sm">
             <h3 className="text-lg font-bold text-gray-900 mb-6">Payment Details</h3>
 
             <div className="space-y-4 mb-8">

@@ -4,11 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { X, Home, Store, ShieldCheck, LogOut, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { RegionSelector } from "../RegionSelector";
 import { useCartStore } from "@/lib/store/cartStore";
-
-import { User } from "@/lib/auth-context";
-import { Country } from "@/types/config";
+import { User, WalletData } from "@/lib/auth-context";
 import { useConfigStore } from "@/lib/store/configStore";
 
 interface MobileMenuProps {
@@ -18,11 +15,7 @@ interface MobileMenuProps {
     isAuthenticated: boolean;
     user: User | null;
     logout: () => void;
-    isMobileRegionOpen: boolean;
-    setIsMobileRegionOpen: (isOpen: boolean) => void;
-    selectedCountry: Country | null;
-    setSelectedCountry: (country: Country) => void;
-    countries: Country[];
+    wallet: WalletData | null;
 }
 
 export function MobileMenu({
@@ -32,11 +25,7 @@ export function MobileMenu({
     isAuthenticated,
     user,
     logout,
-    isMobileRegionOpen,
-    setIsMobileRegionOpen,
-    selectedCountry,
-    setSelectedCountry,
-    countries
+    wallet
 }: MobileMenuProps) {
     const cartItems = useCartStore((state) => state.items);
     const { activeCategoryId } = useConfigStore();
@@ -108,7 +97,12 @@ export function MobileMenu({
                                         <div className="w-12 h-12 bg-[#0092FF] rounded-full shadow-lg shadow-blue-200 group-hover:scale-110 transition-transform flex items-center justify-center">
                                             <Image src="/Wallet.png" alt="Wallet" width={24} height={24} className="w-6 h-6 object-contain brightness-0 invert" />
                                         </div>
-                                        <span className="text-sm font-bold text-gray-700 group-hover:text-[#0092FF] transition-colors">Wallet</span>
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-sm font-bold text-gray-700 group-hover:text-[#0092FF] transition-colors text-center">Wallet</span>
+                                            <span className="text-[10px] font-bold text-[#0092FF]">
+                                                {wallet ? `${wallet.currency.shortCode} ${wallet.currentBalance.toLocaleString()}` : "$0.00"}
+                                            </span>
+                                        </div>
                                     </Link>
                                     <Link
                                         href="/cart"
@@ -197,20 +191,9 @@ export function MobileMenu({
                             </Link>
                         </div>
 
-                        {/* Settings Section */}
-                        <div className='pt-6 border-t border-gray-100'>
-                            <p className='px-2 mb-4 text-xs font-bold text-gray-400 uppercase tracking-widest'>PREFERENCES</p>
-                            <RegionSelector
-                                isOpen={isMobileRegionOpen}
-                                setIsOpen={setIsMobileRegionOpen}
-                                selectedCountry={selectedCountry}
-                                setSelectedCountry={setSelectedCountry}
-                                countries={countries}
-                                isMobile
-                            />
-                            <div className="mt-4 px-2">
-                                <p className="text-xs text-gray-400 text-center">Version 1.0.0 • © 2025 MegaMart</p>
-                            </div>
+                        {/* Version info footer */}
+                        <div className="mt-auto pt-6 px-2">
+                            <p className="text-xs text-gray-400 text-center">Version 1.0.0 • © 2025 MegaMart</p>
                         </div>
                     </div>
                 </motion.div>

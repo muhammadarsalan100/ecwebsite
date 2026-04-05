@@ -20,12 +20,12 @@ export function VendorStoreCard({ vendor }: VendorStoreCardProps) {
             className="bg-white dark:bg-gray-900 rounded-[32px] p-6 mb-6 shadow-sm border border-gray-100 dark:border-gray-800"
         >
             {/* Store Header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8">
                 <Link 
                     href={`/store/${vendor.storeId}`}
                     className="flex items-center gap-4 group/header cursor-pointer"
                 >
-                    <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-gray-100 dark:border-gray-800 bg-gray-50 flex-shrink-0 group-hover/header:border-[#0092FF]/30 transition-all">
+                    <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-gray-100 dark:border-gray-800 bg-gray-50 flex-shrink-0 group-hover/header:border-[#0092FF]/30 transition-all">
                         {vendor.logo ? (
                             <Image 
                                 src={vendor.logo} 
@@ -34,16 +34,16 @@ export function VendorStoreCard({ vendor }: VendorStoreCardProps) {
                                 className="object-cover"
                             />
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 font-bold text-xl group-hover/header:text-[#0092FF] transition-colors">
+                            <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 font-bold text-lg sm:text-xl group-hover/header:text-[#0092FF] transition-colors">
                                 {vendor.storeName.charAt(0)}
                             </div>
                         )}
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover/header:text-[#0092FF] transition-colors">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-0.5 group-hover/header:text-[#0092FF] transition-colors">
                             {vendor.storeName}
                         </h3>
-                        <div className="flex items-center gap-2 text-sm text-gray-400 font-medium">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 font-medium">
                             <span>
                                 {vendor.followersCount} {vendor.followersCount === 1 ? 'follower' : 'followers'}
                             </span>
@@ -55,15 +55,15 @@ export function VendorStoreCard({ vendor }: VendorStoreCardProps) {
                     </div>
                 </Link>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
                     {!vendor.isFollowed ? (
-                        <button className="px-7 py-2.5 bg-[#0092FF] text-white text-[13px] font-bold rounded-xl hover:bg-[#0081E0] transition-colors shadow-lg shadow-blue-500/10 active:scale-95">
+                        <button className="flex-1 sm:flex-initial px-7 py-2.5 bg-[#0092FF] text-white text-[13px] font-bold rounded-xl hover:bg-[#0081E0] transition-colors shadow-lg shadow-blue-500/10 active:scale-95">
                             Follow
                         </button>
                     ) : (
                         <Link 
                             href={`/store/${vendor.storeId}`}
-                            className="w-10 h-10 rounded-full border border-gray-100 dark:border-gray-800 flex items-center justify-center text-gray-300 hover:text-[#0092FF] hover:border-[#0092FF]/30 transition-all"
+                            className="w-10 h-10 rounded-full border border-gray-100 dark:border-gray-800 flex items-center justify-center text-gray-300 hover:text-[#0092FF] hover:border-[#0092FF]/30 transition-all ml-auto sm:ml-0"
                         >
                             <ChevronRight className="w-5 h-5" />
                         </Link>

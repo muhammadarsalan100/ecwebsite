@@ -14,6 +14,7 @@ export interface RegionSelectorProps {
     setSelectedCountry: (country: Country) => void;
     countries: Country[];
     isMobile?: boolean;
+    darkText?: boolean;
 }
 
 export interface NavCategory {

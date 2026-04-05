@@ -11,9 +11,9 @@ interface RelatedProductsProps {
 
 export const RelatedProducts = ({ isLoading, products }: RelatedProductsProps) => {
     return (
-        <div className="mt-20">
+        <div className="mt-12 sm:mt-20">
             <motion.h2 
-                className="text-2xl font-bold text-gray-900 dark:text-white mb-8 px-2"
+                className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-6 sm:mb-8 px-2 leading-tight"
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -28,17 +28,17 @@ export const RelatedProducts = ({ isLoading, products }: RelatedProductsProps) =
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="flex flex-col items-center justify-center py-24 bg-white dark:bg-gray-950 rounded-[32px] border border-gray-100 dark:border-gray-800"
+                        className="flex flex-col items-center justify-center py-16 sm:py-24 bg-white dark:bg-gray-950 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800"
                     >
-                        <Loader2 className="w-12 h-12 text-[#0092FF] animate-spin mb-4" />
-                        <p className="text-gray-400 font-medium animate-pulse">Finding recommendations...</p>
+                        <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 text-[#0092FF] animate-spin mb-4" />
+                        <p className="text-gray-400 font-medium animate-pulse text-sm sm:text-base">Finding recommendations...</p>
                     </motion.div>
                 ) : products.length > 0 ? (
                     <motion.div 
                         key="grid"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                        className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
                     >
                         {products.map((product, index) => (
                             <motion.div

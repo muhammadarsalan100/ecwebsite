@@ -12,13 +12,15 @@ export function RecentCollections() {
           titleLight="Collections"
           subtitle="Have a look on what's trending now!"
         />
-        <Image
-          src={RecentCollectionBanner}
-          alt='Recent Collections Banner'
-          width={1200}
-          height={400}
-          className='mt-6 w-full h-auto rounded-lg object-cover'
-        />
+        <div className="mt-6 md:mt-10 overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg shadow-gray-200/50">
+          <Image
+            src={RecentCollectionBanner}
+            alt='Recent Collections Banner'
+            width={1200}
+            height={400}
+            className='w-full h-[180px] sm:h-auto object-cover hover:scale-105 transition-transform duration-700'
+          />
+        </div>
       </div>
     </section>
   );

@@ -19,7 +19,7 @@ export const CartItemCard = ({ item, onUpdateQuantity, onRemove, currencySymbol 
             item.isUpdating && "opacity-60 pointer-events-none"
         )}>
             {/* Product Image */}
-            <div className="w-full sm:w-40 h-48 sm:h-40 bg-[#F8F9FA] rounded-2xl flex items-center justify-center p-4 shrink-0 relative overflow-hidden">
+            <div className="w-full sm:w-40 h-40 bg-[#F8F9FA] rounded-2xl flex items-center justify-center p-3 shrink-0 relative overflow-hidden">
                 <Image
                     src={item.image}
                     alt={item.title}

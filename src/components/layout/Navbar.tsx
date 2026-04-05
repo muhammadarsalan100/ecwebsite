@@ -28,14 +28,12 @@ import { useConfigStore } from "@/lib/store/configStore";
 
 export default function Navbar() {
   // Custom Hooks
-  const { isAuthenticated, user, logout, isLoading } = useAuth();
+  const { isAuthenticated, user, logout, isLoading, wallet } = useAuth();
   const router = useRouter();
   const { countries, fetchCountries, selectedCountry, setSelectedCountry } = useConfigStore();
-  console.log('user', user)
   // State Hooks
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
-  const [isMobileRegionOpen, setIsMobileRegionOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   const [hasHydrated, setHasHydrated] = useState(false);
@@ -180,16 +178,17 @@ export default function Navbar() {
               authRef={authRef}
               walletRef={walletRef}
               cartRef={cartRef}
+              wallet={wallet}
             />
 
             {/* Mobile Menu Buttons */}
-            <div className='md:hidden flex items-center gap-3 xs:gap-5 shrink-0'>
+            <div className='md:hidden flex items-center gap-3 xs:gap-6 shrink-0'>
               <button
                 onClick={() => { setIsMobileSearchOpen(!isMobileSearchOpen); setIsMenuOpen(false); }}
                 className='flex flex-col items-center gap-0.5 hover:opacity-80 transition-opacity'
               >
                 <Search className='w-5 h-5' />
-                <span className="text-[9px] font-bold">Search</span>
+                <span className="text-[11px] font-bold">Search</span>
               </button>
 
               <Link
@@ -198,7 +197,9 @@ export default function Navbar() {
                 className='flex flex-col items-center gap-0.5 hover:opacity-80 transition-opacity'
               >
                 <Image src="/Wallet.png" alt="Wallet" width={20} height={20} className="w-5 h-5 object-contain" />
-                <span className="text-[9px] font-bold">$0</span>
+                <span className="text-[11px] font-bold">
+                  {isAuthenticated && wallet ? `${wallet.currency.shortCode} ${Math.round(wallet.currentBalance).toLocaleString()}` : "$0"}
+                </span>
               </Link>
 
               <Link
@@ -214,7 +215,7 @@ export default function Navbar() {
                     </span>
                   )}
                 </div>
-                <span className="text-[9px] font-bold">${Math.round(subtotal)}</span>
+                <span className="text-[11px] font-bold">${Math.round(subtotal)}</span>
               </Link>
 
               <button
@@ -222,7 +223,7 @@ export default function Navbar() {
                 className='flex flex-col items-center gap-0.5 hover:opacity-80 transition-opacity'
               >
                 <Menu className='w-6 h-6' />
-                <span className="text-[9px] font-bold">Menu</span>
+                <span className="text-[11px] font-bold">Menu</span>
               </button>
             </div>
           </div>
@@ -236,11 +237,7 @@ export default function Navbar() {
           isAuthenticated={isAuthenticated}
           user={user}
           logout={logout}
-          isMobileRegionOpen={isMobileRegionOpen}
-          setIsMobileRegionOpen={setIsMobileRegionOpen}
-          selectedCountry={selectedCountry}
-          setSelectedCountry={setSelectedCountry}
-          countries={countries}
+          wallet={wallet}
         />
 
         {/* Mobile Search Bar */}

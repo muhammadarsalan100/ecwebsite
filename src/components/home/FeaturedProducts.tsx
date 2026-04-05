@@ -38,7 +38,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
     <section className='w-full px-4 py-8 md:px-8 lg:px-12'>
       <div className='mx-auto max-w-7xl'>
         <motion.div
-          className='grid grid-cols-1 md:grid-cols-3 gap-6'
+          className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

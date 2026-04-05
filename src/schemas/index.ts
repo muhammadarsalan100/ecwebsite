@@ -13,6 +13,9 @@ export type { BillingSchema } from "./billing.schema";
 export { newsletterSchema } from "./misc.schema";
 export type { NewsletterSchema } from "./misc.schema";
 
+export { addressSchema } from "./address.schema";
+export type { AddressSchema } from "./address.schema";
+
 export {
     vendorStep1Schema,
     vendorStep2Schema,

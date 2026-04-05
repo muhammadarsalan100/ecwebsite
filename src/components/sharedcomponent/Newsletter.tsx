@@ -78,7 +78,7 @@ export function Newsletter() {
 
             {/* Email Input Container */}
             <motion.div
-              className='flex flex-col items-center gap-4 w-full p-3 bg-white rounded-lg shadow-lg'
+              className='flex flex-col items-center gap-4 w-full p-2 sm:p-3 bg-white rounded-lg shadow-lg'
               style={{
                 maxWidth: "527px",
                 boxShadow: "0 20px 50px rgba(1, 141, 242, 0.05)"

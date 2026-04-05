@@ -35,7 +35,7 @@ export function CountryFilteredProducts() {
   return (
     <section className="flex flex-col">
       <div className="w-full px-4 md:px-8 lg:px-12 mx-auto max-w-7xl">
-        <h2 className="mb-6 text-[32px] font-semibold text-black font-poppins text-center">
+        <h2 className="mb-6 text-2xl sm:text-[32px] font-semibold text-black font-poppins text-center">
           {title} Products
         </h2>
       </div>

@@ -64,9 +64,9 @@ export function LeatherBagBanner() {
             />
           </div>
 
-          <div className='flex flex-col md:flex-row items-center min-h-[400px] md:h-[326px]'>
+          <div className='flex flex-col md:flex-row items-center min-h-[360px] md:h-[326px] overflow-hidden'>
             {/* Left Content */}
-            <div className='flex-1 p-8 md:p-12 lg:p-16 z-10 w-full text-center md:text-left'>
+            <div className='flex-1 p-6 sm:p-8 md:p-12 lg:p-16 z-10 w-full text-center md:text-left'>
               {/* Main Heading */}
               <motion.h2
                 style={{

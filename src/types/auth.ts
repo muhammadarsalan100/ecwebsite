@@ -95,3 +95,26 @@ export interface ProfileData {
     createDate: string;
     modifiedDate: string;
 }
+
+export interface WalletData {
+    customerId: number;
+    currencyId: number;
+    currentBalance: number;
+    history: any;
+    currency: {
+        name: string;
+        shortCode: string;
+        symbolUrl: string | null;
+        id: number;
+        code: string | null;
+        active: boolean;
+        createDate: string | null;
+        modifiedDate: string | null;
+    };
+    currentRequest: any;
+    id: number;
+    code: string;
+    active: boolean;
+    createDate: string;
+    modifiedDate: string | null;
+}

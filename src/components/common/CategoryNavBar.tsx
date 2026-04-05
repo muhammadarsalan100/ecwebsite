@@ -8,6 +8,7 @@ import { useConfigStore } from "@/lib/store/configStore";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { CountryNavBar } from "./CountryNavBar";
+import { RegionSelector } from "../layout/RegionSelector";
 import { useClickOutside } from "@/hooks/useClickOutside";
 
 export function CategoryNavBar() {
@@ -21,13 +22,19 @@ export function CategoryNavBar() {
     fetchCountries
   } = useConfigStore();
   const [isOpen, setIsOpen] = useState(false);
+  const [isRegionOpen, setIsRegionOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const regionRef = useRef<HTMLDivElement>(null);
 
   useClickOutside(menuRef, () => {
     setIsOpen(false);
     setActiveCategory(null);
+  });
+
+  useClickOutside(regionRef, () => {
+    setIsRegionOpen(false);
   });
 
   useEffect(() => {
@@ -78,10 +85,10 @@ export function CategoryNavBar() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full left-0 mt-4 w-[800px] bg-white rounded-2xl shadow-2xl border border-gray-100 flex overflow-hidden z-[100] min-h-[400px]"
+                  className="absolute top-full left-0 mt-4 w-[calc(100vw-2rem)] sm:w-[600px] md:w-[700px] lg:w-[800px] bg-white rounded-2xl shadow-2xl border border-gray-100 flex flex-col md:flex-row overflow-hidden z-[100] min-h-[400px]"
                 >
                   {/* Category List (Left Sidebar) */}
-                  <div className="w-[300px] bg-gray-50/50 border-r border-gray-100 py-4 overflow-y-auto">
+                  <div className="w-full md:w-[300px] bg-gray-50/50 border-b md:border-b-0 md:border-r border-gray-100 py-4 overflow-y-auto max-h-[300px] md:max-h-none">
                     {isCategoriesLoading ? (
                       <div className="px-4 space-y-4">
                         {[1, 2, 3, 4, 5].map(i => <div key={i} className="h-10 bg-gray-100 animate-pulse rounded-xl" />)}
@@ -151,15 +158,29 @@ export function CategoryNavBar() {
             </AnimatePresence>
           </div>
 
-          {/* Right: Country Navigation */}
-          <CountryNavBar
-            countries={countries}
-            activeCountryId={String(selectedCountry?.id || "")}
-            onSelect={(id) => {
-              const c = countries.find(country => String(country.id) === String(id));
-              if (c) setSelectedCountry(c);
-            }}
-          />
+          {/* Right: Country Navigation (Desktop) */}
+          <div className="hidden lg:block">
+            <CountryNavBar
+              countries={countries}
+              activeCountryId={String(selectedCountry?.id || "")}
+              onSelect={(id) => {
+                const c = countries.find(country => String(country.id) === String(id));
+                if (c) setSelectedCountry(c);
+              }}
+            />
+          </div>
+
+          {/* Right: Region Dropdown (Mobile/Tablet) */}
+          <div className="block lg:hidden" ref={regionRef}>
+            <RegionSelector
+              isOpen={isRegionOpen}
+              setIsOpen={setIsRegionOpen}
+              countries={countries}
+              selectedCountry={selectedCountry}
+              setSelectedCountry={setSelectedCountry}
+              darkText={true}
+            />
+          </div>
 
         </div>
       </div>

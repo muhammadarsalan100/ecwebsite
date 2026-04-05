@@ -50,18 +50,18 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
     }
 
     return (
-        <div className='mb-10'>
+        <div className='mb-10 lg:mb-20'>
             <motion.h2
-                className='text-3xl font-bold mb-10 text-gray-900 dark:text-white'
+                className='text-2xl sm:text-3xl font-bold mb-8 sm:mb-10 text-gray-900 dark:text-white'
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
             >
-                Related Product
+                Related Products
             </motion.h2>
 
-            <div className='grid grid-cols-1 md:grid-cols-4 gap-8'>
+            <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8'>
                 {products.map((product) => (
                     <ProductCard
                         key={product.id}

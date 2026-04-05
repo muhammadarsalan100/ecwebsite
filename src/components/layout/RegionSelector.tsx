@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ChevronDown, Globe, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { RegionSelectorProps } from "@/types";
 
 export function RegionSelector({
@@ -11,7 +12,8 @@ export function RegionSelector({
     selectedCountry,
     setSelectedCountry,
     countries,
-    isMobile = false
+    isMobile = false,
+    darkText = false
 }: RegionSelectorProps) {
     if (isMobile) {
         return (
@@ -22,7 +24,7 @@ export function RegionSelector({
                 >
                     <div className='flex items-center gap-3'>
                         <Globe className='w-4 h-4 text-muted-foreground' />
-                        <span className='text-sm font-medium text-foreground'>Region</span>
+                        <span className='text-sm font-medium text-foreground'>Shopping Places</span>
                     </div>
                     <div className='flex items-center gap-2'>
                         <div className='w-5 h-4 relative overflow-hidden rounded-sm shadow-sm bg-gray-100 flex items-center justify-center font-bold'>
@@ -90,8 +92,8 @@ export function RegionSelector({
                         </span>
                     )}
                 </div>
-                <span className="font-medium text-base text-white">Region</span>
-                <ChevronDown className='w-4 h-4 text-white' />
+                <span className={cn("font-medium text-sm sm:text-base whitespace-nowrap", darkText ? "text-gray-800" : "text-white")}>Shopping Places</span>
+                <ChevronDown className={cn('w-3.5 h-3.5', darkText ? "text-gray-800" : "text-white")} />
             </button>
 
             <AnimatePresence>

@@ -1,7 +1,8 @@
 import { api } from "./apiClient";
 import { AuthSchema } from "@/schemas/auth.schema";
-import { ApiResponse, RegistrationData, LoginSessionData, UserData } from "@/types/auth";
+import { ApiResponse, RegistrationData, LoginSessionData, UserData, WalletData } from "@/types/auth";
 import { API_ROUTES } from "@/constants";
+import { AddressListResponse, CreateAddressPayload, Address } from "@/types/address";
 
 /**
  * Authentication and User related API calls.
@@ -182,4 +183,45 @@ export const authService = {
      */
     getStoreDetail: (id: string | number) =>
         api.get<ApiResponse<any>>(`/api/v1.0/store/${id}`),
+
+    /**
+     * Get list of customer addresses (Requires Auth)
+     */
+    getAddresses: () =>
+        api.get<AddressListResponse>(API_ROUTES.CUSTOMER_ADDRESS),
+
+    /**
+     * Create customer address (Requires Auth)
+     */
+    createAddress: (payload: CreateAddressPayload) =>
+        api.post<ApiResponse<any>>(API_ROUTES.CUSTOMER_ADDRESS, payload),
+
+    /**
+     * Update customer address (Requires Auth)
+     */
+    updateAddress: (payload: { data: Address }) =>
+        api.put<ApiResponse<any>>(API_ROUTES.CUSTOMER_ADDRESS, payload),
+
+    /**
+     * Get wallet details (Requires Auth)
+     */
+    getWallet: () =>
+        api.get<ApiResponse<WalletData>>(API_ROUTES.WALLET),
+
+    /**
+     * Get wallet history (Requires Auth)
+     */
+    getWalletHistory: () =>
+        api.get<ApiResponse<WalletData>>(API_ROUTES.WALLET_HISTORY),
+
+    /**
+     * Create wallet topup request (Requires Auth)
+     */
+    createTopUpRequest: (amount: string) =>
+        api.post<ApiResponse<any>>(API_ROUTES.WALLET_TOPUP_REQUEST, {
+            data: {
+                amountInUserCurrency: amount,
+                source: "digital"
+            }
+        }),
 };

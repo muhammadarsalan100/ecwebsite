@@ -125,15 +125,15 @@ export function CustomerReview() {
 
           {/* Center Review Card (Main - Elevated) - Responsive */}
           <div
-            className='relative flex flex-col md:flex-row items-center md:items-stretch bg-white rounded-lg shadow-xl overflow-hidden z-10 w-full max-w-[340px] md:max-w-[700px] lg:max-w-[802px]'
+            className='relative flex flex-col md:flex-row items-center md:items-stretch bg-white rounded-lg shadow-xl overflow-hidden z-10 w-full max-w-[calc(100vw-2rem)] md:max-w-[700px] lg:max-w-[802px]'
             style={{
               minHeight: "325px",
             }}
           >
             {/* Stacked Images - Center Card */}
-            <div className='relative w-[160px] h-[160px] md:w-[196px] md:h-[196px] flex-shrink-0 self-center mt-6 md:mt-0 md:ml-10'>
-              <div className='absolute w-full h-full bg-[#E8E8E8] rounded-[4px] top-[12px] left-[12px] md:top-[16px] md:left-[16px] z-[1]' />
-              <div className='absolute w-full h-full bg-[#F0F0F0] rounded-[4px] top-[6px] left-[6px] md:top-[8px] md:left-[8px] z-[2]' />
+            <div className='relative w-[120px] h-[120px] xs:w-[160px] xs:h-[160px] md:w-[196px] md:h-[196px] flex-shrink-0 self-center mt-6 md:mt-0 md:ml-10'>
+              <div className='absolute w-full h-full bg-[#E8E8E8] rounded-[4px] top-[8px] left-[8px] md:top-[16px] md:left-[16px] z-[1]' />
+              <div className='absolute w-full h-full bg-[#F0F0F0] rounded-[4px] top-[4px] left-[4px] md:top-[8px] md:left-[8px] z-[2]' />
               <div className='relative w-full h-full rounded-[4px] z-[3] overflow-hidden'>
                 <Image
                   src={visibleReviews[1].image}
@@ -145,7 +145,7 @@ export function CustomerReview() {
             </div>
 
             {/* Content - Center Card */}
-            <div className='flex-1 flex flex-col justify-center px-6 py-8 md:px-10 md:py-14 text-center md:text-left w-full'>
+            <div className='flex-1 flex flex-col justify-center px-4 py-8 xs:px-6 md:px-10 md:py-14 text-center md:text-left w-full'>
               {/* Review Text */}
               <p className='text-[#484848] font-poppins text-sm md:text-[13px] font-normal mb-4 leading-relaxed'>
                 &quot;{visibleReviews[1].review}&quot;

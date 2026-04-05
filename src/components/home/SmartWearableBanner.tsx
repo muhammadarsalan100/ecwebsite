@@ -76,7 +76,7 @@ export function SmartWearableBanner() {
         {/* LEFT ARROW - Hidden on very small screens, shown on md+ */}
         <motion.button
           onClick={() => setCurrentSlide((prev) => Math.max(0, prev - 1))}
-          className='absolute left-[-10px] md:-left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-14 md:h-14 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition disabled:opacity-50'
+          className='absolute left-1 md:-left-6 top-1/2 -translate-y-1/2 z-30 w-8 h-8 md:w-14 md:h-14 rounded-full bg-white/90 md:bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition disabled:opacity-50 backdrop-blur-sm'
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           initial={{ opacity: 0, x: -20 }}
@@ -93,7 +93,7 @@ export function SmartWearableBanner() {
           onClick={() =>
             setCurrentSlide((prev) => Math.min(totalSlides - 1, prev + 1))
           }
-          className='absolute right-[-10px] md:-right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-14 md:h-14 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition disabled:opacity-50'
+          className='absolute right-1 md:-right-6 top-1/2 -translate-y-1/2 z-30 w-8 h-8 md:w-14 md:h-14 rounded-full bg-white/90 md:bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition disabled:opacity-50 backdrop-blur-sm'
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           initial={{ opacity: 0, x: 20 }}
@@ -144,7 +144,7 @@ export function SmartWearableBanner() {
               <AnimatePresence mode='wait'>
                 <motion.p
                   key={`subtitle-${currentSlide}`}
-                  className='text-white font-poppins font-semibold mb-2 md:mb-3 text-lg md:text-[29px] leading-tight'
+                  className='text-white font-poppins font-semibold mb-2 md:mb-3 text-base sm:text-lg md:text-[24px] lg:text-[29px] leading-tight'
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
@@ -158,7 +158,7 @@ export function SmartWearableBanner() {
               <AnimatePresence mode='wait'>
                 <motion.h2
                   key={`title-${currentSlide}`}
-                  className='text-white font-poppins font-bold mb-2 md:mb-3 text-3xl md:text-[61px] leading-tight md:leading-[1]'
+                  className='text-white font-poppins font-bold mb-2 md:mb-3 text-2xl sm:text-3xl md:text-[48px] lg:text-[61px] leading-tight md:leading-[1]'
                   initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 30 }}

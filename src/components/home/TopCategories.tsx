@@ -46,13 +46,13 @@ export function TopCategories({ categories }: TopCategoriesProps) {
           className="mb-12"
         />
 
-        {/* Categories Flex Container */}
+        {/* Categories Grid Container */}
         <motion.div
-          className='flex flex-wrap items-center justify-center md:justify-between gap-y-10 gap-x-4 md:gap-x-6 lg:gap-x-8'
+          className='grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap md:items-center md:justify-center lg:justify-between gap-6 sm:gap-8 md:gap-10'
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false }}
+          viewport={{ once: true }}
         >
           {categories.map((category) => (
             <Link 
@@ -66,7 +66,7 @@ export function TopCategories({ categories }: TopCategoriesProps) {
               >
                 {/* Circle Container */}
                 <motion.div
-                  className='relative w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 lg:w-48 lg:h-48 rounded-full bg-[#F8F8F8] border border-gray-100 flex items-center justify-center overflow-hidden group-hover:bg-[#f0f0f0] group-hover:border-[#0092FF]/20 transition-all duration-300 shadow-sm group-hover:shadow-md'
+                  className='relative w-24 h-24 xs:w-28 xs:h-28 sm:w-40 sm:h-40 md:w-44 md:h-44 lg:w-48 lg:h-48 rounded-full bg-[#F8F8F8] border border-gray-100 flex items-center justify-center overflow-hidden group-hover:bg-[#f0f0f0] group-hover:border-[#0092FF]/20 transition-all duration-300 shadow-sm group-hover:shadow-md'
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >

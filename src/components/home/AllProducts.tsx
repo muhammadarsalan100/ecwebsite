@@ -30,7 +30,7 @@ export function AllProducts({ products, categoryId }: AllProductsProps) {
         {products.length > 0 ? (
           <>
             <motion.div
-              className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-10'
+              className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-10'
               initial="hidden"
               whileInView="visible"
               viewport={{ once: false, margin: "-50px" }}

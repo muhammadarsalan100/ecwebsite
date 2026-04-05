@@ -6,14 +6,15 @@ import { Button } from "@/components/ui/button";
 import logo from "../../../public/logo.png";
 
 import { AuthOTPProps } from "@/types/auth";
-
+import { authSchema, otpSchema } from "@/schemas/auth.schema";
+import { z } from "zod";
 import { authService } from "@/services/authService";
 
 export function AuthOTP({ email, fullName, requestCode, loginSessionId, onContinue, onBack }: AuthOTPProps) {
     const [otp, setOtp] = useState(["", "", "", ""]);
     const [timer, setTimer] = useState(52);
     const [isResendActive, setIsResendActive] = useState(false);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
 
@@ -38,7 +39,7 @@ export function AuthOTP({ email, fullName, requestCode, loginSessionId, onContin
 
     const handleChange = (index: number, value: string) => {
         if (!/^\d*$/.test(value)) return;
-        if (error) setError(false);
+        if (error) setError(null);
         if (apiError) setApiError(null);
 
         const newOtp = [...otp];
@@ -75,14 +76,11 @@ export function AuthOTP({ email, fullName, requestCode, loginSessionId, onContin
     const handleContinue = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         const code = otp.join("");
-        if (code.length < 4) {
-            setError(true);
-            return;
-        }
-
         try {
+            otpSchema.parse({ otp: code });
             setIsLoading(true);
             setApiError(null);
+            setError(null);
 
             if (requestCode) {
                 // REGISTRATION FLOW
@@ -116,8 +114,12 @@ export function AuthOTP({ email, fullName, requestCode, loginSessionId, onContin
             }
         } catch (err: any) {
             setIsLoading(false);
-            setApiError(err.message || "Operation failed. Please try again.");
-            setError(true);
+            if (err instanceof z.ZodError) {
+                setError(err.issues[0].message);
+            } else {
+                setApiError(err.message || "Operation failed. Please try again.");
+                setError("Invalid OTP");
+            }
         }
     };
 
@@ -137,7 +139,7 @@ export function AuthOTP({ email, fullName, requestCode, loginSessionId, onContin
                     Enter OTP
                 </h1>
                 <p className='text-sm text-[#8A8A8A] font-medium'>
-                    Please enter the OTP Sent to <span className="text-[#4D4D4D]">{email}</span>
+                    Please enter the OTP sent to <span className="text-[#4D4D4D]">{email}</span>
                 </p>
             </div>
 
@@ -154,10 +156,15 @@ export function AuthOTP({ email, fullName, requestCode, loginSessionId, onContin
                                 value={digit}
                                 onChange={(e) => handleChange(index, e.target.value)}
                                 onKeyDown={(e) => handleKeyDown(index, e)}
-                                className={`w-[66px] h-[72px] text-center text-2xl font-bold bg-white border ${error ? "border-red-500 ring-1 ring-red-500" : "border-[#E6E6E6] focus:border-[#0092FF] focus:ring-1 focus:ring-[#0092FF]"} rounded-xl outline-none transition-all text-[#1A1A1A]`}
+                                className={`w-[50px] xs:w-[66px] h-[60px] xs:h-[72px] text-center text-xl xs:text-2xl font-bold bg-white border ${error ? "border-red-500 ring-1 ring-red-500" : "border-[#E6E6E6] focus:border-[#0092FF] focus:ring-1 focus:ring-[#0092FF]"} rounded-xl outline-none transition-all text-[#1A1A1A]`}
                             />
                         ))}
                     </div>
+                    {error && (
+                        <p className="text-sm font-medium text-red-500 text-center animate-in fade-in slide-in-from-top-1">
+                            {error}
+                        </p>
+                    )}
 
                     {/* Resend/Timer Section */}
                     <div className="h-6 flex items-center justify-center">

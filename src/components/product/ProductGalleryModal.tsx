@@ -60,8 +60,8 @@ export function ProductGalleryModal({ isOpen, onClose, items, initialIndex = 0 }
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header with Tabs */}
-                <div className="flex justify-center items-center pt-8 pb-2 relative">
-                    <div className="flex gap-10">
+                <div className="flex flex-col sm:flex-row justify-center items-center pt-12 sm:pt-8 pb-2 relative">
+                    <div className="flex gap-6 sm:gap-10">
                         <button
                             onClick={() => {
                                 setActiveType("image");
@@ -106,9 +106,9 @@ export function ProductGalleryModal({ isOpen, onClose, items, initialIndex = 0 }
 
                     <button
                         onClick={onClose}
-                        className="absolute right-6 top-6 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                        className="absolute right-4 top-4 sm:right-6 sm:top-6 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                     >
-                        <X className="w-6 h-6 text-gray-400" />
+                        <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400" />
                     </button>
                 </div>
 
@@ -163,13 +163,13 @@ export function ProductGalleryModal({ isOpen, onClose, items, initialIndex = 0 }
 
                 {/* Thumbnails row */}
                 {filteredItems.length > 0 && (
-                    <div className="p-8 pt-0 flex items-center justify-center gap-4">
+                    <div className="p-4 sm:p-8 pt-0 flex items-center justify-center gap-2 sm:gap-4">
                     {filteredItems.length > 1 && (
                         <button
                             onClick={handlePrevious}
-                            className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 transition-all flex-shrink-0 shadow-sm"
+                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 transition-all flex-shrink-0 shadow-sm"
                         >
-                            <ChevronLeft className="w-5 h-5" />
+                            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                     )}
 
@@ -205,9 +205,9 @@ export function ProductGalleryModal({ isOpen, onClose, items, initialIndex = 0 }
                     {filteredItems.length > 1 && (
                         <button
                             onClick={handleNext}
-                            className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 transition-all flex-shrink-0 shadow-sm"
+                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 transition-all flex-shrink-0 shadow-sm"
                         >
-                            <ChevronRight className="w-5 h-5" />
+                            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                     )}
                 </div>

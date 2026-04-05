@@ -13,3 +13,4 @@ export * from "./layout";
 export * from "./product";
 export * from "./vendor";
 export * from "./wallet";
+export * from "./address";

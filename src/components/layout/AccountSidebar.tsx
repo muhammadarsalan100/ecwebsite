@@ -78,28 +78,28 @@ export function AccountSidebar() {
         : "";
 
     return (
-        <aside className="w-full md:w-[280px] md:min-w-[280px] bg-[#0092FF] text-white rounded-[24px] md:rounded-[32px] flex-shrink-0 md:min-h-[600px] flex flex-col py-6 md:py-8 px-5 md:px-6 shadow-xl shadow-blue-500/10">
+        <aside className="w-full md:w-[280px] md:min-w-[280px] bg-[#0092FF] text-white rounded-[24px] md:rounded-[32px] flex-shrink-0 flex flex-col py-5 md:py-8 px-4 md:px-6 shadow-xl shadow-blue-500/10">
             {/* Profile Section */}
-            <div className="flex items-center gap-4 mb-10">
-                <Avatar className="w-20 h-20 border-2 border-white/20 shadow-inner">
+            <div className="flex items-center gap-4 mb-6 md:mb-10">
+                <Avatar className="w-16 h-16 md:w-20 md:h-20 border-2 border-white/20 shadow-inner">
                     <AvatarImage
                         src={user?.personImageUrl || user?.imageUrl}
                         alt="Profile"
                         className="object-cover"
                     />
-                    <AvatarFallback className="bg-white/10 text-white font-bold text-2xl uppercase">
+                    <AvatarFallback className="bg-white/10 text-white font-bold text-xl md:text-2xl uppercase">
                         {initials}
                     </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
-                    <h3 className="font-bold text-lg text-white truncate" style={{ fontFamily: "var(--font-poppins)" }}>
+                    <h3 className="font-bold text-base md:text-lg text-white truncate" style={{ fontFamily: "var(--font-poppins)" }}>
                         {displayName}
                     </h3>
                 </div>
             </div>
 
             {/* Navigation */}
-            <nav className="flex flex-col gap-1.5 flex-1">
+            <nav className="flex flex-col gap-1 md:gap-1.5 flex-1">
                 {sidebarItems.map((item) => {
                     const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
                     const Icon = item.icon;

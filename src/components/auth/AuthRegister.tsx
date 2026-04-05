@@ -65,9 +65,9 @@ export function AuthRegister({ onSignIn, onBack, onSuccess }: AuthRegisterProps)
             </div>
 
             <div className='space-y-1'>
-                <h1 className='text-[32px] font-bold tracking-tight text-[#1A1A1A]' style={{ fontFamily: 'var(--font-poppins)' }}>Create Account</h1>
+                <h1 className='text-2xl sm:text-[32px] font-bold tracking-tight text-[#1A1A1A]' style={{ fontFamily: 'var(--font-poppins)' }}>Create Account</h1>
                 <p className='text-[13px] text-[#737373] leading-relaxed max-w-[340px]'>
-                    Enter your email id for the verification process, We will send 4 digit code to your email
+                    Enter your email ID for the verification process. We will send a 4-digit code to your email.
                 </p>
             </div>
 

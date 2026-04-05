@@ -75,8 +75,8 @@ export function TopSellingProducts({ initialProducts = [] }: TopSellingProductsP
     return (
       <section className='w-full px-4 py-12 md:px-8 lg:px-12 border-t border-gray-200'>
         <div className='mx-auto max-w-7xl'>
-          <div className="h-8 w-64 bg-gray-100 animate-pulse rounded-lg mb-10" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="h-8 w-48 sm:w-64 bg-gray-100 animate-pulse rounded-lg mb-10" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="space-y-4">
                 <div className="aspect-[4/5] bg-gray-100 animate-pulse rounded-3xl" />

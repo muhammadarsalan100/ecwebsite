@@ -11,7 +11,7 @@ export interface TransactionData {
     transactionId: string;
 }
 
-export type TopUpPurpose = "agent" | "branch" | "go_agent";
+export type TopUpPurpose = "mobile_money" | "bank_account";
 
 export interface CardData {
     id: number;

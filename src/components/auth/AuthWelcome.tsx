@@ -26,12 +26,11 @@ export function AuthWelcome({ onContinue }: AuthWelcomeProps) {
 
     // Initial pre-selection logic for UAE (Primary) or Pakistan (Fallback)
     useEffect(() => {
-        if (isAuthLoading) return; // Wait for authentication initialization (guest/user)
+        if (isAuthLoading) return;
 
         const selectDefaultCountry = () => {
-            if (selectedCountry) return; // Don't override existing selection
+            if (selectedCountry) return;
 
-            // Priority 1: UAE
             const uae = countries.find(c =>
                 c.name.toLowerCase() === "uae" ||
                 c.shortCode.toUpperCase() === "AE" ||
@@ -39,7 +38,6 @@ export function AuthWelcome({ onContinue }: AuthWelcomeProps) {
                 c.name.toLowerCase().includes("united arab emirates")
             );
 
-            // Priority 2: Pakistan
             const pk = countries.find(c =>
                 c.name.toLowerCase() === "pakistan" ||
                 c.shortCode.toUpperCase() === "PK"
@@ -48,7 +46,6 @@ export function AuthWelcome({ onContinue }: AuthWelcomeProps) {
             const defaultCountry = uae || pk || countries[0];
 
             if (defaultCountry) {
-                // @ts-ignore - Handle type mismatch between wallet Country and store Country
                 setSelectedCountry(defaultCountry);
             }
         };
@@ -61,129 +58,102 @@ export function AuthWelcome({ onContinue }: AuthWelcomeProps) {
     }, [isAuthLoading, countries, selectedCountry, setSelectedCountry, fetchCountries]);
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            {/* Backdrop */}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-8">
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                className="absolute inset-0 bg-black/60 backdrop-blur-md"
             />
 
-            {/* Modal Content */}
             <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                initial={{ opacity: 0, scale: 0.98, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                className='relative w-full max-w-md h-[85vh] sm:h-[90vh] max-h-[750px] flex flex-col bg-white rounded-2xl sm:rounded-[32px] overflow-hidden shadow-2xl'
+                className='relative w-full max-w-[440px] flex flex-col bg-white rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.2)]'
             >
-                {/* Header */}
-                <div className="py-6 border-b border-gray-100 mb-2">
-                    <h1 className="text-center text-xl font-bold text-[#1A1A1A]">Country Region</h1>
+                <div className="pt-8 pb-4 text-center">
+                    <span className="text-[10px] font-bold text-[#0092FF] uppercase tracking-[0.3em] mb-2 block">Preferences</span>
+                    <h1 className="text-xl font-bold text-[#1A1A1A]">Shopping Experience</h1>
                 </div>
 
-                <div className="flex-grow px-8 overflow-y-auto scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                    <style jsx global>{`
-                        .scrollbar-hide::-webkit-scrollbar {
-                            display: none;
-                        }
-                    `}</style>
+                <div className="px-8 pb-8 overflow-y-auto max-h-[70vh] scrollbar-hide">
+                    <style jsx global>{`.scrollbar-hide::-webkit-scrollbar { display: none; }`}</style>
 
-                    {/* World Map Section */}
-                    <div className="py-8 flex flex-col items-center">
+                    <div className="py-6 flex flex-col items-center">
                         <motion.div
-                            initial={{ scale: 0.8, opacity: 0 }}
+                            initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            transition={{ duration: 0.5 }}
-                            className="relative w-full aspect-[2/1] max-w-[320px] mb-8"
+                            className="relative w-full aspect-[2/1] max-w-[280px] mb-6 opacity-80"
                         >
-                            <Image
-                                src={worldMap}
-                                alt="World Map"
-                                fill
-                                className="object-contain"
-                            />
+                            <Image src={worldMap} alt="World Map" fill className="object-contain" priority />
                         </motion.div>
-                        <motion.h2
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                            className="text-[26px] font-bold text-[#1A1A1A] tracking-tight text-center"
-                        >
+                        <h2 className="text-lg font-bold text-[#1A1A1A] text-center">
                             Welcome to Mega Mart
-                        </motion.h2>
-                        <p className="text-[#8A8A8A] text-sm font-medium mt-2 text-center">
-                            Set your preferences to start exploring
+                        </h2>
+                        <p className="text-[#8E8E93] text-[13px] font-medium mt-1.5 text-center">
+                            Select your region to view local products and pricing.
                         </p>
                     </div>
 
-                    {/* Selection Fields */}
-                    <div className="space-y-4 mt-6">
-                        {/* Country/Region */}
+                    <div className="space-y-3">
+                        {/* Shopping Place Selection */}
                         <div
                             onClick={() => setIsModalOpen(true)}
-                            className="group cursor-pointer p-5 bg-gray-50 hover:bg-white rounded-2xl border border-transparent hover:border-[#0092FF] transition-all duration-300 hover:shadow-md"
+                            className="group cursor-pointer p-4 bg-white hover:bg-[#F9FAFB] rounded-2xl border border-gray-100 hover:border-[#0092FF] transition-all duration-300 active:scale-[0.99]"
                         >
-                            <p className="text-[12px] text-[#A6A6A6] font-bold mb-2 uppercase tracking-widest">Country/Region</p>
+                            <p className="text-[10px] text-[#A6A6A6] font-bold mb-2 uppercase tracking-widest">Shopping Place</p>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     {selectedCountry ? (
                                         <>
-                                            <div className="relative w-8 h-8 rounded-full overflow-hidden shadow-sm">
-                                                <Image
-                                                    src={selectedCountry.flagUrl}
-                                                    alt={selectedCountry.name}
-                                                    fill
-                                                    className="object-cover"
-                                                    unoptimized
-                                                />
+                                            <div className="relative w-7 h-7 rounded-full overflow-hidden border border-gray-100">
+                                                <Image src={selectedCountry.flagUrl} alt={selectedCountry.name} fill className="object-cover" unoptimized />
                                             </div>
-                                            <span className="text-base font-bold text-[#1A1A1A]">{selectedCountry.name}</span>
+                                            <span className="text-[15px] font-bold text-[#1A1A1A]">{selectedCountry.name}</span>
                                         </>
                                     ) : (
-                                        <>
-                                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                                <Globe className="w-4 h-4 text-gray-400" />
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center">
+                                                <Globe className="w-3.5 h-3.5 text-gray-400" />
                                             </div>
-                                            <span className="text-base font-bold text-[#A6A6A6]">Select Country</span>
-                                        </>
+                                            <span className="text-[15px] font-bold text-[#A6A6A6]">Select Region</span>
+                                        </div>
                                     )}
                                 </div>
-                                <ChevronRight className="w-5 h-5 text-[#8A8A8A] group-hover:text-[#0092FF] transition-all group-hover:translate-x-1" />
+                                <ChevronRight className="w-4 h-4 text-[#C7C7CC] group-hover:text-[#0092FF] transition-all" />
                             </div>
                         </div>
 
-                        {/* Language */}
-                        <div className="group cursor-pointer p-5 bg-gray-50 hover:bg-white rounded-2xl border border-transparent hover:border-[#0092FF] transition-all duration-300 hover:shadow-md">
-                            <p className="text-[12px] text-[#A6A6A6] font-bold mb-2 uppercase tracking-widest">Language</p>
+                        {/* Language Selection */}
+                        <div className="group cursor-pointer p-4 bg-white hover:bg-[#F9FAFB] rounded-2xl border border-gray-100 hover:border-[#0092FF] transition-all duration-300 active:scale-[0.99]">
+                            <p className="text-[10px] text-[#A6A6A6] font-bold mb-2 uppercase tracking-widest">Language</p>
                             <div className="flex items-center justify-between">
-                                <span className={`text-base font-bold ${selectedLanguage ? 'text-[#1A1A1A]' : 'text-[#A6A6A6]'}`}>
+                                <span className={`text-[15px] font-bold ${selectedLanguage ? 'text-[#1A1A1A]' : 'text-[#A6A6A6]'}`}>
                                     {selectedLanguage || "Select Language"}
                                 </span>
-                                <ChevronRight className="w-5 h-5 text-[#8A8A8A] group-hover:text-[#0092FF] transition-all group-hover:translate-x-1" />
+                                <ChevronRight className="w-4 h-4 text-[#C7C7CC] group-hover:text-[#0092FF] transition-all" />
                             </div>
                         </div>
 
-                        {/* Currency */}
-                        <div className="group cursor-pointer p-5 bg-gray-50 hover:bg-white rounded-2xl border border-transparent hover:border-[#0092FF] transition-all duration-300 hover:shadow-md">
-                            <p className="text-[12px] text-[#A6A6A6] font-bold mb-2 uppercase tracking-widest">Currency</p>
+                        {/* Currency Selection */}
+                        <div className="group cursor-pointer p-4 bg-white hover:bg-[#F9FAFB] rounded-2xl border border-gray-100 hover:border-[#0092FF] transition-all duration-300 active:scale-[0.99]">
+                            <p className="text-[10px] text-[#A6A6A6] font-bold mb-2 uppercase tracking-widest">Currency</p>
                             <div className="flex items-center justify-between">
-                                <span className={`text-base font-bold ${selectedCurrency ? 'text-[#1A1A1A]' : 'text-[#A6A6A6]'}`}>
+                                <span className={`text-[15px] font-bold ${selectedCurrency ? 'text-[#1A1A1A]' : 'text-[#A6A6A6]'}`}>
                                     {selectedCurrency || "Select Currency"}
                                 </span>
-                                <ChevronRight className="w-5 h-5 text-[#8A8A8A] group-hover:text-[#0092FF] transition-all group-hover:translate-x-1" />
+                                <ChevronRight className="w-4 h-4 text-[#C7C7CC] group-hover:text-[#0092FF] transition-all" />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Bottom Button */}
-                <div className="p-8 pb-10 bg-white">
+                <div className="p-8 pt-2">
                     <Button
                         onClick={onContinue}
                         disabled={!selectedCountry}
-                        className="w-full h-[62px] text-lg font-bold bg-[#0092FF] hover:bg-[#0081E0] text-white rounded-2xl shadow-xl shadow-blue-500/20 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-                        style={{ fontFamily: 'var(--font-poppins)' }}
+                        className="w-full h-14 text-sm font-bold bg-[#0092FF] hover:bg-[#0081E0] text-white rounded-2xl shadow-xl shadow-blue-500/10 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] disabled:opacity-40"
                     >
-                        Go Shopping
+                        Enter Marketplace
                     </Button>
                 </div>
             </motion.div>
@@ -191,7 +161,7 @@ export function AuthWelcome({ onContinue }: AuthWelcomeProps) {
             <CountrySelectModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onSelect={setSelectedCountry as any}
+                onSelect={setSelectedCountry}
                 selectedCountry={selectedCountry?.name}
             />
         </div>

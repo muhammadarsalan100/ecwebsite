@@ -196,7 +196,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                                 if (retryResponse.ok) {
                                     resolve(data as T);
                                 } else {
-                                    reject(new Error(`${extractErrorMessage(data, retryResponse.status)} (${endpoint})`));
+                                    reject(new Error(extractErrorMessage(data, retryResponse.status)));
                                 }
                             } catch (e) {
                                 reject(e);
@@ -276,7 +276,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
                                 if (retryResponse.ok) {
                                     resolve(data as T);
                                 } else {
-                                    reject(new Error(`${extractErrorMessage(data, retryResponse.status)} (${endpoint})`));
+                                    reject(new Error(extractErrorMessage(data, retryResponse.status)));
                                 }
                             } catch (e) {
                                 reject(e);
@@ -293,7 +293,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
             response.headers.get("x-secure-token");
 
         if (!response.ok) {
-            throw new Error(`${extractErrorMessage(data, response.status)} (${endpoint})`);
+            throw new Error(extractErrorMessage(data, response.status));
         }
 
         // Return data. Only attach _authToken if data is a non-array object.

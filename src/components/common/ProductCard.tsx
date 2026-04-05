@@ -148,7 +148,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
     return (
         <motion.div
             className={cn(
-                "group cursor-pointer bg-white rounded-[2.5rem] overflow-hidden border border-[#0092FF]/5 shadow-sm hover:shadow-[0_20px_50px_rgba(0,146,255,0.12)] transition-all duration-500 flex flex-col h-full w-full relative",
+                "group cursor-pointer bg-white rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden border border-[#0092FF]/5 shadow-sm hover:shadow-[0_20px_50px_rgba(0,146,255,0.12)] transition-all duration-500 flex flex-col h-full w-full relative",
                 className
             )}
             variants={itemVariants}
@@ -156,12 +156,12 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
         >
             <Link href={`/product/${product.id}`} className="block flex-1 flex flex-col">
                 {/* Image Container with Floating Action Layer */}
-                <div className="relative aspect-[1/1] m-3 overflow-hidden rounded-[2rem] bg-gray-50/50 group/img">
+                <div className="relative aspect-[1/1] m-2 sm:m-3 overflow-hidden rounded-[1.2rem] sm:rounded-[2rem] bg-gray-50/50 group/img">
                     <Image
                         src={product.image || "/p-1.jpg"}
                         alt={product.name}
                         fill
-                        className="object-contain p-6 group-hover:scale-105 transition-transform duration-700 ease-out"
+                        className="object-contain p-3 sm:p-6 group-hover:scale-105 transition-transform duration-700 ease-out"
                         sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     />
 
@@ -208,7 +208,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
                 </div>
 
                 {/* Highly Refined Content Section */}
-                <div className="px-6 pb-6 pt-2 flex flex-col flex-1">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-1 sm:pt-2 flex flex-col flex-1">
                     {/* Category/Brand Badge */}
                     <div className="mb-3">
                         <span className="inline-block text-[10px] font-bold uppercase tracking-[0.2em] text-[#0092FF]/60 bg-[#0092FF]/5 px-2.5 py-1 rounded-lg">
@@ -217,7 +217,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
                     </div>
 
                     {/* Title with improved leading */}
-                    <h3 className="text-[16px] leading-[1.4] font-bold text-gray-900 mb-3 group-hover:text-[#0092FF] transition-colors line-clamp-2 min-h-[44px]">
+                    <h3 className="text-sm sm:text-[16px] leading-[1.4] font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-[#0092FF] transition-colors line-clamp-2 min-h-[38px] sm:min-h-[44px]">
                         {product.name}
                     </h3>
 
@@ -228,7 +228,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
                                 <Star
                                     key={i}
                                     className={cn(
-                                        "w-3.5 h-3.5",
+                                        "w-2.5 h-2.5 sm:w-3.5 sm:h-3.5",
                                         i < Math.floor(product.rating)
                                             ? "fill-orange-400 text-orange-400"
                                             : "fill-gray-100 text-gray-200"
@@ -236,7 +236,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
                                 />
                             ))}
                         </div>
-                        <span className="text-[12px] text-gray-400 font-semibold tracking-tight">
+                        <span className="text-[10px] sm:text-[12px] text-gray-400 font-semibold tracking-tight">
                             {Number(product.reviews) > 0 ? `${product.rating} (${product.reviews})` : "New Arrival"}
                         </span>
                     </div>
@@ -250,12 +250,12 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
                                 </span>
                             )}
 
-                            <div className="flex items-baseline gap-1 group/price">
-                                <span className="text-sm font-extrabold text-[#0092FF]">{product.currencyCode || "AED"}</span>
-                                <span className="text-2xl font-black text-gray-900 tracking-tighter">
+                            <div className="flex items-baseline gap-0.5 sm:gap-1 group/price">
+                                <span className="text-[10px] sm:text-sm font-extrabold text-[#0092FF]">{product.currencyCode || "AED"}</span>
+                                <span className="text-lg sm:text-2xl font-black text-gray-900 tracking-tighter">
                                     {Math.floor(product.price)}
                                 </span>
-                                <span className="text-sm font-bold text-gray-600">
+                                <span className="text-[10px] sm:text-sm font-bold text-gray-600">
                                     .{(product.price % 1).toFixed(2).split('.')[1]}
                                 </span>
                             </div>
@@ -266,7 +266,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
                             onClick={handleAddToCart}
                             disabled={isAddingToCart}
                             className={cn(
-                                "group/btn relative w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 overflow-hidden",
+                                "group/btn relative w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-500 overflow-hidden",
                                 isAddingToCart
                                     ? "bg-[#0092FF] text-white"
                                     : "bg-gray-950 text-white hover:bg-[#0092FF] shadow-lg shadow-black/10 hover:shadow-blue-500/30"

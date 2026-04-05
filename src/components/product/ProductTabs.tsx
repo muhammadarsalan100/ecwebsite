@@ -39,7 +39,7 @@ export function ProductTabs({
     return (
         <div className="w-full">
             <div className="border-b border-gray-200 dark:border-gray-800">
-                <div className="flex gap-8 overflow-x-auto pb-4">
+                <div className="flex gap-4 sm:gap-8 overflow-x-auto pb-4 custom-scrollbar">
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}

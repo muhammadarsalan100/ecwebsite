@@ -30,6 +30,9 @@ export const API_ROUTES = {
     UPDATE_BASE_PROFILE: "/api/v1.0/user/update-base-profile",
     CART: "/api/v1.0/cart",
     CART_ITEMS: "/api/v1.0/cart/items",
+    WALLET: "/api/v1.0/wallet",
+    WALLET_HISTORY: "/api/v1.0/wallet/history",
+    WALLET_TOPUP_REQUEST: "/api/v1.0/wallet/topup-request",
 
     // Config
     COUNTRIES: "/api/v1.0/country",
@@ -45,6 +48,7 @@ export const API_ROUTES = {
     // User
     WISHLIST: "/api/v1.0/user/customer/wishlist",
     TOP_VENDORS: "/api/v1.0/user/vendor/top-vendors",
+    CUSTOMER_ADDRESS: "/api/v1.0/customer/address",
 
     // Vendor
     VENDOR_INIT: "/api/v1.0/vendor/registration/init-registration",

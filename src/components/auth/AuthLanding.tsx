@@ -17,7 +17,7 @@ export function AuthLanding({ onSignIn, onCreateAccount, onSkip, onBecomeSeller 
             {/* Header */}
             <div className='space-y-6'>
                 <h1
-                    className='text-[28px] font-bold tracking-tight text-[#1A1A1A]'
+                    className='text-2xl sm:text-[28px] font-bold tracking-tight text-[#1A1A1A]'
                     style={{ fontFamily: 'var(--font-poppins)' }}
                 >
                     Sign in to your Account

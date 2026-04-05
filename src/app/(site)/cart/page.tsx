@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { authService } from "@/services/authService";
 import { productService } from "@/services/productService";
 import { useConfigStore } from "@/lib/store/configStore";
+import { useAuth } from "@/lib/auth-context";
 
 // Sub-components
 import { EmptyCart } from "@/components/cart/EmptyCart";
@@ -24,12 +25,14 @@ function CartPage() {
     const currencySymbol = selectedCurrency.includes("USD") ? "$" : "";
 
     // Dynamic state for fetching
+    const { addresses, isLoading: isAuthLoading } = useAuth();
     const [profile, setProfile] = useState<any>(null);
     const [isLoadingProfile, setIsLoadingProfile] = useState(true);
     const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
     const [isLoadingProducts, setIsLoadingProducts] = useState(true);
-    const [selectedAddress, setSelectedAddress] = useState(0);
+    const [selectedAddressIndex, setSelectedAddressIndex] = useState(0);
     const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+    const [selectedAddressData, setSelectedAddressData] = useState<any>(null);
 
     // Hardcoded to 0 as per user request if not available via API
     const discount = 0;
@@ -91,7 +94,8 @@ function CartPage() {
     }, [selectedCountry, profile?.preferredCountryId]);
 
     const handleAddressSuccess = () => {
-        fetchProfile();
+        setIsAddressModalOpen(false);
+        setSelectedAddressData(null);
     };
 
     // Derived addresses from profile
@@ -140,11 +144,18 @@ function CartPage() {
                     {/* Right Column: Address and Summary */}
                     <div className="w-full lg:w-[400px] space-y-6">
                         <AddressSelector
-                            isLoading={isLoadingProfile}
-                            addresses={userAddresses}
-                            selectedAddress={selectedAddress}
-                            onSelectAddress={setSelectedAddress}
-                            onAddNew={() => setIsAddressModalOpen(true)}
+                            isLoading={isAuthLoading || isLoadingProfile}
+                            addresses={addresses}
+                            selectedAddress={selectedAddressIndex}
+                            onSelectAddress={setSelectedAddressIndex}
+                            onAddNew={() => {
+                                setSelectedAddressData(null);
+                                setIsAddressModalOpen(true);
+                            }}
+                            onEdit={(addr) => {
+                                setSelectedAddressData(addr);
+                                setIsAddressModalOpen(true);
+                            }}
                         />
 
                         <PaymentDetails
@@ -165,9 +176,12 @@ function CartPage() {
 
             <AddressModal
                 isOpen={isAddressModalOpen}
-                onClose={() => setIsAddressModalOpen(false)}
+                onClose={() => {
+                    setIsAddressModalOpen(false);
+                    setSelectedAddressData(null);
+                }}
                 onSuccess={handleAddressSuccess}
-                initialData={profile}
+                initialData={selectedAddressData || profile}
             />
         </div>
     );

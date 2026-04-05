@@ -50,7 +50,7 @@ export function AuthLogin({ onRegister, onBack, onLogin }: AuthLoginProps) {
 
             {/* Header */}
             <div className=' space-y-2'>
-                <h1 className='text-3xl font-bold tracking-tight'>Sign in</h1>
+                <h1 className='text-2xl sm:text-3xl font-bold tracking-tight'>Sign in</h1>
                 <p className='text-sm text-muted-foreground'>
                     Don’t have an account?{" "}
                     <button
@@ -66,14 +66,14 @@ export function AuthLogin({ onRegister, onBack, onLogin }: AuthLoginProps) {
             <form onSubmit={handleSubmit} className='space-y-7'>
                 <div className="space-y-3">
                     <Input
-                        type='email'
+                        type='text'
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) => {
                             setEmail(e.target.value);
                             if (error) setError(null);
                         }}
-                        className={`h-12 text-base border-zinc-300 focus-visible:ring-blue-500 ${error ? "border-red-500" : ""}`}
+                        className={`h-12 text-sm sm:text-base border-zinc-300 focus-visible:ring-blue-500 ${error ? "border-red-500" : ""}`}
                     />
                     {error && (
                         <p className="text-sm font-medium text-red-500">{error}</p>
@@ -83,7 +83,7 @@ export function AuthLogin({ onRegister, onBack, onLogin }: AuthLoginProps) {
                 <Button
                     type="submit"
                     disabled={isLoading}
-                    className='w-full h-12 text-base font-semibold bg-blue-500 hover:bg-blue-600'
+                    className='w-full h-12 text-sm sm:text-base font-semibold bg-blue-500 hover:bg-blue-600'
                 >
                     {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
@@ -102,7 +102,7 @@ export function AuthLogin({ onRegister, onBack, onLogin }: AuthLoginProps) {
                     <Button
                         type="button"
                         variant='outline'
-                        className='w-full h-12 flex items-center justify-center gap-3 rounded-lg'
+                        className='w-full h-12 flex items-center justify-center gap-3 rounded-lg text-sm sm:text-base'
                     >
                         <Image
                             src='https://authjs.dev/img/providers/google.svg'
@@ -116,7 +116,7 @@ export function AuthLogin({ onRegister, onBack, onLogin }: AuthLoginProps) {
                     <Button
                         type="button"
                         variant='outline'
-                        className='w-full h-12 flex items-center justify-center gap-3 rounded-lg'
+                        className='w-full h-12 flex items-center justify-center gap-3 rounded-lg text-sm sm:text-base'
                     >
                         <Image
                             src='https://authjs.dev/img/providers/facebook.svg'

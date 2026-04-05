@@ -30,13 +30,13 @@ export function AddCardModal({ isOpen, onClose }: AddCardModalProps) {
                             stiffness: 300,
                             mass: 0.8
                         }}
-                        className="bg-white rounded-[44px] shadow-2xl w-full max-w-[740px] overflow-hidden"
+                        className="bg-white rounded-[24px] sm:rounded-[44px] shadow-2xl w-full max-w-[740px] overflow-hidden"
                         style={{ fontFamily: "var(--font-poppins)" }}
                     >
-                        <div className="p-12 md:p-14">
+                        <div className="p-6 xs:p-8 sm:p-12 md:p-14">
                             {/* Header */}
                             <div className="text-center mb-12">
-                                <h2 className="text-[32px] font-bold text-gray-900 tracking-tight">
+                                <h2 className="text-2xl sm:text-[32px] font-bold text-gray-900 tracking-tight">
                                     Add Your Payment Method
                                 </h2>
                             </div>

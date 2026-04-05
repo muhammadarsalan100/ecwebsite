@@ -5,7 +5,7 @@ import Image from "next/image";
 import { User as UserIcon, ShoppingCart, History, Store, Award, Globe, ArrowRight, X, Minus, Plus, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LanguageSelector, Language } from "../LanguageSelector";
-import { User } from "@/lib/auth-context";
+import { User, WalletData } from "@/lib/auth-context";
 import { useCartStore, useCartSubtotal } from "@/lib/store/cartStore";
 import { useConfigStore } from "@/lib/store/configStore";
 import { useEffect } from "react";
@@ -30,6 +30,7 @@ interface UserActionsProps {
     authRef: React.RefObject<HTMLDivElement | null>;
     walletRef: React.RefObject<HTMLDivElement | null>;
     cartRef: React.RefObject<HTMLDivElement | null>;
+    wallet: WalletData | null;
 }
 
 export function UserActions({
@@ -51,6 +52,7 @@ export function UserActions({
     authRef,
     walletRef,
     cartRef,
+    wallet,
 }: UserActionsProps) {
     const cartItems = useCartStore((state) => state.items);
     const fetchCart = useCartStore((state) => state.fetchCart);
@@ -239,7 +241,9 @@ export function UserActions({
                 >
                     <div className="flex flex-col items-center gap-1">
                         <Image src="/Wallet.png" alt="Wallet" width={24} height={24} className="w-6 h-6 object-contain" />
-                        <span className="text-xs font-bold">$0.00</span>
+                        <span className="text-xs font-bold">
+                            {isAuthenticated && wallet ? `${wallet.currency.shortCode} ${wallet.currentBalance.toLocaleString()}` : "$0.00"}
+                        </span>
                     </div>
                 </button>
 
@@ -266,7 +270,7 @@ export function UserActions({
                                         </p>
                                         <div className="flex flex-col gap-2">
                                             <h2 className="text-2xl font-bold tracking-tight">
-                                                {isAuthenticated ? "$ 201,0231" : (
+                                                {isAuthenticated && wallet ? `${wallet.currency.shortCode} ${wallet.currentBalance.toLocaleString()}` : (
                                                     <span className="opacity-30 tracking-tighter">$ 0.00</span>
                                                 )}
                                             </h2>

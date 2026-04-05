@@ -18,9 +18,8 @@ function WalletLayout({
 
     // Map of paths to breadcrumb titles
     const breadcrumbMap: Record<string, string> = {
-        'top-up-request': 'Digital Top up',
-        'request': 'Top Up Request',
-        'confirm': 'Digital Top up'
+        'top-up-request': 'Digital Wallet',
+        'confirm': 'Digital Wallet'
     };
 
     // Get the last segment

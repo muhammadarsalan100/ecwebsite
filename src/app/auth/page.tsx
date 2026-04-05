@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth-context";
 import banner from "../../../public/banner.png";
@@ -11,6 +11,7 @@ import { AuthOTP } from "@/components/auth/AuthOTP";
 import { AuthWelcome } from "@/components/auth/AuthWelcome";
 import { useRouter } from "next/navigation";
 import { AuthView } from "@/types/auth";
+import { Loader } from "@/components/ui/loader";
 
 export default function LoginPage() {
   const [view, setView] = useState<AuthView>("LANDING");
@@ -19,8 +20,15 @@ export default function LoginPage() {
   const [authFullName, setAuthFullName] = useState("");
   const [requestCode, setRequestCode] = useState<string | undefined>(undefined);
   const [loginSessionId, setLoginSessionId] = useState<string | undefined>(undefined);
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+
+  // Redirect if already authenticated, but NOT if we are in the WELCOME selection view
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && view !== "WELCOME") {
+      router.replace("/");
+    }
+  }, [isAuthenticated, isLoading, router, view]);
 
   const handleStartOTP = (email: string, fullName: string = "", code?: string, sessionId?: string) => {
     setAuthEmail(email);
@@ -101,6 +109,10 @@ export default function LoginPage() {
         );
     }
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className='flex h-screen w-full'>

@@ -12,9 +12,9 @@ interface CountryNavBarProps {
 
 export function CountryNavBar({ countries, activeCountryId, onSelect }: CountryNavBarProps) {
   return (
-    <div className='flex items-center gap-4'>
-      <span className="text-[13px] font-bold text-gray-800 whitespace-nowrap">Region</span>
-      <div className="flex items-center gap-4 overflow-x-auto scrollbar-hide p-2">
+    <div className='flex items-center gap-3 sm:gap-4'>
+      <span className="text-[11px] sm:text-[13px] font-bold text-gray-800 whitespace-nowrap uppercase tracking-wider opacity-60">Shopping Places</span>
+      <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto scrollbar-hide p-2 flex-1">
         {countries.map((country) => {
           const isActive = String(activeCountryId) === String(country.id);
           return (
