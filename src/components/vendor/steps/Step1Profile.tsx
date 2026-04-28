@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Lock } from "lucide-react";
 import { VendorStepIndicator } from "@/components/vendor/VendorStepIndicator";
 import { vendorStep1Schema } from "@/schemas/vendor.schema";
 
@@ -109,14 +110,20 @@ export function Step1Profile({ data, onChange, onNext, onBack }: Step1ProfilePro
                     <label className={labelClass} style={{ fontFamily: "var(--font-poppins)" }}>
                         Email <span className="text-red-400">*</span>
                     </label>
-                    <input
-                        type="email"
-                        value={data.email}
-                        onChange={handleChange("email")}
-                        placeholder="Enter Email"
-                        className={errors.email ? inputError : inputNormal}
-                        style={{ fontFamily: "var(--font-poppins)" }}
-                    />
+                    <div className="relative">
+                        <input
+                            type="email"
+                            value={data.email}
+                            placeholder="Enter Email"
+                            className={`${errors.email ? inputError : inputNormal} bg-gray-50/80 cursor-not-allowed opacity-70 !border-gray-200 pr-10`}
+                            style={{ fontFamily: "var(--font-poppins)" }}
+                            readOnly
+                            disabled
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <Lock className="w-3.5 h-3.5" />
+                        </div>
+                    </div>
                     {errors.email && <p className={errorClass} style={{ fontFamily: "var(--font-poppins)" }}>{errors.email}</p>}
                 </div>
 

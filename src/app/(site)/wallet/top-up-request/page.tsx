@@ -1,39 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { ChevronDown, Check, Smartphone, Landmark } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
+import { ChevronDown, Check, Smartphone, Landmark, Loader2, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { TopUpDetailsForm } from "@/components/wallet/TopUpDetailsForm";
-import { CardData, TopUpPurpose } from "@/types";
+import { TopUpPurpose } from "@/types";
+import { authService } from "@/services/authService";
 
 // Constants
-const CARDS: CardData[] = [
-    {
-        id: 1,
-        type: "Debit Card",
-        balance: "$450.73",
-        avg: "AVG",
-        selected: true,
-    },
-    {
-        id: 2,
-        type: "Debit Card",
-        balance: "$450.73",
-        avg: "AVG",
-        selected: false,
-    },
-    {
-        id: 3,
-        type: "Debit Card",
-        balance: "$450.73",
-        avg: "AVG",
-        selected: false,
-    },
-];
-
-const QUICK_AMOUNTS = ["1000", "900", "800", "700", "600", "800", "700", "600"];
+const QUICK_AMOUNTS = ["1000", "900", "800", "700", "600", "1500", "2000", "500"];
 const EXCHANGE_RATE = 300 / 450.73; // Mock conversion rate
 
 const PURPOSES = [
@@ -46,6 +23,30 @@ export default function TopUpRequestPage() {
     const [selectedAmount, setSelectedAmount] = useState("450.73");
     const [selectedPurpose, setSelectedPurpose] = useState<TopUpPurpose | "">("");
     const [showDetails, setShowDetails] = useState(false);
+    const [cards, setCards] = useState<any[]>([]);
+    const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
+    const [isLoadingCards, setIsLoadingCards] = useState(true);
+
+    // Fetch Cards
+    useEffect(() => {
+        const fetchCards = async () => {
+            try {
+                const response = await authService.getSavedCards();
+                if (response?.data) {
+                    setCards(response.data);
+                    if (response.data.length > 0) {
+                        setSelectedCardId(response.data[0].id);
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to fetch cards:", error);
+            } finally {
+                setIsLoadingCards(false);
+            }
+        };
+
+        fetchCards();
+    }, []);
 
     // Derived State
     const convertedAmount = useMemo(() => {
@@ -64,37 +65,98 @@ export default function TopUpRequestPage() {
             {!showDetails ? (
                 <>
                     {/* Cards Slider */}
-                    <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                        {CARDS.map((card, index) => (
-                            <div
-                                key={card.id}
-                                className={`min-w-[280px] h-[160px] rounded-3xl p-6 text-white relative flex flex-col justify-between shrink-0 overflow-hidden shadow-sm ${index === 0 ? "bg-gradient-to-br from-[#40302B] to-[#2A1F1B]" :
-                                    index === 1 ? "bg-gradient-to-br from-[#4A5568] to-[#2D3748]" :
-                                        "bg-gradient-to-br from-[#0092FF] to-[#0070C6]"
-                                    }`}
-                            >
-                                {/* Decorative elements for cards */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
-                                <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-full blur-xl -ml-5 -mb-5 pointer-events-none" />
-
-                                <div className="relative z-10 flex justify-between items-start">
-                                    <span className="text-sm font-bold opacity-80">{card.type}</span>
-                                    {card.selected && (
-                                        <div className="bg-white/20 p-1.5 rounded-full shadow-sm">
-                                            <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="relative z-10 flex items-end justify-between">
-                                    <div>
-                                        <p className="text-[10px] opacity-60 mb-1 font-medium tracking-wide">Available Balance</p>
-                                        <p className="text-3xl font-bold tracking-tight">{card.balance}</p>
+                    <div className="flex gap-4 overflow-x-auto pb-6 scrollbar-hide -mx-1 px-1">
+                        {isLoadingCards ? (
+                            <div className="flex gap-4">
+                                {[1, 2].map((i) => (
+                                    <div key={i} className="min-w-[280px] h-[160px] rounded-3xl bg-gray-100 animate-pulse flex items-center justify-center">
+                                        <Loader2 className="w-6 h-6 animate-spin text-gray-300" />
                                     </div>
-                                    <span className="text-[11px] font-bold opacity-40 uppercase tracking-widest">{card.avg}</span>
-                                </div>
+                                ))}
                             </div>
-                        ))}
+                        ) : cards.length > 0 ? (
+                            cards.map((card, index) => (
+                                <div
+                                    key={card.id}
+                                    onClick={() => setSelectedCardId(card.id)}
+                                    className={`min-w-[280px] h-[168px] rounded-3xl p-6 text-white relative flex flex-col justify-between shrink-0 overflow-hidden cursor-pointer transition-all duration-300 group ${
+                                        selectedCardId === card.id 
+                                            ? "shadow-xl shadow-blue-500/30 scale-[1.02] ring-2 ring-white/50" 
+                                            : "shadow-md hover:shadow-lg hover:translate-y-[-2px] brightness-90 hover:brightness-100"
+                                    } ${
+                                        index % 3 === 0 ? "bg-gradient-to-br from-[#1E1E1E] via-[#2D2D2D] to-[#1A1A1A]" : // Professional Dark
+                                        index % 3 === 1 ? "bg-gradient-to-br from-[#1a2a6c] via-[#b21f1f] to-[#fdbb2d]" : // Aurora Sunset
+                                        "bg-gradient-to-br from-[#00c6ff] to-[#0072ff]" // Clean Blue
+                                    }`}
+                                >
+                                    {/* Glassmorphic Overlays */}
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none group-hover:scale-110 transition-transform duration-700" />
+                                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/20 rounded-full blur-2xl -ml-12 -mb-12 pointer-events-none" />
+                                    <div className="absolute inset-0 bg-white/[0.03] backdrop-blur-[1px] pointer-events-none" />
+
+                                    <div className="relative z-10 flex justify-between items-start">
+                                        <div className="flex flex-col">
+                                            <span className="text-[9px] font-black uppercase tracking-[0.2em] opacity-50 mb-0.5">Platform Card</span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-lg font-bold tracking-tight capitalize">{card.brand}</span>
+                                                {card.brand === "visa" ? (
+                                                    <div className="italic font-black text-sm opacity-90">VISA</div>
+                                                ) : (
+                                                    <div className="flex -space-x-2 opacity-90">
+                                                        <div className="w-4 h-4 rounded-full bg-red-500/80" />
+                                                        <div className="w-4 h-4 rounded-full bg-yellow-500/80" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Metallic Chip */}
+                                        <div className="w-9 h-7 bg-gradient-to-br from-amber-200 via-yellow-400 to-amber-600 rounded-md relative overflow-hidden flex items-center justify-center border border-white/20 shadow-inner">
+                                            <div className="w-full h-full flex flex-col justify-between p-1 opacity-20">
+                                                <div className="h-px w-full bg-black" />
+                                                <div className="h-px w-full bg-black" />
+                                                <div className="h-px w-full bg-black" />
+                                            </div>
+                                            <div className="absolute inset-0 flex">
+                                                <div className="w-px h-full bg-black/20 mx-auto" />
+                                                <div className="w-px h-full bg-black/20 mx-auto" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="relative z-10">
+                                        <div className="flex items-center gap-4 mb-4">
+                                            <p className="text-xl font-bold tracking-[0.25em] font-mono text-shadow-sm">
+                                                <span className="opacity-40">••••</span> <span className="opacity-40">••••</span> <span className="opacity-40">••••</span> {card.last4Digits}
+                                            </p>
+                                        </div>
+                                        
+                                        <div className="flex justify-between items-end">
+                                            <div className="flex flex-col">
+                                                <span className="text-[8px] font-bold uppercase tracking-widest opacity-40">Card Holder</span>
+                                                <span className="text-[11px] font-bold uppercase tracking-wider">M. Arsalan</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                {selectedCardId === card.id ? (
+                                                    <div className="bg-white text-blue-600 p-1 rounded-full shadow-lg scale-110 animate-in zoom-in duration-300">
+                                                        <Check className="w-3 h-3" strokeWidth={4} />
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-5 h-5 rounded-full border border-white/30 flex items-center justify-center">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="min-w-full h-[160px] rounded-3xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400 gap-2">
+                                <p className="text-sm font-medium">No saved cards found</p>
+                                <Button variant="outline" size="sm" className="rounded-xl">Add New Card</Button>
+                            </div>
+                        )}
                     </div>
 
                     {/* Amount & Quick Amount Grid */}

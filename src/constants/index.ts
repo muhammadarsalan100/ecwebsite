@@ -49,6 +49,7 @@ export const API_ROUTES = {
     WISHLIST: "/api/v1.0/user/customer/wishlist",
     TOP_VENDORS: "/api/v1.0/user/vendor/top-vendors",
     CUSTOMER_ADDRESS: "/api/v1.0/customer/address",
+    SAVED_CARDS: "/api/v1.0/user/saved-cards",
 
     // Vendor
     VENDOR_INIT: "/api/v1.0/vendor/registration/init-registration",

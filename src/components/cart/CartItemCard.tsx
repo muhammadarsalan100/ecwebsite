@@ -55,9 +55,7 @@ export const CartItemCard = ({ item, onUpdateQuantity, onRemove, currencySymbol 
 
                 <div className="flex items-end sm:items-center justify-between mt-auto w-full">
                     <div className="flex flex-col">
-                        <span className="text-[10px] sm:text-xs text-gray-400 line-through font-medium">
-                            {currencySymbol}{(item.price * 1.2).toFixed(2)}
-                        </span>
+
                         <span className="text-lg sm:text-xl font-bold text-gray-900">
                             {currencySymbol}{item.price.toFixed(2)}
                         </span>

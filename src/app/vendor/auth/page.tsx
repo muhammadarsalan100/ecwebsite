@@ -1,26 +1,26 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { VendorAuthLanding } from "@/components/auth/VendorAuthLanding";
+import { Suspense } from "react";
 import banner from "../../../../public/banner.png";
 
-export default function VendorAuthPage() {
+function VendorAuthContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const initialError = searchParams.get("error");
 
     const handleContinue = (email: string, initCode: string) => {
-        // Store sensitive data in sessionStorage to avoid exposure in the URL
         if (typeof window !== "undefined") {
             sessionStorage.setItem("vendorEmail", email);
             sessionStorage.setItem("vendorInitCode", initCode);
         }
-        // Navigate with a clean URL
         router.push("/vendor/register");
     };
 
     return (
         <div className="flex h-screen w-full">
-            {/* LEFT IMAGE SECTION */}
             <div className="relative hidden w-1/2 md:flex overflow-hidden">
                 <div className="relative w-full h-full max-w-[700px]">
                     <Image
@@ -33,13 +33,21 @@ export default function VendorAuthPage() {
                 </div>
             </div>
 
-            {/* RIGHT CONTENT SECTION */}
             <div className="flex w-full md:w-1/2 items-center justify-start sm:px-10">
                 <VendorAuthLanding
                     onContinue={handleContinue}
                     onBack={() => router.push("/auth")}
+                    initialError={initialError}
                 />
             </div>
         </div>
+    );
+}
+
+export default function VendorAuthPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <VendorAuthContent />
+        </Suspense>
     );
 }

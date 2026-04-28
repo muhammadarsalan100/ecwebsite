@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, AlertCircle } from "lucide-react";
 
 import { VendorSidebar } from "@/components/vendor/VendorSidebar";
 import { Step1Profile, Step1Data } from "@/components/vendor/steps/Step1Profile";
@@ -179,8 +179,12 @@ export default function VendorRegisterPage() {
                 {/* Right Form Panel */}
                 <div className="flex-1 w-full bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-10 min-h-0 sm:min-h-[600px]">
                     {apiError && (
-                        <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-sm animate-shake">
-                            <span className="font-semibold">Error:</span> {apiError}
+                        <div className="mb-6 p-4 bg-red-50 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-600 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <AlertCircle className="w-5 h-5 shrink-0" />
+                            <div className="flex flex-col">
+                                <span className="text-[10px] font-bold uppercase tracking-wider opacity-70">Registration Error</span>
+                                <p className="text-sm font-medium leading-tight">{apiError}</p>
+                            </div>
                         </div>
                     )}
                     {currentStep === 1 && (

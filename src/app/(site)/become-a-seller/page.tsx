@@ -15,6 +15,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { USER_ROLES } from "@/constants";
 import { cn } from "@/lib/utils";
+import { vendorService } from "@/services";
+import { Loader2 } from "lucide-react";
 
 const STEPS = [
   {
@@ -100,15 +102,45 @@ const FAQS = [
 
 export default function BecomeASellerPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(1);
+  const [isJoining, setIsJoining] = useState(false);
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
 
-  const handleJoin = () => {
+  const handleJoin = async () => {
+    // 1. If already a vendor, go directly to registration details
     if (isAuthenticated && user?.role === USER_ROLES.VENDOR) {
       router.push("/vendor/register");
-    } else {
-      router.push("/vendor/auth");
+      return;
     }
+
+    // 2. If logged in as Customer, attempt to auto-init vendor registration
+    if (isAuthenticated && user?.email) {
+      setIsJoining(true);
+      try {
+        const response = await vendorService.initRegistration(user.email);
+        
+        if (response?.data?.code) {
+          // Success: No account exists, store codes and skip to register
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("vendorEmail", user.email);
+            sessionStorage.setItem("vendorInitCode", response.data.code);
+          }
+          router.push("/vendor/register");
+          return;
+        }
+      } catch (error: any) {
+        console.error("[BecomeASeller] Auto-init failed:", error);
+        // Fallback: If account exists or API fails, go to auth screen and pass the error for display
+        const errorMsg = error.message || "This email ID/ phone # is already in use";
+        router.push(`/vendor/auth?error=${encodeURIComponent(errorMsg)}`);
+        return;
+      } finally {
+        setIsJoining(false);
+      }
+    }
+
+    // 3. Default (Guest): Go to vendor auth screen
+    router.push("/vendor/auth");
   };
 
   return (
@@ -154,9 +186,17 @@ export default function BecomeASellerPage() {
 
           <button 
             onClick={handleJoin}
-            className="mt-12 bg-[#0092FF] hover:bg-[#0081E0] text-white font-bold py-4 px-12 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-95"
+            disabled={isJoining}
+            className="mt-12 bg-[#0092FF] hover:bg-[#0081E0] text-white font-bold py-4 px-12 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-95 disabled:opacity-70 disabled:cursor-wait flex items-center gap-3 mx-auto"
           >
-            Let's Go
+            {isJoining ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                INITIATING...
+              </>
+            ) : (
+              "Let's Go"
+            )}
           </button>
         </div>
       </section>
@@ -216,9 +256,11 @@ export default function BecomeASellerPage() {
               </p>
               <button 
                 onClick={handleJoin}
-                className="bg-[#FFC700] hover:bg-[#E6B400] text-gray-900 font-bold py-3 px-8 rounded-xl transition-all active:scale-95 shadow-lg shadow-yellow-500/20"
+                disabled={isJoining}
+                className="bg-[#FFC700] hover:bg-[#E6B400] text-gray-900 font-bold py-3 px-8 rounded-xl transition-all active:scale-95 shadow-lg shadow-yellow-500/20 disabled:opacity-70 flex items-center gap-2"
               >
-                Become a Seller
+                {isJoining && <Loader2 className="w-4 h-4 animate-spin" />}
+                {isJoining ? "Processing..." : "Become a Seller"}
               </button>
             </div>
             <div className="flex-1 relative w-full h-[300px] md:h-full min-h-[400px]">
@@ -283,8 +325,19 @@ export default function BecomeASellerPage() {
                   Lorem Ipsum is simply dummy text of the printing and typesetting industry.
                 </p>
                 <form className="space-y-4">
-                  <input type="text" placeholder="Full name" className="w-full bg-white border-none p-4 rounded-xl text-sm focus:ring-2 focus:ring-[#0092FF] outline-none" />
-                  <input type="email" placeholder="Email" className="w-full bg-white border-none p-4 rounded-xl text-sm focus:ring-2 focus:ring-[#0092FF] outline-none" />
+                  <input 
+                    type="text" 
+                    placeholder="Full name" 
+                    defaultValue={isAuthenticated ? user?.fullName || "" : ""}
+                    className="w-full bg-white border-none p-4 rounded-xl text-sm focus:ring-2 focus:ring-[#0092FF] outline-none" 
+                  />
+                  <input 
+                    type="email" 
+                    placeholder="Email" 
+                    defaultValue={isAuthenticated ? user?.email || "" : ""}
+                    className="w-full bg-white border-none p-4 rounded-xl text-sm focus:ring-2 focus:ring-[#0092FF] outline-none transition-all disabled:opacity-50"
+                    disabled={isAuthenticated}
+                  />
                   <textarea placeholder="Message" rows={4} className="w-full bg-white border-none p-4 rounded-xl text-sm focus:ring-2 focus:ring-[#0092FF] outline-none resize-none" />
                   <button className="w-full bg-[#0092FF] hover:bg-[#0081E0] text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 group shadow-lg shadow-blue-500/20">
                     SEND MESSAGE

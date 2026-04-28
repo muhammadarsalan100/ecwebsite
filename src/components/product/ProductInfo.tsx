@@ -261,11 +261,7 @@ export function ProductInfo({
                         <span>{isAddingToCart ? "Adding..." : "Add to cart"}</span>
                     </Button>
                     <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-1 px-4 order-1 sm:order-2">
-                        {originalPrice && originalPrice > price && (
-                            <span className="text-sm text-gray-400 line-through font-medium hidden sm:block">
-                                {currencyCode || "AED"} {originalPrice.toFixed(2)}
-                            </span>
-                        )}
+
                         <div className="h-12 px-6 flex items-center justify-center rounded-lg border border-gray-200 text-gray-900 bg-white dark:bg-gray-900 dark:border-gray-800 dark:text-gray-100 min-w-[140px] sm:min-w-[160px] w-full sm:w-auto">
                             <div className="flex items-baseline gap-1">
                                 <span className="text-sm font-bold text-gray-500 dark:text-gray-400">{currencyCode || "AED"}</span>

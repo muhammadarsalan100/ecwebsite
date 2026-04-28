@@ -8,5 +8,6 @@ export { authService } from "./authService";
 export { productService } from "./productService";
 export { vendorService } from "./vendorService";
 export { billingService } from "./billingService";
+export { cartService } from "./cartService";
 export { api } from "./apiClient";
 export type { RequestOptions } from "./apiClient";

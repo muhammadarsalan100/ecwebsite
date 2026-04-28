@@ -99,20 +99,84 @@ All services call `api.get / api.post / api.put / api.patch / api.delete` from `
 ### Adding a new API call
 
 ```typescript
-// src/services/someService.ts
+// src/services/authService.ts
 import { api } from "./apiClient";
 import { API_ROUTES } from "@/constants";
 
-export const someService = {
-    getData: () =>
-        api.get<ApiResponse<DataType>>(API_ROUTES.SOME_ENDPOINT),
+export const authService = {
+    // ... other methods
+    getAddresses: () =>
+        api.get<AddressListResponse>(API_ROUTES.CUSTOMER_ADDRESS),
 
-    postData: (data: SomeType) =>
-        api.post<ApiResponse<DataType>>(API_ROUTES.SOME_ENDPOINT, { data }),
+    createAddress: (payload: CreateAddressPayload) =>
+        api.post<ApiResponse<any>>(API_ROUTES.CUSTOMER_ADDRESS, payload),
+
+    updateAddress: (payload: { data: Address }) =>
+        api.put<ApiResponse<any>>(API_ROUTES.CUSTOMER_ADDRESS, payload),
 };
 ```
 
 > **Rule:** Add the endpoint path to `API_ROUTES` in `src/constants/index.ts` first, then reference it from the service. Never hard-code URLs inline.
+
+---
+
+## 📍 Customer Address Management
+
+The platform supports full CRUD for customer delivery addresses. Addresses are managed globally via `AuthContext` to ensure synchronization across the Navbar, Cart, and Account pages.
+
+### API Endpoints (`API_ROUTES.CUSTOMER_ADDRESS`)
+
+| Method | Purpose | Payload Type |
+|---|---|---|
+| **GET** | Fetch all saved addresses | `AddressListResponse` |
+| **POST** | Create a new address | `CreateAddressPayload` |
+| **PUT** | Update an existing address | `{ data: Address }` |
+
+### Key Payload Structure (Create/Update)
+
+```json
+{
+    "data": {
+        "type": 1, 
+        "label": "Home",
+        "address": "Street / Flat / House",
+        "building": "Al Yasmeen Tower",
+        "roomNo": "905",
+        "countryId": 2,
+        "stateId": 1,
+        "cityId": 1,
+        "mobileNumber": "0097150...",
+        "landmark": "Near BrandsForLess",
+        "pinCode": "010",
+        "default": true
+    }
+}
+```
+
+### Components Involved
+- **`src/components/cart/AddressModal.tsx`**: The main UI for adding and editing addresses. It handles form state, location fetching (countries/states/cities), and submission logic.
+- **`src/components/layout/navbar/LocationSelector.tsx`**: Displays the active address list in the header and provides entry points for creation/editing.
+- **`src/lib/auth-context.tsx`**: Provides `addAddress` and `updateAddress` methods that automatically refresh the global `addresses` state.
+
+---
+
+## 📱 Device Management
+
+### Update Device Key (`API_ROUTES.DEVICE_KEY`)
+
+Used to register a unique identifier for the user's current device (e.g., for push notifications or security).
+
+| Method | Payload Type |
+|---|---|
+| **PUT** | `{ data: { deviceKey: string } }` |
+
+```json
+{
+    "data": {
+        "deviceKey": "asasasa1"
+    }
+}
+```
 
 ---
 
@@ -302,6 +366,21 @@ Both stores use `zustand/middleware`'s `persist` with `createJSONStorage(() => l
 5. **Hook** → Create a hook in `src/hooks/` if the logic is reusable
 6. **Component** → Build in the appropriate feature folder, using CSS variables for styling
 7. **Protection** → Wrap with `<ProtectedRoute>` if the page requires authentication
+
+---
+
+## 🛠️ Future Roadmap & Planned Improvements
+
+To further enhance the application's stability and user experience, the following technical improvements are planned for future implementation:
+
+### 1. API Client Resilience (`apiClient.ts`)
+- **Request Timeouts**: Implement a global 20-30 second timeout for all API requests using `AbortController` to prevent permanent UI hangs during network stalls.
+- **Refresh Deadlock Fix**: Update the `refreshSubscribers` queue to handle failure cases. Currently, if a token refresh fails, queued requests may stay "pending" indefinitely. The fix will ensure all subscribers are notified (rejected) if a refresh cycle fails.
+- **Global Retry Logic**: Add a lightweight retry mechanism (e.g., 2-3 attempts with backoff) for idempotent `GET` requests, especially for critical initialization data like categories and country configurations.
+
+### 2. Data Fetching Stability (`configStore.ts`)
+- **Resilient Category Fetching**: Implement a retry pattern for `fetchCategories` to gracefully recover from transient server errors or large payload transfer timeouts.
+- **Unified Error Boundary**: Standardize how API timeouts and "No Response" scenarios are surfaced to the user, replacing generic "An error occurred" messages with actionable "Retry" prompts.
 
 ---
 

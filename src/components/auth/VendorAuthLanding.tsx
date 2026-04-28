@@ -1,23 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowLeft, Store, Loader2 } from "lucide-react";
+import { ArrowLeft, Store, Loader2, Mail, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { vendorService } from "@/services/vendorService";
 import { z } from "zod";
 import logo from "../../../public/logo.png";
 import { authSchema } from "@/schemas/auth.schema";
+import { useAuth } from "@/lib/auth-context";
+import { cn } from "@/lib/utils";
 
 interface VendorAuthLandingProps {
     onContinue: (email: string, initCode: string) => void;
     onBack: () => void;
+    initialError?: string | null;
 }
 
-export function VendorAuthLanding({ onContinue, onBack }: VendorAuthLandingProps) {
+export function VendorAuthLanding({ onContinue, onBack, initialError }: VendorAuthLandingProps) {
+    const { user, isAuthenticated } = useAuth();
     const [email, setEmail] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(initialError || null);
+
+    // Auto-fill email if user is logged in
+    useEffect(() => {
+        if (isAuthenticated && user?.email) {
+            setEmail(user.email);
+        }
+    }, [isAuthenticated, user]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -118,24 +129,48 @@ export function VendorAuthLanding({ onContinue, onBack }: VendorAuthLandingProps
                     >
                         Email Address
                     </label>
-                    <input
-                        id="vendor-email"
-                        type="text"
-                        autoComplete="email"
-                        value={email}
-                        onChange={(e) => {
-                            setEmail(e.target.value);
-                            if (error) setError(null);
-                        }}
-                        placeholder="e.g. yourstore@email.com"
-                        className="w-full h-[54px] rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0092FF]/40 focus:border-[#0092FF] transition-all"
-                        style={{ fontFamily: "var(--font-poppins)" }}
-                        disabled={isLoading}
-                    />
+                    <div className="relative group">
+                        <input
+                            id="vendor-email"
+                            type="text"
+                            autoComplete="email"
+                            value={email}
+                            onChange={(e) => {
+                                // Allow editing if not authenticated, or if there is an error, 
+                                // or if the user has already diverged from their account email
+                                const isDefaultEmail = isAuthenticated && e.target.value === user?.email;
+                                if (!isAuthenticated || error || !isDefaultEmail) {
+                                    setEmail(e.target.value);
+                                    if (error) setError(null);
+                                }
+                            }}
+                            placeholder="e.g. yourstore@email.com"
+                            className={cn(
+                                "w-full h-[54px] rounded-xl border px-4 text-sm transition-all outline-none",
+                                error
+                                    ? "border-red-500 bg-red-50/30 focus:ring-red-500/20"
+                                    : "border-gray-200 bg-white focus:ring-[#0092FF]/40 focus:border-[#0092FF]",
+                                isAuthenticated && email === user?.email && !error && "bg-gray-50/80 cursor-not-allowed border-[#0092FF]/20 text-gray-500"
+                            )}
+                            style={{ fontFamily: "var(--font-poppins)" }}
+                            disabled={isLoading || (isAuthenticated && email === user?.email && !error)}
+                            readOnly={isAuthenticated && email === user?.email && !error}
+                        />
+                        {isAuthenticated && email === user?.email && (
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-[#0092FF] animate-in fade-in zoom-in duration-300">
+                                <Mail className="w-4 h-4 opacity-50" />
+                                <span className="text-[10px] font-bold uppercase tracking-wider">Linked</span>
+                            </div>
+                        )}
+                    </div>
+
                     {error && (
-                        <p className="text-sm text-red-500" style={{ fontFamily: "var(--font-poppins)" }}>
-                            {error}
-                        </p>
+                        <div className="flex items-center gap-2 px-1 text-red-600 animate-in fade-in slide-in-from-top-1 duration-300">
+                            <AlertCircle className="w-4 h-4 shrink-0" />
+                            <p className="text-[13px] font-medium leading-tight" style={{ fontFamily: "var(--font-poppins)" }}>
+                                {error}
+                            </p>
+                        </div>
                     )}
                 </div>
 

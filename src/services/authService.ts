@@ -203,6 +203,12 @@ export const authService = {
         api.put<ApiResponse<any>>(API_ROUTES.CUSTOMER_ADDRESS, payload),
 
     /**
+     * Get saved payment cards (Requires Auth)
+     */
+    getSavedCards: () =>
+        api.get<ApiResponse<any>>(API_ROUTES.SAVED_CARDS),
+
+    /**
      * Get wallet details (Requires Auth)
      */
     getWallet: () =>

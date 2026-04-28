@@ -141,9 +141,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
         }
     };
 
-    const discountPercentage = product.originalPrice && product.isPromotionApplied && product.originalPrice > product.price
-        ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-        : null;
+
 
     return (
         <motion.div
@@ -170,11 +168,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
 
                     {/* Elite Glassmorphism Badges */}
                     <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
-                        {discountPercentage && (
-                            <div className="bg-[#0092FF] text-white px-3 py-1.5 rounded-2xl shadow-lg shadow-blue-500/20 flex items-center gap-1.5 ring-1 ring-white/20">
-                                <span className="text-[11px] font-bold tracking-tight">-{discountPercentage}%</span>
-                            </div>
-                        )}
+
                         {product.stockMessage && (
                             <div className="bg-white/80 backdrop-blur-xl px-3 py-1.5 rounded-2xl border border-white/50 shadow-sm ring-1 ring-black/5">
                                 <span className="text-[10px] font-extrabold text-red-500 uppercase tracking-[0.1em]">
@@ -185,12 +179,12 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
                     </div>
 
                     {/* Side Floating Actions */}
-                    <div className="absolute top-4 right-4 flex flex-col gap-2 z-20 opacity-0 lg:group-hover:opacity-100 translate-x-4 lg:group-hover:translate-x-0 transition-all duration-500 delay-75">
+                    <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-col gap-2 z-20 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 translate-x-0 lg:translate-x-4 lg:group-hover:translate-x-0 transition-all duration-500 delay-75">
                         <button
                             onClick={handleWishlist}
                             disabled={isAdding}
                             className={cn(
-                                "w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-xl backdrop-blur-2xl ring-1 ring-black/5",
+                                "w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-300 shadow-xl backdrop-blur-2xl ring-1 ring-black/5",
                                 isWishlisted
                                     ? "bg-red-500 text-white"
                                     : "bg-white/90 text-gray-400 hover:text-red-500 hover:bg-white"
@@ -244,11 +238,7 @@ export const ProductCard = ({ product, variant = "default", className = "" }: Pr
                     {/* Grand Finale Price & Action Row */}
                     <div className="flex items-center justify-between mt-auto">
                         <div className="flex flex-col">
-                            {product.isPromotionApplied && product.originalPrice && (
-                                <span className="text-[13px] text-gray-400 line-through font-medium mb-1 decoration-[#0092FF]/30">
-                                    {product.currencyCode || "AED"} {product.originalPrice.toFixed(2)}
-                                </span>
-                            )}
+
 
                             <div className="flex items-baseline gap-0.5 sm:gap-1 group/price">
                                 <span className="text-[10px] sm:text-sm font-extrabold text-[#0092FF]">{product.currencyCode || "AED"}</span>
